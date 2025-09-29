@@ -1,0 +1,209 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+
+:root {
+    --bg-page: #FFFFFF;
+    --font-color: #3E3E3E;
+    --font-text-color: #FFFFFF;
+    --font-title-color: #005980;
+    --bg-container-light: #F3F3E6; 
+    --bg-container-blue-light: #75B4CC; 
+    --bg-container-blue-dark: #005586; 
+    --max-page: 1200px;
+    --gap-flex: 13px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Lato", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    background-color: var(--bg-page);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-flex);
+    padding-bottom: 100px;
+}
+
+header {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 87px;
+    background-color: var(--bg-container-blue-dark);
+}
+
+header .btns-container {
+    display: flex;
+    flex-direction: row;
+    gap: 50px;
+}
+
+header .btns-container .btn {
+    background-color: #12699C;
+    color: #ABE1FA;
+    font-weight: 500;
+    padding: 10px 15px;
+    border-radius: 10px;
+    width: 160px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+header .btns-container .btn.active {
+    background-color: #D5EFF8;
+    color: #005586;
+    padding: 10px 15px;
+    border-radius: 10px;
+    width: 160px;
+    text-align: center;
+}
+
+header .btns-container .btn:hover {
+    background-color: #D5EFF8;
+    color: #005586;
+}
+
+h1 {
+    max-width: var(--max-page);
+    text-align: center;
+    margin: 40px 0px 30px 0px;
+    font-size: 35px;
+    color: var(--font-title-color);
+}
+
+section {
+    max-width: var(--max-page);
+    margin: 0px 10px;
+}
+
+
+/* ### column 1 ### */
+
+section.column-1 {
+    height: 320px;
+    display: flex;
+    flex-direction: row;
+    gap: var(--gap-flex);
+}
+
+div.container {
+    border-radius: 12px;
+}
+
+div.container.logo {
+    width: 25%;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center 
+}
+
+div.container.logo img {
+    width: 87%;
+
+}
+
+
+div.container-numbers {
+    width: 25%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-flex);
+}
+
+div.container-numbers > .container {
+    width: 100%;
+    height: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;;
+    padding: 20px;
+}
+
+div.container-numbers p {
+    color: var(--font-text-color);
+    text-align: center;
+}
+
+div.container-numbers > .container p:nth-child(1) {
+    font-size: 43px;
+}
+
+div.container-numbers > .container p:nth-child(2) {
+    font-size: 15px;
+    text-transform: uppercase;
+}
+
+.container.featured-image {
+  width: 50%;          /* ajuste conforme precisar */
+  overflow: hidden;     /* esconde o que ultrapassar */
+  position: relative;
+}
+
+.container.featured-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;    /* preenche proporcionalmente */
+  object-position: center; /* centraliza a imagem */
+  display: block;
+}
+
+
+
+
+div.container.blue-light {
+    background-color: var(--bg-container-blue-light);
+}
+
+div.container.blue-dark {
+    background-color: var(--bg-container-blue-dark);
+}
+
+div.container.light {
+    background-color: var(--bg-container-light);
+}
+
+
+/* ### column 2  ###*/
+
+
+section.column-2 {
+    height: 600px;
+    display: flex;
+    flex-direction: row;
+    gap: var(--gap-flex);
+}
+
+section.column-2 .container.text.bg-image {
+    width: 36%;
+    padding: 50px;
+    color: var(--font-text-color);
+    line-height: 27px;
+    font-size: 21px;
+    font-weight: 300;
+    background-image: url("../imagens/bg-blue.png");
+    background-size: cover;      /* preenche proporcionalmente */
+    background-position: center; /* centraliza a imagem */
+    background-repeat: no-repeat;/* evita repetição */
+}
+
+section.column-2 .container.graphics {
+    width: 64%;
+}
+

@@ -302,43 +302,35 @@ section.column-3 .chart-bar-container {
 
 /* Estilos do Mapa Container */
 .mapa-brasil-container {
+    /* Removendo a altura e largura fixas para que o flex-grow funcione melhor */
+    /* e permitindo que o contêiner do mapa use a largura total do seu pai (48% da section) */
     width: 100%; 
+    /* REMOVIDO: height: 500px; */
     max-width: 450px; 
     margin-top: 20px;
-    flex-grow: 1; 
+    flex-grow: 1; /* Permite que o mapa use o espaço vertical restante */
     display: flex;
     justify-content: center;
     align-items: center;
-    /* Adição crucial para Mapbox */
-    position: relative; 
 }
 
-/* REMOÇÃO DOS ESTILOS SVG ANTIGOS */
-/* .mapa-brasil-container svg {
+/* Estilos para o SVG injetado */
+.mapa-brasil-container svg {
     width: 100%;
-    height: 100%;
+    height: auto;
+    /* Adicionando max-height para evitar que o SVG ultrapasse o contêiner em casos extremos */
     max-height: 100%;
-    object-fit: contain;
 }
 
+/* Estilos para os Paths dentro do SVG */
 .mapa-brasil-container svg path {
-    stroke: #FFFFFF;
+    stroke: #FFFFFF; /* Borda branca para destaque */
     stroke-width: 0.5;
     transition: fill 0.3s ease-in-out;
 }
 
 .mapa-brasil-container svg path:hover {
     opacity: 0.8;
-} 
-*/
-
-
-/* Estilos específicos para Mapbox */
-#mapbox-map {
-    /* Mapbox usa o ID para inicializar o mapa */
-    height: 500px; /* Definindo uma altura explícita para o Mapbox */
-    width: 100%;
-    border-radius: 8px; /* Mantendo o arredondamento */
 }
 
 section.column-3 .title-img {

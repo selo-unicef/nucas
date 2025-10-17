@@ -1,23 +1,16 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./assets/style.css">
+    <!-- Removendo a query string para simplificar -->
+    <link rel="stylesheet" href="./assets/style.css"> 
     <title>Dashboard - Selo Unicef</title>
     <!-- Adição do Chart.js para os gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
-    <script
-        src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
-
-    <!-- INÍCIO: Adições Mapbox -->
-    <script src="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.js"></script>
-    <link href="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.css" rel="stylesheet" />
-    <!-- FIM: Adições Mapbox -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 
 </head>
-
 <body>
 
     <header>
@@ -50,18 +43,14 @@
                 <p>Adolescentes inscritos</p>
             </div>
         </div>
-
+        
 
     </section>
-
+    
     <section class="column-2">
 
         <div class="container text bg-image">
-            <p>Os <strong>Núcleos de Cidadania de Adolescentes (NUCAs) fazem parte da metodologia do Selo
-                    UNICEF</strong> e são um indicador essencial da garantia do direito à participação de adolescentes e
-                jovens, assegurando espaço seguro para o desenvolvimento das competências e da cidadania de meninas,
-                menines e meninos em seus territórios. Saiba mais sobre os NUCAs nesta edição do Selo UNICEF 2025 -
-                2028.</p>
+            <p>Os <strong>Núcleos de Cidadania de Adolescentes (NUCAs) fazem parte da metodologia do Selo UNICEF</strong> e são um indicador essencial da garantia do direito à participação de adolescentes e jovens, assegurando espaço seguro para o desenvolvimento das competências e da cidadania de meninas, menines e meninos em seus territórios. Saiba mais sobre os NUCAs nesta edição do Selo UNICEF 2025 - 2028.</p>
         </div>
         <div class="container graphics light">
             <div class="filters">
@@ -96,10 +85,10 @@
                 <img src="./imagens/escola_menina.png" alt="Logo Selo UNICEF">
                 <h3>NUCAs espelhados pelo Brasil</h3>
             </div>
-
-            <!-- CONTAINER DO MAPBOX (substitui o SVG estático) -->
-            <div id="mapbox-map" class="mapa-brasil-container">
-                <!-- O mapa Mapbox será injetado aqui -->
+            
+            <!-- Container onde o SVG do mapa do Brasil será injetado pelo JavaScript -->
+            <div id="mapaBrasilContainer" class="mapa-brasil-container">
+                <!-- O SVG será carregado e injetado pelo main.js para permitir a coloração dinâmica. -->
             </div>
 
         </div>
@@ -115,7 +104,6 @@
 
     <!-- Mantivemos apenas a chamada do script principal -->
     <script src="./assets/main.js"></script>
-
+    
 </body>
-
 </html>

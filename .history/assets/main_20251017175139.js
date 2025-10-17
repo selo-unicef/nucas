@@ -318,7 +318,7 @@ function carregarMapbox(nucaDataByUF) {
           id: "background",
           type: "background",
           paint: {
-            "background-color": "#F3F3E6", //#F3F3E6
+            "background-color": "#a5a574", //#F3F3E6
           },
         },
       ],
@@ -330,12 +330,12 @@ function carregarMapbox(nucaDataByUF) {
   });
 
   if (larguraTela <= 600) {
-    map.scrollZoom.disable();
-    map.dragPan.disable();
-  } else {
-    map.scrollZoom.disable();
-    map.dragPan.disable();
-  }
+        map.scrollZoom.disable();
+        map.dragPan.disable();
+        } else {
+        map.scrollZoom.disable();
+        map.dragPan.enable();
+        }
 
   map.on("move", () => {
     const center = map.getCenter(); // retorna {lng, lat}

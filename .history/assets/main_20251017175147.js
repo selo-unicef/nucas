@@ -318,7 +318,7 @@ function carregarMapbox(nucaDataByUF) {
           id: "background",
           type: "background",
           paint: {
-            "background-color": "#F3F3E6", //#F3F3E6
+            "background-color": "#a5a574", //#F3F3E6
           },
         },
       ],

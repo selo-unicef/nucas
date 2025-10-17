@@ -8,9 +8,6 @@ const DADOS_PROCESSADOS = {
   generoContagens: {},
 };
 
-// // Obtém a largura da tela
-let larguraTela = window.innerWidth;
-
 // NOVO: Variável global para armazenar a contagem de NUCAs criados por UF
 const NUCA_COUNT_BY_UF = {};
 
@@ -309,43 +306,12 @@ function carregarMapbox(nucaDataByUF) {
   // Inicialização do Mapa
   const map = new mapboxgl.Map({
     container: "mapbox-map",
-    style: {
-      version: 8,
-      name: "White Canvas",
-      sources: {},
-      layers: [
-        {
-          id: "background",
-          type: "background",
-          paint: {
-            "background-color": "#F3F3E6", //#F3F3E6
-          },
-        },
-      ],
-    },
-    center: [-54.174281, -15.459189], // Centro do Brasil
-    zoom: 2.97,
+    // Estilo que possui as fronteiras estaduais do Brasil (Mapbox Streets)
+    style: "mapbox://styles/mapbox/light-v11",
+    center: [-54, -14], // Centro do Brasil
+    zoom: 2,
     minZoom: 1,
     projection: "mercator",
-  });
-
-  if (larguraTela <= 600) {
-    map.scrollZoom.disable();
-    map.dragPan.disable();
-  } else {
-    map.scrollZoom.disable();
-    map.dragPan.disable();
-  }
-
-  map.on("move", () => {
-    const center = map.getCenter(); // retorna {lng, lat}
-    const zoom = map.getZoom();
-
-    console.log(
-      `Latitude: ${center.lat.toFixed(6)}, Longitude: ${center.lng.toFixed(
-        6
-      )}, Zoom: ${zoom.toFixed(2)}`
-    );
   });
 
   map.on("load", async () => {
@@ -382,7 +348,7 @@ function carregarMapbox(nucaDataByUF) {
       type: "fill",
       source: "brazil-states",
       paint: {
-        "fill-color": "#ca6a6a",
+        "fill-color": fillStyle, // Estilo de preenchimento baseado na contagem de NUCAs
         "fill-opacity": 0.8,
       },
     });
@@ -394,7 +360,7 @@ function carregarMapbox(nucaDataByUF) {
       source: "brazil-states",
       layout: {},
       paint: {
-        "line-color": "#d12929",
+        "line-color": "#FFFFFF",
         "line-width": 1,
       },
     });

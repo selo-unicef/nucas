@@ -1,5 +1,4 @@
-const CSV_URL =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPqiRFxht-An0D4qkvXOddlecVuv0LIE1gOEEq93MBwYuFgtaa3pfrvg67s0ZhXsEpvMxgaMz77zUn/pub?gid=1024027397&single=true&output=csv";
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPqiRFxht-An0D4qkvXOddlecVuv0LIE1gOEEq93MBwYuFgtaa3pfrvg67s0ZhXsEpvMxgaMz77zUn/pubhtml?gid=1024027397&single=true";
 
 // Variável global para armazenar os dados processados (resumos)
 const DADOS_PROCESSADOS = {
@@ -8,9 +7,6 @@ const DADOS_PROCESSADOS = {
   generoContagens: {},
 };
 
-// // Obtém a largura da tela
-let larguraTela = window.innerWidth;
-
 // NOVO: Variável global para armazenar a contagem de NUCAs criados por UF
 const NUCA_COUNT_BY_UF = {};
 
@@ -18,18 +14,13 @@ const NUCA_COUNT_BY_UF = {};
 const DADOS_DETALHADOS_POR_MUNICIPIO = {};
 
 // Variável Mapbox - IMPORTANTE: Substitua pelo seu token real
-const MAPBOX_ACCESS_TOKEN =
-  "pk.eyJ1IjoibHVjYXN0aGF5bmFuLWVzdGFkYW8iLCJhIjoiY2xnM3N1amQzMGlqeDNrbWdla3doY2o2dCJ9.OXh3OY3_HFqAiF-zzZ6SDQ";
+const MAPBOX_ACCESS_TOKEN = "pk.eyJ1IjoibHVjYXN0aGF5bmFuLWVzdGFkYW8iLCJhIjoiY2xnM3N1amQzMGlqeDNrbWdla3doY2o2dCJ9.OXh3OY3_HFqAiF-zzZ6SDQ";
+// URL de um GeoJSON simplificado dos estados do Brasil com o código 'uf_code'
+// NOTE: Devido a restrições de CORS/Sandbox, esta busca pode falhar.
+// É a forma mais fiel de demonstrar a implementação do Mapbox.
+const BRAZIL_STATES_GEOJSON_URL =
+  "./data/brazil_states.geojson";
 
-const BRAZIL_STATES_GEOJSON_URL = "./data/brazil_states.geojson";
-
-/**
- * Função para criar um gráfico de rosca (Doughnut Chart)
- * @param {string} canvasId - O ID do elemento canvas.
- * @param {string[]} labels - Rótulos para cada fatia do gráfico.
- * @param {number[]} data - Valores numéricos para cada fatia.
- * @param {string[]} colors - Cores de fundo para cada fatia.
- */
 function createDoughnutChart(canvasId, labels, data, colors) {
   const ctx = document.getElementById(canvasId);
 
@@ -246,6 +237,7 @@ async function loadAndProcessData() {
     // 7. Geração do Mapa e Gráfico de Barras por UF
     carregarMapbox(NUCA_COUNT_BY_UF); // Chamada da nova função do Mapbox
     createBarChart(NUCA_COUNT_BY_UF);
+
   } catch (error) {
     console.error("Falha ao processar os dados:", error);
     // Exibe mensagem de erro na interface
@@ -257,6 +249,7 @@ async function loadAndProcessData() {
 // Inicializa o carregamento dos dados e gráficos
 window.onload = loadAndProcessData;
 
+
 // --- FUNÇÕES DO MAPBOX (SUBSTITUEM AS FUNÇÕES DE SVG ESTÁTICO) ---
 
 /**
@@ -267,107 +260,84 @@ function carregarMapbox(nucaDataByUF) {
   // Configura o token de acesso (substituir o placeholder pelo token real)
   mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
 
+  if (MAPBOX_ACCESS_TOKEN === 'YOUR_MAPBOX_ACCESS_TOKEN_HERE') {
+      const mapContainer = document.getElementById('mapbox-map');
+      if (mapContainer) {
+          mapContainer.innerHTML = `
+              <div style="padding: 20px; text-align: center; color: #cc0000; background-color: #ffe6e6; border: 1px solid #cc0000; border-radius: 8px;">
+                  <p><strong>ERRO:</strong> O token de acesso do Mapbox é obrigatório.</p>
+                  <p>Substitua <code>YOUR_MAPBOX_ACCESS_TOKEN_HERE</code> no arquivo <code>main.js</code> pelo seu token real.</p>
+              </div>
+          `;
+      }
+      return;
+  }
+  
   // Encontra os valores min e max para a escala de cores
-  const counts = Object.values(nucaDataByUF).filter((c) => c > 0);
+  const counts = Object.values(nucaDataByUF).filter(c => c > 0);
   const minCount = counts.length > 0 ? Math.min(...counts) : 0;
   const maxCount = counts.length > 0 ? Math.max(...counts) : 1; // Evita divisão por zero
-
+  
   // Cria a escala de cores Mapbox
   // Gradiente: de Azul Claro (#75B4CC) para Azul Escuro (#005586)
   const colorStops = [
-    0,
-    "#75B4CC", // Para contagem 0, use a cor mais clara
-    minCount,
-    "#75B4CC", // Mínimo
-    // Adiciona um ponto intermediário e o máximo
-    (maxCount + minCount) / 2,
-    "#48849E",
-    maxCount,
-    "#005586",
+      // Cor de base para a primeira parada, não inclua o valor de parada 0 aqui
+      minCount, '#75B4CC', 
+      (maxCount + minCount) / 2, '#48849E',
+      maxCount, '#005586' 
   ];
 
   // A Mapbox GL JS usa uma expressão de estilo para data-driven styling.
   // Criamos o 'case' para mapear cada código UF com seu valor, caindo para a escala de cor.
   const caseStatements = ["case"];
   for (const ufCode in nucaDataByUF) {
-    // Adiciona a lógica: se a propriedade 'uf_code' for igual ao UF, use o valor para a escala.
-    // Aqui usamos o código UF (ex: 'SP') para buscar o valor.
-    caseStatements.push(["==", ["get", "uf_code"], ufCode]);
-    caseStatements.push(nucaDataByUF[ufCode]);
+      // Adiciona a lógica: se a propriedade 'uf_code' for igual ao UF, use o valor para a escala.
+      // Aqui usamos o código UF (ex: 'SP') para buscar o valor.
+      caseStatements.push(["==", ["get", "uf_code"], ufCode]);
+      caseStatements.push(nucaDataByUF[ufCode]);
   }
   // Valor padrão se não for encontrado: 0
   caseStatements.push(0);
 
   // Combina o case com o gradiente (step)
   const fillStyle = [
-    "step",
-    caseStatements, // Input: o valor do NUCA
-    // Output colors: A escala de cor
-    ...colorStops,
+      "step",
+      caseStatements, // Input: o valor do NUCA
+      '#75B4CC', // VALOR DE SAÍDA PADRÃO: Cor para valores abaixo da primeira parada (minCount)
+      ...colorStops // Aqui estão apenas os pares de parada/cor
   ];
+
 
   // Inicialização do Mapa
   const map = new mapboxgl.Map({
     container: "mapbox-map",
-    style: {
-      version: 8,
-      name: "White Canvas",
-      sources: {},
-      layers: [
-        {
-          id: "background",
-          type: "background",
-          paint: {
-            "background-color": "#F3F3E6", //#F3F3E6
-          },
-        },
-      ],
-    },
-    center: [-54.174281, -15.459189], // Centro do Brasil
-    zoom: 2.97,
-    minZoom: 1,
-    projection: "mercator",
-  });
-
-  if (larguraTela <= 600) {
-    map.scrollZoom.disable();
-    map.dragPan.disable();
-  } else {
-    map.scrollZoom.disable();
-    map.dragPan.disable();
-  }
-
-  map.on("move", () => {
-    const center = map.getCenter(); // retorna {lng, lat}
-    const zoom = map.getZoom();
-
-    console.log(
-      `Latitude: ${center.lat.toFixed(6)}, Longitude: ${center.lng.toFixed(
-        6
-      )}, Zoom: ${zoom.toFixed(2)}`
-    );
+    // Estilo que possui as fronteiras estaduais do Brasil (Mapbox Streets)
+    style: "mapbox://styles/mapbox/light-v11", 
+    center: [-54, -14], // Centro do Brasil
+    zoom: 3, 
+    minZoom: 2,
+    maxBounds: [
+        [-80, -40], // Sudoeste
+        [-25, 10]  // Nordeste
+    ]
   });
 
   map.on("load", async () => {
     // 1. Carregar o GeoJSON dos estados
     let geojsonData;
     try {
-      const response = await fetch(BRAZIL_STATES_GEOJSON_URL);
-      if (!response.ok)
-        throw new Error("Falha ao carregar GeoJSON dos estados.");
-      geojsonData = await response.json();
+        const response = await fetch(BRAZIL_STATES_GEOJSON_URL);
+        if (!response.ok) throw new Error("Falha ao carregar GeoJSON dos estados.");
+        geojsonData = await response.json();
     } catch (e) {
-      console.error(
-        "Erro ao buscar o GeoJSON dos estados. Use um arquivo local ou GeoJSON embutido.",
-        e
-      );
-      // Exibe erro na interface
-      document.getElementById("mapbox-map").innerHTML = `
+        console.error("Erro ao buscar o GeoJSON dos estados. Use um arquivo local ou GeoJSON embutido.", e);
+        // Exibe erro na interface
+        document.getElementById('mapbox-map').innerHTML = `
             <div style="padding: 20px; text-align: center; color: #cc0000; background-color: #ffe6e6; border: 1px solid #cc0000; border-radius: 8px; height: 100%; display: flex; align-items: center; justify-content: center;">
                 <p><strong>ERRO DE MAPA:</strong> Não foi possível carregar as fronteiras dos estados (GeoJSON).</p>
             </div>
         `;
-      return;
+        return;
     }
 
     // 2. Adicionar Fonte de Dados (Source)
@@ -382,57 +352,55 @@ function carregarMapbox(nucaDataByUF) {
       type: "fill",
       source: "brazil-states",
       paint: {
-        "fill-color": "#ca6a6a",
+        "fill-color": fillStyle, // Estilo de preenchimento baseado na contagem de NUCAs
         "fill-opacity": 0.8,
       },
     });
 
     // 4. Adicionar Contorno (Stroke)
     map.addLayer({
-      id: "states-border",
-      type: "line",
-      source: "brazil-states",
-      layout: {},
-      paint: {
-        "line-color": "#d12929",
-        "line-width": 1,
-      },
+        id: "states-border",
+        type: "line",
+        source: "brazil-states",
+        layout: {},
+        paint: {
+            "line-color": "#FFFFFF",
+            "line-width": 1,
+        }
     });
 
     // 5. Adicionar Interatividade (Tooltip)
     const popup = new mapboxgl.Popup({
       closeButton: false,
       closeOnClick: false,
-      anchor: "top",
+      anchor: 'top',
     });
 
-    map.on("mousemove", "states-fill", (e) => {
-      if (e.features.length > 0) {
-        const feature = e.features[0];
-        const ufCode = feature.properties.uf_code;
-        const ufName = feature.properties.name;
-        const count = nucaDataByUF[ufCode] || 0;
+    map.on('mousemove', 'states-fill', (e) => {
+        if (e.features.length > 0) {
+            const feature = e.features[0];
+            const ufCode = feature.properties.uf_code;
+            const ufName = feature.properties.name;
+            const count = nucaDataByUF[ufCode] || 0;
+            
+            map.getCanvas().style.cursor = 'pointer';
 
-        map.getCanvas().style.cursor = "pointer";
-
-        popup
-          .setLngLat(e.lngLat)
-          .setHTML(
-            `
+            popup.setLngLat(e.lngLat)
+                 .setHTML(`
                     <div style="font-family: Inter, sans-serif; color: #3E3E3E; padding: 4px;">
                         <strong>${ufName} (${ufCode})</strong><br>
                         ${count.toLocaleString("pt-BR")} NUCAs
                     </div>
-                 `
-          )
-          .addTo(map);
-      }
+                 `)
+                 .addTo(map);
+        }
     });
 
-    map.on("mouseleave", "states-fill", () => {
-      map.getCanvas().style.cursor = "";
-      popup.remove();
+    map.on('mouseleave', 'states-fill', () => {
+        map.getCanvas().style.cursor = '';
+        popup.remove();
     });
+
   });
 }
 
@@ -441,109 +409,107 @@ function carregarMapbox(nucaDataByUF) {
  * @param {object} nucaDataByUF - Objeto com a contagem de NUCAs criados por UF.
  */
 function createBarChart(nucaDataByUF) {
-  const ctx = document.getElementById("nucasBarChart");
-  if (!ctx) return;
+    const ctx = document.getElementById('nucasBarChart');
+    if (!ctx) return;
 
-  // Converte o objeto de contagens em um array de objetos para fácil ordenação
-  let dataArray = Object.keys(nucaDataByUF).map((uf) => ({
-    uf: uf,
-    count: nucaDataByUF[uf],
-  }));
+    // Converte o objeto de contagens em um array de objetos para fácil ordenação
+    let dataArray = Object.keys(nucaDataByUF).map(uf => ({
+        uf: uf,
+        count: nucaDataByUF[uf]
+    }));
+    
+    // Filtra para manter apenas as UFs com NUCAs criados para o gráfico
+    dataArray = dataArray.filter(item => item.count > 0);
 
-  // Filtra para manter apenas as UFs com NUCAs criados para o gráfico
-  dataArray = dataArray.filter((item) => item.count > 0);
+    // Ordena do maior para o menor
+    dataArray.sort((a, b) => b.count - a.count);
 
-  // Ordena do maior para o menor
-  dataArray.sort((a, b) => b.count - a.count);
-
-  const labels = dataArray.map((item) => item.uf);
-  const data = dataArray.map((item) => item.count);
-
-  // Cor do tema (Azul escuro)
-  const backgroundColor = "#005586";
-
-  // Destrói o gráfico anterior, se existir (para evitar duplicações em re-render)
-  if (Chart.getChart(ctx)) {
-    Chart.getChart(ctx).destroy();
-  }
-
-  new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          label: "NUCAs Criados",
-          data: data,
-          backgroundColor: backgroundColor,
-          borderColor: "#003350",
-          borderWidth: 1,
-          borderRadius: 4,
+    const labels = dataArray.map(item => item.uf);
+    const data = dataArray.map(item => item.count);
+    
+    // Cor do tema (Azul escuro)
+    const backgroundColor = "#005586"; 
+    
+    // Destrói o gráfico anterior, se existir (para evitar duplicações em re-render)
+    if (Chart.getChart(ctx)) {
+        Chart.getChart(ctx).destroy();
+    }
+    
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'NUCAs Criados',
+                data: data,
+                backgroundColor: backgroundColor,
+                borderColor: '#003350', 
+                borderWidth: 1,
+                borderRadius: 4
+            }]
         },
-      ],
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      indexAxis: "y", // Gráfico de barras horizontal
-      layout: {
-        padding: {
-          left: 0,
-          right: 25, // Espaço extra para o datalabel
-        },
-      },
-      plugins: {
-        legend: {
-          display: false,
-        },
-        tooltip: {
-          callbacks: {
-            label: function (context) {
-              let label = context.dataset.label || "";
-              if (label) {
-                label += ": ";
-              }
-              // Formata o valor com separador de milhar
-              const value = context.parsed.x.toLocaleString("pt-BR");
-              label += value;
-              return label;
+        options: {
+            responsive: true,
+            maintainAspectRatio: false, 
+            indexAxis: 'y', // Gráfico de barras horizontal
+            layout: {
+                padding: {
+                    left: 0,
+                    right: 25 // Espaço extra para o datalabel
+                }
             },
-          },
-        },
-        datalabels: {
-          display: true,
-          align: "end",
-          anchor: "end",
-          color: "#3E3E3E",
-          formatter: (value) => value.toLocaleString("pt-BR"),
-          font: {
-            weight: "bold",
-          },
-        },
-      },
-      scales: {
-        x: {
-          beginAtZero: true,
-          title: {
-            display: true,
-            text: "Contagem de NUCAs",
-          },
-          ticks: {
-            callback: function (value) {
-              return value.toLocaleString("pt-BR");
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            let label = context.dataset.label || "";
+                            if (label) {
+                                label += ": ";
+                            }
+                            // Formata o valor com separador de milhar
+                            const value = context.parsed.x.toLocaleString("pt-BR");
+                            label += value;
+                            return label;
+                        },
+                    },
+                },
+                datalabels: {
+                    display: true,
+                    align: 'end',
+                    anchor: 'end',
+                    color: '#3E3E3E',
+                    formatter: (value) => value.toLocaleString('pt-BR'),
+                    font: {
+                        weight: 'bold'
+                    }
+                }
             },
-          },
-          grid: {
-            display: false,
-          },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Contagem de NUCAs'
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString('pt-BR');
+                        }
+                    },
+                    grid: {
+                        display: false
+                    }
+                },
+                y: {
+                    grid: {
+                        display: false
+                    }
+                }
+            }
         },
-        y: {
-          grid: {
-            display: false,
-          },
-        },
-      },
-    },
-    plugins: [ChartDataLabels],
-  });
+        plugins: [ChartDataLabels]
+    });
 }

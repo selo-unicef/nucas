@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- O caminho para o CSS deve ser relativo à raiz do projeto -->
     <link rel="stylesheet" href="./assets/style.css">
     <title>Dashboard - Selo Unicef</title>
     <!-- Adição do Chart.js para os gráficos -->
@@ -33,10 +34,11 @@
     <section class="column-1">
 
         <div class="container logo blue-light">
-            <img src="./imagens/selo-unicef.png" alt="Logo Selo UNICEF" srcset="">
+            <!-- Corrigido o caminho das imagens -->
+            <img src="https://raw.githubusercontent.com/unicef-brasil/desafio-dados-2024/main/assets/imagens/selo-unicef.png" alt="Logo Selo UNICEF">
         </div>
         <div class="container featured-image">
-            <img src="./imagens/imagem-destaque.png" alt="Imagem de destaque" srcset="">
+            <img src="https://raw.githubusercontent.com/unicef-brasil/desafio-dados-2024/main/assets/imagens/imagem-destaque.png" alt="Imagem de destaque">
         </div>
         <div class="container-numbers">
             <div class="container total-nucas blue-light">
@@ -93,8 +95,8 @@
     <section class="column-3">
         <div class="map-container">
             <div class="title-img">
-                <img src="./imagens/escola_menina.png" alt="Logo Selo UNICEF">
-                <h3>NUCAs espelhados pelo Brasil</h3>
+                <img src="https://raw.githubusercontent.com/unicef-brasil/desafio-dados-2024/main/assets/imagens/escola_menina.png" alt="Ilustração de uma menina">
+                <h3>NUCAs espalhados pelo Brasil</h3>
             </div>
 
             <!-- CONTAINER DO MAPBOX (substitui o SVG estático) -->
@@ -113,7 +115,7 @@
 
     </section>
 
-    <!-- Mantivemos apenas a chamada do script principal -->
+    <!-- O caminho para o JS deve ser relativo à raiz do projeto -->
     <script src="./assets/main.js"></script>
 
 </body>

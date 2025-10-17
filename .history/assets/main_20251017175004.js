@@ -8,9 +8,6 @@ const DADOS_PROCESSADOS = {
   generoContagens: {},
 };
 
-// // Obtém a largura da tela
-let larguraTela = window.innerWidth;
-
 // NOVO: Variável global para armazenar a contagem de NUCAs criados por UF
 const NUCA_COUNT_BY_UF = {};
 
@@ -318,24 +315,16 @@ function carregarMapbox(nucaDataByUF) {
           id: "background",
           type: "background",
           paint: {
-            "background-color": "#F3F3E6", //#F3F3E6
+            "background-color": "#a5a574", //#F3F3E6
           },
         },
       ],
     },
-    center: [-54.174281, -15.459189], // Centro do Brasil
-    zoom: 2.97,
+    center: [-54, -14], // Centro do Brasil
+    zoom: 2,
     minZoom: 1,
     projection: "mercator",
   });
-
-  if (larguraTela <= 600) {
-    map.scrollZoom.disable();
-    map.dragPan.disable();
-  } else {
-    map.scrollZoom.disable();
-    map.dragPan.disable();
-  }
 
   map.on("move", () => {
     const center = map.getCenter(); // retorna {lng, lat}

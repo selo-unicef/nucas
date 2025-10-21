@@ -5,9 +5,9 @@
     --font-color: #3E3E3E;
     --font-text-color: #FFFFFF;
     --font-title-color: #005980;
-    --bg-container-light: #F3F3E6;
-    --bg-container-blue-light: #75B4CC;
-    --bg-container-blue-dark: #005586;
+    --bg-container-light: #F3F3E6; 
+    --bg-container-blue-light: #75B4CC; 
+    --bg-container-blue-dark: #005586; 
     --max-page: 1200px;
     --gap-flex: 13px;
 }
@@ -106,7 +106,7 @@ div.container.logo {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center
+    justify-content: center 
 }
 
 div.container.logo img {
@@ -125,14 +125,13 @@ div.container-numbers {
     gap: var(--gap-flex);
 }
 
-div.container-numbers>.container {
+div.container-numbers > .container {
     width: 100%;
     height: 50%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    ;
+    justify-content: center;;
     padding: 20px;
 }
 
@@ -141,31 +140,27 @@ div.container-numbers p {
     text-align: center;
 }
 
-div.container-numbers>.container p:nth-child(1) {
+div.container-numbers > .container p:nth-child(1) {
     font-size: 43px;
 }
 
-div.container-numbers>.container p:nth-child(2) {
+div.container-numbers > .container p:nth-child(2) {
     font-size: 15px;
     text-transform: uppercase;
 }
 
 .container.featured-image {
-    width: 50%;
-    /* ajuste conforme precisar */
-    overflow: hidden;
-    /* esconde o que ultrapassar */
-    position: relative;
+  width: 50%;          /* ajuste conforme precisar */
+  overflow: hidden;     /* esconde o que ultrapassar */
+  position: relative;
 }
 
 .container.featured-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    /* preenche proporcionalmente */
-    object-position: center;
-    /* centraliza a imagem */
-    display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;    /* preenche proporcionalmente */
+  object-position: center; /* centraliza a imagem */
+  display: block;
 }
 
 
@@ -202,13 +197,10 @@ section.column-2 .container.text.bg-image {
     font-size: 19px;
     font-weight: 300;
     /* Ajustei o caminho da imagem de fundo para ser relativo à raiz do CSS */
-    background-image: url("../imagens/bg-blue.png");
-    background-size: cover;
-    /* preenche proporcionalmente */
-    background-position: center;
-    /* centraliza a imagem */
-    background-repeat: no-repeat;
-    /* evita repetição */
+    background-image: url("../imagens/bg-blue.png"); 
+    background-size: cover;      /* preenche proporcionalmente */
+    background-position: center; /* centraliza a imagem */
+    background-repeat: no-repeat;/* evita repetição */
 }
 
 section.column-2 .container.graphics {
@@ -224,28 +216,28 @@ section.column-2 .container.graphics {
     display: flex;
     justify-content: space-around;
     align-items: flex-start;
-    padding: 20px 0;
+    padding: 20px 0; 
     gap: 20px;
-    height: 100%;
+    height: 100%; 
     box-sizing: border-box;
-    max-height: 400px;
+    max-height: 400px; 
     margin-top: 20px;
 }
 
-.graphics-pizza>div {
-    flex: 1;
-    max-width: 50%;
+.graphics-pizza > div {
+    flex: 1; 
+    max-width: 50%; 
     height: 100%;
-    max-height: 400px;
+    max-height: 400px; 
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
 .graphics-pizza canvas {
-    width: 100%;
-    height: 100%;
-    max-height: 350px;
+    width: 100%; 
+    height: 100%; 
+    max-height: 350px; 
 }
 
 .chart-title {
@@ -262,8 +254,7 @@ div.options {
     gap: 20px;
     margin-top: 10px;
 }
-
-div.options>div {
+div.options > div {
     background-color: #BBC1C4;
     width: 155px;
     padding: 10px 20px;
@@ -275,11 +266,11 @@ div.options>div {
     transition: all 0.15s ease-in-out;
 }
 
-div.options>div:hover {
+div.options > div:hover {
     background-color: #005586;
 }
 
-div.options>div.active {
+div.options > div.active {
     background-color: #005586;
     font-weight: 600;
 }
@@ -302,7 +293,7 @@ section.column-3 {
 /* Estilos para Map e Bar Chart containers */
 section.column-3 .map-container,
 section.column-3 .chart-bar-container {
-    width: 48%;
+    width: 48%; 
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -313,10 +304,9 @@ section.column-3 .chart-bar-container {
 .mapa-brasil-container {
     width: 500px;
     height: 500px;
-    max-width: 450px;
+    max-width: 450px; 
     margin-top: 20px;
-    flex-grow: 1;
-    /* Permite que o mapa use o espaço restante */
+    flex-grow: 1; /* Permite que o mapa use o espaço restante */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -330,8 +320,7 @@ section.column-3 .chart-bar-container {
 
 /* Estilos para os Paths dentro do SVG */
 .mapa-brasil-container svg path {
-    stroke: #FFFFFF;
-    /* Borda branca para destaque */
+    stroke: #FFFFFF; /* Borda branca para destaque */
     stroke-width: 0.5;
     transition: fill 0.3s ease-in-out;
 }
@@ -345,12 +334,12 @@ section.column-3 .title-img {
     flex-direction: row;
     gap: 20px;
     align-items: center;
-    max-width: 100%;
+    max-width: 100%; 
     margin-bottom: 30px;
 }
 
 section.column-3 .title-img img {
-    width: 135px;
+    width: 100px; 
     height: auto;
 }
 
@@ -358,18 +347,15 @@ section.column-3 .title-img img {
 .chart-bar-container .chart-title {
     margin-top: 0;
     margin-bottom: 20px;
-    align-self: center;
+    align-self: center; 
 }
 
 .chart-bar-canvas {
     width: 100%;
-    height: 80%;
-    /* Garante que o canvas use a maior parte do espaço vertical */
-    max-height: 550px;
-    padding-left: 10px;
-    /* Pequeno padding para as labels do eixo Y */
+    height: 80%; /* Garante que o canvas use a maior parte do espaço vertical */
+    max-height: 550px; 
+    padding-left: 10px; /* Pequeno padding para as labels do eixo Y */
 }
-
 .chart-bar-canvas canvas {
     width: 100%;
     height: 100%;
@@ -386,147 +372,54 @@ h3 {
 /*  TABLE */
 
 
-
 section.column-4 {
-    height: 950px;
-    display: flex;
-    flex-direction: column;
+    height: 750px;
+    display: flex
+;
+    flex-direction: row;
     gap: var(--gap-flex);
     background-color: var(--bg-container-light);
     width: var(--max-page);
     border-radius: 12px;
     padding: 30px 50px;
-    justify-content: flex-start;
+    justify-content: space-between;
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    background-color: #EBEBD9;
-    border-radius: 12px;
-    overflow: hidden;
-}
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: #fff;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      overflow: hidden;
+    }
 
+    th, td {
+      border: 1px solid #dee2e6;
+      padding: 10px 14px;
+      text-align: center;
+    }
 
-td {
-    border-top: 5px solid var(--bg-container-light);
-    padding: 10px 14px;
-    text-align: center;
-}
+    th {
+      background-color: #007BFF;
+      color: white;
+      font-weight: bold;
+    }
 
-th {
-    /* border: 5px solid #005980; */
-    padding: 10px 14px;
-    text-align: center;
-    background-color: var(--bg-container-blue-light);
-    color: white;
-    font-weight: bold;
-}
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
 
-tr:nth-child(even) {
-    background-color: #EBEBD9;
-}
+    tr:hover {
+      background-color: #e9f5ff;
+    }
 
-tr:hover {
-    background-color: #e2e2ce;
-}
+    a {
+      color: #007BFF;
+      text-decoration: none;
+    }
 
-a {
-    color: #408de0;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-
-.filter-container {
-    display: flex;
-    flex-direction: row;
-}
-
-.filter-container .title-img {
-    width: 48%;
-
-}
-
-.filter-container .title-img img {
-    width: 135px;
-    height: auto;
-}
-
-.filter-container .text {
-    width: 52%;
-}
-
-
-/* --- NOVOS ESTILOS PARA RESPONSIVIDADE E PAGINAÇÃO --- */
-
-/* Container da tabela para rolagem horizontal em telas pequenas */
-.table-container {
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    /* Melhora a experiência de rolagem em iOS */
-    border-radius: 12px;
-}
-
-/* Container dos botões de paginação */
-.pagination-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px 0;
-    gap: 8px;
-    flex-wrap: wrap;
-    /* Permite que os botões quebrem a linha */
-}
-
-.pagination-container button {
-    cursor: pointer;
-    background-color: #EBEBD9;
-    border: 1px solid #005980;
-    color: #005980;
-    padding: 8px 14px;
-    border-radius: 6px;
-    font-weight: bold;
-    font-size: 14px;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-.pagination-container button:hover {
-    background-color: #005980;
-    color: #FFFFFF;
-}
-
-.pagination-container button.active {
-    background-color: #005980;
-    color: #FFFFFF;
-    border-color: #005980;
-}
-
-.pagination-container button:disabled {
-    cursor: not-allowed;
-    opacity: 0.6;
-}
-
-tr.header {
-    height: 56px;
-}
-
-
-/* filtro */
-
-
-.filter-uf select {
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid #005980;
-  background-color: #EBEBD9;
-  color: #005980;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-}
+    a:hover {
+      text-decoration: underline;
+    }

@@ -511,22 +511,3 @@ a:hover {
     cursor: not-allowed;
     opacity: 0.6;
 }
-
-tr.header {
-    height: 56px;
-}
-
-
-/* filtro */
-
-
-.filter-uf select {
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid #005980;
-  background-color: #EBEBD9;
-  color: #005980;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-}

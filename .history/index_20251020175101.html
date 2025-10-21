@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./assets/style.css">
+    <!-- O caminho para o CSS foi corrigido para apontar para a raiz -->
+    <link rel="stylesheet" href="style.css">
     <title>Dashboard - Selo Unicef</title>
     <!-- Adição do Chart.js para os gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
@@ -94,7 +95,7 @@
         <div class="map-container">
             <div class="title-img">
                 <img src="./imagens/escola_menina.png" alt="Logo Selo UNICEF">
-                <h3>NUCAs espelhados pelo Brasil</h3>
+                <h3>NUCAs espalhados pelo Brasil</h3>
             </div>
 
             <!-- CONTAINER DO MAPBOX (substitui o SVG estático) -->
@@ -113,56 +114,8 @@
 
     </section>
 
-    <section class="column-4">
-
-
-        <div class="filter-container">
-            <div class="title-img">
-                <img src="./imagens/escola_menina.png" alt="Logo Selo UNICEF">
-                <div class="itens">
-                    <h3>Detalhes de cada NUCA registrado</h3>
-                    <div class="filter-uf">
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="text">
-                <p>Filtre por estado e veja quantos NUCAs já foram criados e o total de adolescentes cadastrados, engajados e transformando o seu município e seus arredores nesta edição do Selo Unicef</p>
-                <p class="text-space">No Acre foram criados 100 NUCAs e há 10.000 adolescentes engajados</p>
-            </div>
-
-        </div>
-
-        <div class="table-adolescentes">
-
-            <!-- Container adicionado para permitir rolagem horizontal em telas pequenas -->
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr class="header">
-                            <th>UF</th>
-                            <th>Município</th>
-                            <th>Adolescentes</th>
-                            <th>Indígenas</th>
-                            <th>Quilombolas</th>
-                            <th>Ciganos</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Conteúdo será inserido dinamicamente via JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-            <!-- Container para os botões de paginação -->
-            <div id="pagination-container" class="pagination-container"></div>
-
-        </div>
-    </section>
-
-    <!-- Mantivemos apenas a chamada do script principal -->
-    <script src="./assets/main.js"></script>
+    <!-- O caminho para o JavaScript foi corrigido para apontar para a raiz -->
+    <script src="main.js"></script>
 
 </body>
 

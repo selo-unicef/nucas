@@ -350,7 +350,7 @@ section.column-3 .title-img {
 }
 
 section.column-3 .title-img img {
-    width: 135px;
+    width: 100px;
     height: auto;
 }
 
@@ -386,17 +386,16 @@ h3 {
 /*  TABLE */
 
 
-
 section.column-4 {
-    height: 950px;
+    height: 750px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: var(--gap-flex);
     background-color: var(--bg-container-light);
     width: var(--max-page);
     border-radius: 12px;
     padding: 30px 50px;
-    justify-content: flex-start;
+    justify-content: space-between;
 }
 
 table {
@@ -404,7 +403,7 @@ table {
     border-collapse: collapse;
     margin-top: 20px;
     background-color: #EBEBD9;
-    border-radius: 12px;
+    border-radius: 20px;
     overflow: hidden;
 }
 
@@ -419,6 +418,10 @@ th {
     /* border: 5px solid #005980; */
     padding: 10px 14px;
     text-align: center;
+}
+
+
+th {
     background-color: var(--bg-container-blue-light);
     color: white;
     font-weight: bold;
@@ -429,7 +432,7 @@ tr:nth-child(even) {
 }
 
 tr:hover {
-    background-color: #e2e2ce;
+    background-color: #EBEBD9;
 }
 
 a {
@@ -439,94 +442,4 @@ a {
 
 a:hover {
     text-decoration: underline;
-}
-
-
-.filter-container {
-    display: flex;
-    flex-direction: row;
-}
-
-.filter-container .title-img {
-    width: 48%;
-
-}
-
-.filter-container .title-img img {
-    width: 135px;
-    height: auto;
-}
-
-.filter-container .text {
-    width: 52%;
-}
-
-
-/* --- NOVOS ESTILOS PARA RESPONSIVIDADE E PAGINAÇÃO --- */
-
-/* Container da tabela para rolagem horizontal em telas pequenas */
-.table-container {
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    /* Melhora a experiência de rolagem em iOS */
-    border-radius: 12px;
-}
-
-/* Container dos botões de paginação */
-.pagination-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px 0;
-    gap: 8px;
-    flex-wrap: wrap;
-    /* Permite que os botões quebrem a linha */
-}
-
-.pagination-container button {
-    cursor: pointer;
-    background-color: #EBEBD9;
-    border: 1px solid #005980;
-    color: #005980;
-    padding: 8px 14px;
-    border-radius: 6px;
-    font-weight: bold;
-    font-size: 14px;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-.pagination-container button:hover {
-    background-color: #005980;
-    color: #FFFFFF;
-}
-
-.pagination-container button.active {
-    background-color: #005980;
-    color: #FFFFFF;
-    border-color: #005980;
-}
-
-.pagination-container button:disabled {
-    cursor: not-allowed;
-    opacity: 0.6;
-}
-
-tr.header {
-    height: 56px;
-}
-
-
-/* filtro */
-
-
-.filter-uf select {
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid #005980;
-  background-color: #EBEBD9;
-  color: #005980;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
 }

@@ -621,7 +621,45 @@ function setupPagination(data, paginationContainer, tableBody) {
 /**
  * Carrega e processa os dados do CSV para a tabela de adolescentes.
  */
+async function loadAdolescentesTableData() {
+    try {
+        const response = await fetch(CSV_ADOLESCENTES_URL);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const csvText = await response.text();
+        const rows = csvText.trim().split(/\r?\n/).slice(1);
+        
+        adolescentesData = rows.map(row => {
+            const cleanedRow = row.trim();
+            const columns = cleanedRow.split(',');
+            return {
+                UF: columns[0] || '',
+                Municipio: columns[1] || '',
+                Indigenas: columns[2] || '',
+                Quilombolas: columns[3] || '',
+                Ciganos: columns[4] || '',
+                Adolescentes: columns[5] || '',
+                Status: columns[6] || ''
+            };
+        }).filter(row => row.UF && row.Municipio); // Filtra linhas vazias
 
+        const tableBody = document.querySelector('.table-container tbody');
+        const paginationContainer = document.getElementById('pagination-container');
+
+        if (tableBody && paginationContainer) {
+            displayTablePage(adolescentesData, tableBody, currentPage);
+            setupPagination(adolescentesData, paginationContainer, tableBody);
+        }
+
+    } catch (error) {
+        console.error("Erro ao carregar os dados da tabela de adolescentes:", error);
+        const tableBody = document.querySelector('.table-container tbody');
+        if (tableBody) {
+             tableBody.innerHTML = '<tr><td colspan="7">Não foi possível carregar os dados. Tente novamente mais tarde.</td></tr>';
+        }
+    }
+}
 
 function processCSVData(csvText) {
   const rows = csvText.split("\n").slice(1);

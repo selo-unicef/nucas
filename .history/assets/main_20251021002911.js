@@ -769,14 +769,15 @@ async function loadAdolescentesTableData() {
         adolescentesData = rows.map(row => {
             const cleanedRow = row.trim();
             const columns = cleanedRow.split(',');
-            return {
-                UF: columns[0] || '',
-                Municipio: columns[1] || '',
-                Indigenas: columns[2] || '0',
-                Quilombolas: columns[3] || '0',
-                Ciganos: columns[4] || '0',
-                Adolescentes: columns[5] || '0',
-                Status: columns[6] || ''
+              return {
+                UF: cleanedColumns[0] || '',
+                Municipio: cleanedColumns[1] || '',
+                // AQUI A MUDANÇA: Verifica se o valor numérico é > 0
+                Indigenas: Number(cleanedColumns[2]) > 0 ? 'Sim' : '',
+                Quilombolas: Number(cleanedColumns[3]) > 0 ? 'Sim' : '',
+                Ciganos: Number(cleanedColumns[4]) > 0 ? 'Sim' : '',
+                Adolescentes: cleanedColumns[5] || '',
+                Status: cleanedColumns[6] || ''
             };
         }).filter(row => row.UF && row.Municipio);
 

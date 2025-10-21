@@ -772,10 +772,10 @@ async function loadAdolescentesTableData() {
             return {
                 UF: columns[0] || '',
                 Municipio: columns[1] || '',
-                Indigenas: columns[2] || '0',
-                Quilombolas: columns[3] || '0',
-                Ciganos: columns[4] || '0',
-                Adolescentes: columns[5] || '0',
+                Indigenas: columns[2] || '',
+                Quilombolas: columns[3] || '',
+                Ciganos: columns[4] || '',
+                Adolescentes: columns[5] || '',
                 Status: columns[6] || ''
             };
         }).filter(row => row.UF && row.Municipio);

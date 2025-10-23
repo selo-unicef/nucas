@@ -14,6 +14,8 @@
     <!-- INÍCIO: Adições Mapbox -->
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.js"></script>
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.css" rel="stylesheet" />
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
     <!-- FIM: Adições Mapbox -->
 
 </head>
@@ -23,8 +25,8 @@
     <header>
         <div class="btns-container">
             <div class="btn active">Sobre os NUCAs</div>
-            <div class="btn">NUCAs em Ação</div>
-            <div class="btn">Outras Ações</div>
+            <!-- <div class="btn">NUCAs em Ação</div>
+            <div class="btn">Outras Ações</div> -->
         </div>
     </header>
 
@@ -65,23 +67,37 @@
         </div>
         <div class="container graphics light">
             <div class="filters">
-                <p>Filtre por território</p>
-                <div class="options">
-                    <div class="btn-todos active">Todos os territórios</div>
-                    <div class="btn-semiarido">Semiárido</div>
-                    <div class="btn-amazonia">Amazônia Legal</div>
+                <!-- <p>Filtre por território</p> -->
+                <!-- ATUALIZAÇÃO: Transformado de botões para dropdown -->
+                <div class="filter-ez">
+                    <select id="ez-select">
+                        <option value="todos">Todos os territórios</option>
+                        <option value="recife">EZ Recife (PE, PB e AL)</option>
+                        <option value="sao-luis">EZ São Luís (MA e PI)</option>
+                        <option value="fortaleza">EZ Fortaleza (CE e RN)</option>
+                        <option value="salvador">EZ Salvador (BA e SE)</option>
+                        <option value="manaus">EZ Manaus (AC, AM, RO)</option>
+                        <option value="belem">EZ Belém (AP, MT, PA, TO)</option>
+                        <option value="boa-vista">EZ Boa Vista (RR)</option>
+                    </select>
                 </div>
             </div>
 
             <div class="graphics-pizza">
                 <div class="nucas">
-                    <!-- Donut chart por Nucas criados, quantidade incompleta e fora dos critérios -->
-                    <h3 class="chart-title">Total de NUCAs</h3>
+                    <!-- ATUALIZAÇÃO: Adicionado container para título e total -->
+                    <div class="chart-title-container">
+                        <h3 class="chart-title">Total de NUCAs</h3>
+                        <!-- <span class="chart-total" id="nucasTotal">...</span> -->
+                    </div>
                     <canvas id="nucasChart"></canvas>
                 </div>
                 <div class="genero">
-                    <!-- Donut chart por genero-->
-                    <h3 class="chart-title">Gênero dos adolescentes</h3>
+                    <!-- ATUALIZAÇÃO: Adicionado container para título e total -->
+                    <div class="chart-title-container">
+                        <h3 class="chart-title">Gênero dos adolescentes</h3>
+                        <!-- <span class="chart-total" id="generoTotal">...</span> -->
+                    </div>
                     <canvas id="generoChart"></canvas>
                 </div>
             </div>
@@ -98,14 +114,12 @@
             </div>
 
             <!-- CONTAINER DO MAPBOX (substitui o SVG estático) -->
-            <div id="mapbox-map" class="mapa-brasil-container">
-                <!-- O mapa Mapbox será injetado aqui -->
-            </div>
+            <div id="mapbox-map" class="mapa-brasil-container"></div>
 
         </div>
 
         <div class="chart-bar-container">
-            <h3 class="chart-title">Contagem de NUCAs Criados por UF</h3>
+            <!-- <h3 class="chart-title">NUCAs criados por estado</h3> -->
             <div class="chart-bar-canvas">
                 <canvas id="nucasBarChart"></canvas>
             </div>
@@ -128,13 +142,16 @@
             </div>
 
             <div class="text">
-                <p>Filtre por estado e veja quantos NUCAs já foram criados e o total de adolescentes cadastrados, engajados e transformando o seu município e seus arredores nesta edição do Selo Unicef</p>
-                <p class="text-space">No Acre foram criados 100 NUCAs e há 10.000 adolescentes engajados</p>
+                <p><strong>Filtre por estado</strong> e veja quantos NUCAs já foram criados e o total de adolescentes
+                    cadastrados, engajados e transformando o seu município e seus arredores nesta edição do Selo Unicef
+                </p>
+                <p class="text-space">Carregando dados nacionais...</p>
             </div>
 
         </div>
 
         <div class="table-adolescentes">
+
 
             <!-- Container adicionado para permitir rolagem horizontal em telas pequenas -->
             <div class="table-container">
@@ -143,11 +160,11 @@
                         <tr class="header">
                             <th>Estado</th>
                             <th>Município</th>
-                            <th>Adolescentes</th>
+                            <th>Adolescentes engajados</th>
                             <th>Indígenas</th>
                             <th>Quilombolas</th>
                             <th>Ciganos</th>
-                            <th>Status</th>
+                            <!-- <th>Status</th> -->
                         </tr>
                     </thead>
                     <tbody>
@@ -159,6 +176,26 @@
             <div id="pagination-container" class="pagination-container"></div>
 
         </div>
+    </section>
+
+    <section class="column-5">
+
+        <div class="logos">
+            <div class="logo-container">
+                <p>Parcerias</p>
+                <img src="./imagens/logos-1.png" alt="" srcset="">
+            </div>
+            <div class="logo-container">
+                <p>Parcerias estratégicas</p>
+                <img src="./imagens/logos-2.png" alt="" srcset="">
+            </div>
+            <div class="logo-container">
+                <p>Parcerias técnicas</p>
+                <img src="./imagens/logos-3.png" alt="" srcset="">
+            </div>
+
+        </div>
+
     </section>
 
     <!-- Mantivemos apenas a chamada do script principal -->

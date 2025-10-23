@@ -8,14 +8,30 @@ const DADOS_PROCESSADOS = {
   generoContagens: {},
 };
 
-// // Obtém a largura da tela
+// Obtém a largura da tela
 let larguraTela = window.innerWidth;
 
 // NOVO: Variável global para armazenar a contagem de NUCAs criados por UF
 const NUCA_COUNT_BY_UF = {};
 
 // Variável global para armazenar os dados detalhados por município
+// Esta será nossa "fonte da verdade" para os filtros
 const DADOS_DETALHADOS_POR_MUNICIPIO = {};
+
+// NOVO: Mapeamento dos Escritórios Zonais (EZ) para as UFs correspondentes
+// As UFs devem bater exatamente com o formato vindo do CSV (ex: "Pernambuco (PE)")
+const MAPA_EZ_UFS = {
+  recife: ["Pernambuco (PE)", "Paraíba (PB)", "Alagoas (AL)"],
+  "sao-luis": ["Maranhão (MA)", "Piauí (PI)"],
+  fortaleza: ["Ceará (CE)", "Rio Grande do Norte (RN)"],
+  salvador: ["Bahia (BA)", "Sergipe (SE)"], // Corrigido de "SE e SE"
+  manaus: ["Amazonas (AM)", "Acre (AC)", "Rondônia (RO)"],
+  belem: ["Pará (PA)", "Amapá (AP)", "Mato Grosso (MT)", "Tocantins (TO)"],
+  "boa-vista": ["Roraima (RR)"],
+};
+
+// NOVO: Variável global para armazenar a contagem de adolescentes por UF
+const TEEN_COUNT_BY_UF = {};
 
 // Variável Mapbox - IMPORTANTE: Substitua pelo seu token real
 const MAPBOX_ACCESS_TOKEN =
@@ -23,19 +39,17 @@ const MAPBOX_ACCESS_TOKEN =
 
 const BRAZIL_STATES_GEOJSON_URL = "./data/brazil_states.geojson";
 
-/**
- * Função para criar um gráfico de rosca (Doughnut Chart)
- * @param {string} canvasId - O ID do elemento canvas.
- * @param {string[]} labels - Rótulos para cada fatia do gráfico.
- * @param {number[]} data - Valores numéricos para cada fatia.
- * @param {string[]} colors - Cores de fundo para cada fatia.
- */
 function createDoughnutChart(canvasId, labels, data, colors) {
   const ctx = document.getElementById(canvasId);
 
   if (!ctx) {
     console.error(`Canvas com ID '${canvasId}' não encontrado.`);
     return;
+  }
+
+  // Destrói o gráfico anterior, se existir, para criar um novo
+  if (Chart.getChart(ctx)) {
+    Chart.getChart(ctx).destroy();
   }
 
   // Certifica-se de que o elemento canvas está no tamanho correto para alta resolução
@@ -101,6 +115,73 @@ function createDoughnutChart(canvasId, labels, data, colors) {
 }
 
 /**
+ * ATUALIZAÇÃO: Função extraída para atualizar os gráficos de rosca.
+ * Agora pode ser chamada com dados globais ou filtrados.
+ */
+function updateDonutCharts(nucaStatusCounts, genderCounts) {
+  // 1. Gráfico de Status NUCA
+  const nucaStatusLabels = Object.keys(nucaStatusCounts);
+  const nucaStatusData = Object.values(nucaStatusCounts);
+  
+  // ATUALIZAÇÃO: Calcula e atualiza o total para NUCAs
+  // const totalNucas = nucaStatusData.reduce((acc, val) => acc + val, 0);
+  // const nucasTotalEl = document.getElementById('nucasTotal');
+  // if (nucasTotalEl) {
+  //     nucasTotalEl.textContent = totalNucas.toLocaleString('pt-BR');
+  // }
+
+  const nucaStatusColors = [
+    "#178076", // '✅ NUCA criado'
+    "#D3A80A", // '⚠️ Não atende aos critérios'
+    "#E1A38E", // '❌ Membros insuficientes'
+  ];
+
+  createDoughnutChart(
+    "nucasChart",
+    nucaStatusLabels,
+    nucaStatusData,
+    nucaStatusColors
+  );
+
+  // 2. Gráfico de Gênero
+  const genderLabels = Object.keys(genderCounts);
+  const genderDataValues = Object.values(genderCounts);
+
+  // ATUALIZAÇÃO: Calcula e atualiza o total para Gênero
+  // const totalGenero = genderDataValues.reduce((acc, val) => acc + val, 0);
+  // const generoTotalEl = document.getElementById('generoTotal');
+  // if (generoTotalEl) {
+  //     generoTotalEl.textContent = totalGenero.toLocaleString('pt-BR');
+  // }
+
+  const genderColors = [
+    "#E1A38E", // 'Feminino'
+    "#BCD876", // 'Masculino'
+    "#958C80", // 'Não binário'
+  ];
+
+  // Filtra para remover categorias com contagem 0
+  const filteredGenderLabels = [];
+  const filteredGenderData = [];
+  const filteredGenderColors = [];
+
+  genderLabels.forEach((label, index) => {
+    if (genderDataValues[index] > 0) {
+      filteredGenderLabels.push(label);
+      filteredGenderData.push(genderDataValues[index]);
+      filteredGenderColors.push(genderColors[index]);
+    }
+  });
+
+  createDoughnutChart(
+    "generoChart",
+    filteredGenderLabels,
+    filteredGenderData,
+    filteredGenderColors
+  );
+}
+
+/**
  * Função principal para buscar, processar e exibir os dados do CSV.
  */
 async function loadAndProcessData() {
@@ -115,7 +196,7 @@ async function loadAndProcessData() {
     // 2. Processamento do CSV
     const rows = csvText.split(/\r?\n/);
 
-    // Variáveis de totalização temporárias
+    // Variáveis de totalização temporárias (para os dados GLOBAIS)
     let totalMembers = 0;
     const nucaStatusCounts = {
       "✅ NUCA criado": 0,
@@ -153,26 +234,34 @@ async function loadAndProcessData() {
         const masculino = parseInt(columns[3].replace(/"/g, ""), 10) || 0;
         const naoBinario = parseInt(columns[4].replace(/"/g, ""), 10) || 0;
 
-        // 3. Cálculo dos Totais Agregados
-        totalMembers += total;
-
-        // Contagem de Status do NUCA
+        // --- Contagem para os totais GLOBAIS ---
         if (status in nucaStatusCounts) {
           nucaStatusCounts[status]++;
         }
 
-        // Contagem de Gênero
-        genderCounts["Feminino"] += feminino;
-        genderCounts["Masculino"] += masculino;
-        genderCounts["Não binário"] += naoBinario;
-
-        // NOVO: Armazenamento da contagem de NUCAs CRIADOS por UF
+        // Armazenamento da contagem de NUCAs CRIADOS por UF (para o mapa/barras)
+        // E SOMA dos totais de membros e gênero APENAS se o NUCA estiver criado.
         if (status === "✅ NUCA criado") {
+          // 3. Cálculo dos Totais Agregados (AGORA APENAS PARA NUCAS CRIADOS)
+          totalMembers += total;
+          
+          // Contagem de Gênero (AGORA APENAS PARA NUCAS CRIADOS)
+          genderCounts["Feminino"] += feminino;
+          genderCounts["Masculino"] += masculino;
+          genderCounts["Não binário"] += naoBinario;
+          
+          // Contagem de NUCAs por UF
           NUCA_COUNT_BY_UF[uf] = (NUCA_COUNT_BY_UF[uf] || 0) + 1;
         }
+        // --- Fim da contagem global ---
 
-        // NOVO: Armazenamento por município no novo dicionário
-        DADOS_DETALHADOS_POR_MUNICIPIO[municipio] = {
+
+        // Armazenamento por município (FONTE DA VERDADE PARA FILTROS)
+        // Usamos a UF como chave principal para facilitar a filtragem por EZ
+        if (!DADOS_DETALHADOS_POR_MUNICIPIO[uf]) {
+            DADOS_DETALHADOS_POR_MUNICIPIO[uf] = [];
+        }
+        DADOS_DETALHADOS_POR_MUNICIPIO[uf].push({
           uf: uf,
           municipio: municipio,
           feminino: feminino,
@@ -180,68 +269,39 @@ async function loadAndProcessData() {
           naoBinario: naoBinario,
           total: total,
           status: status,
-        };
+        });
       }
     }
 
-    // --- 4. Armazenamento dos dados no dicionário global DADOS_PROCESSADOS ---
+    // --- 4. Armazenamento dos dados GLOBAIS no dicionário global DADOS_PROCESSADOS ---
     DADOS_PROCESSADOS.totalMembros = totalMembers;
     DADOS_PROCESSADOS.nucaStatus = nucaStatusCounts;
     DADOS_PROCESSADOS.generoContagens = genderCounts;
     // --- Fim do Armazenamento ---
 
-    // 5. Atualização dos Valores no HTML
-    const totalNucasCriados =
-      DADOS_PROCESSADOS.nucaStatus["✅ NUCA criado"] || 0;
+    // 5. Atualização dos Valores no HTML (inicial com dados globais)
+    const totalNucasCriados = DADOS_PROCESSADOS.nucaStatus["✅ NUCA criado"] || 0;
 
-    document.querySelector(".nucas-number").textContent =
-      totalNucasCriados.toLocaleString("pt-BR");
-    document.querySelector(".members-number").textContent =
-      DADOS_PROCESSADOS.totalMembros.toLocaleString("pt-BR");
+    document.querySelector(".nucas-number").textContent = totalNucasCriados.toLocaleString("pt-BR");
+    document.querySelector(".members-number").textContent = DADOS_PROCESSADOS.totalMembros.toLocaleString("pt-BR");
 
-    // 6. Geração dos Gráficos com Chart.js
-    const nucaStatusLabels = Object.keys(DADOS_PROCESSADOS.nucaStatus);
-    const nucaStatusData = Object.values(DADOS_PROCESSADOS.nucaStatus);
-    const nucaStatusColors = [
-      "#178076", // Teal Escuro para '✅ NUCA criado'
-      "#D3A80A", // Amarelo Dourado para '⚠️ Não atende aos critérios'
-      "#E1A38E", // Rosa Suave para '❌ Membros insuficientes'
-    ];
+    // 6. Geração dos Gráficos com Chart.js (inicial com dados globais)
+    // ATUALIZAÇÃO: Chamando a nova função reutilizável
+    updateDonutCharts(DADOS_PROCESSADOS.nucaStatus, DADOS_PROCESSADOS.generoContagens);
 
-    createDoughnutChart(
-      "nucasChart",
-      nucaStatusLabels,
-      nucaStatusData,
-      nucaStatusColors
-    );
-
-    const genderLabels = Object.keys(DADOS_PROCESSADOS.generoContagens);
-    const genderData = Object.values(DADOS_PROCESSADOS.generoContagens);
-    const genderColors = [
-      "#E1A38E", // Rosa Suave para 'Feminino'
-      "#BCD876", // Verde Claro/Lima para 'Masculino'
-      "#958C80", // Cinza Quente para 'Não binário'
-    ];
-
-    // Filtra para remover categorias com contagem 0
-    const filteredGenderLabels = [];
-    const filteredGenderData = [];
-    const filteredGenderColors = [];
-
-    genderLabels.forEach((label, index) => {
-      if (genderData[index] > 0) {
-        filteredGenderLabels.push(label);
-        filteredGenderData.push(genderData[index]);
-        filteredGenderColors.push(genderColors[index]);
-      }
-    });
-
-    createDoughnutChart(
-      "generoChart",
-      filteredGenderLabels,
-      filteredGenderData,
-      filteredGenderColors
-    );
+    // --- NOVO BLOCO: Atualiza TEEN_COUNT_BY_UF com base nos mesmos dados dos gráficos ---
+    for (const uf in DADOS_DETALHADOS_POR_MUNICIPIO) {
+      const municipios = DADOS_DETALHADOS_POR_MUNICIPIO[uf];
+      let somaAdolescentes = 0;
+  
+      municipios.forEach(m => {
+        if (m.status === "✅ NUCA criado") {
+          somaAdolescentes += m.total;
+        }
+      });
+  
+      TEEN_COUNT_BY_UF[uf] = somaAdolescentes;
+    }
 
     // 7. Geração do Mapa e Gráfico de Barras por UF
     carregarMapbox(NUCA_COUNT_BY_UF); // Chamada da nova função do Mapbox
@@ -252,61 +312,164 @@ async function loadAndProcessData() {
     document.querySelector(".nucas-number").textContent = "Erro";
     document.querySelector(".members-number").textContent = "Erro";
   }
+
+
+
 }
 
-// Inicializa o carregamento dos dados e gráficos
-window.onload = loadAndProcessData;
-
-// --- FUNÇÕES DO MAPBOX (SUBSTITUEM AS FUNÇÕES DE SVG ESTÁTICO) ---
+// --- NOVAS FUNÇÕES DE FILTRAGEM POR EZ ---
 
 /**
- * Pinta o mapa usando Mapbox GL JS com o volume de NUCAs criados por UF.
- * @param {object} nucaDataByUF - Objeto com a contagem de NUCAs criados por UF (ex: {'SP': 10, 'RJ': 5}).
+ * Filtra os dados globais com base em uma chave de EZ e atualiza os cards e gráficos.
+ * @param {string} ezKey - A chave do MAPA_EZ_UFS (ex: "recife", "sao-luis").
  */
-function carregarMapbox(nucaDataByUF) {
-  // Configura o token de acesso (substituir o placeholder pelo token real)
+function filtrarEAtualizarPorEZ(ezKey) {
+  const ufsDaEZ = MAPA_EZ_UFS[ezKey];
+  if (!ufsDaEZ) {
+    console.warn(`Chave de EZ não encontrada: ${ezKey}`);
+    return;
+  }
+
+  // Variáveis para os novos cálculos filtrados
+  let totalMembersFiltrado = 0;
+  const nucaStatusFiltrado = {
+    "✅ NUCA criado": 0,
+    "⚠️ Não atende aos critérios": 0,
+    "❌ Membros insuficientes": 0,
+  };
+  const genderCountsFiltrado = {
+    Feminino: 0,
+    Masculino: 0,
+    "Não binário": 0,
+  };
+
+  // Itera sobre as UFs da EZ selecionada
+  ufsDaEZ.forEach(uf => {
+    const municipiosDaUF = DADOS_DETALHADOS_POR_MUNICIPIO[uf];
+    
+    if (municipiosDaUF) {
+        // Itera sobre os municípios daquela UF
+        municipiosDaUF.forEach(municipio => {
+            // 1. Contagem de Status (para todos os municípios da EZ)
+            if (municipio.status in nucaStatusFiltrado) {
+                nucaStatusFiltrado[municipio.status]++;
+            }
+
+            // 2. Contagem de Membros e Gênero (APENAS para NUCAs criados na EZ)
+            if (municipio.status === "✅ NUCA criado") {
+                totalMembersFiltrado += municipio.total;
+                genderCountsFiltrado["Feminino"] += municipio.feminino;
+                genderCountsFiltrado["Masculino"] += municipio.masculino;
+                genderCountsFiltrado["Não binário"] += municipio.naoBinario;
+            }
+        });
+    }
+  });
+
+  // 3. Atualizar Cards com os totais filtrados
+  document.querySelector(".nucas-number").textContent = (nucaStatusFiltrado["✅ NUCA criado"] || 0).toLocaleString("pt-BR");
+  document.querySelector(".members-number").textContent = totalMembersFiltrado.toLocaleString("pt-BR");
+
+  // 4. Atualizar Gráficos de Rosca com os dados filtrados
+  updateDonutCharts(nucaStatusFiltrado, genderCountsFiltrado);
+}
+
+
+/**
+ * Configura os event listeners para o dropdown de filtro da EZ.
+ */
+function setupEZFilters() {
+  // ATUALIZADO: Seleciona o dropdown pelo ID
+  const ezSelect = document.getElementById("ez-select");
+  if (!ezSelect) {
+    console.error("Dropdown de filtro EZ (#ez-select) não encontrado.");
+    return;
+  }
+
+  // ATUALIZADO: Muda o evento de 'click' para 'change'
+  ezSelect.addEventListener("change", (event) => {
+    
+    // ATUALIZADO: Pega o valor da option selecionada
+    const ezKey = event.target.value; 
+    
+    if (ezKey === 'todos') {
+      // Recarregar os gráficos com os dados GLOBAIS
+      updateDonutCharts(DADOS_PROCESSADOS.nucaStatus, DADOS_PROCESSADOS.generoContagens);
+      
+      // Atualizar cards com os totais GLOBAIS
+      const totalNucasGlobal = DADOS_PROCESSADOS.nucaStatus["✅ NUCA criado"] || 0;
+      document.querySelector(".nucas-number").textContent = totalNucasGlobal.toLocaleString("pt-BR");
+      document.querySelector(".members-number").textContent = DADOS_PROCESSADOS.totalMembros.toLocaleString("pt-BR");
+
+    } else {
+      // Filtrar e recarregar com base na EZ
+      filtrarEAtualizarPorEZ(ezKey);
+    }
+  });
+}
+
+
+// --- FUNÇÕES DO MAPBOX ---
+
+async function carregarMapbox(nucaDataByUF) {
   mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
 
-  // Encontra os valores min e max para a escala de cores
-  const counts = Object.values(nucaDataByUF).filter((c) => c > 0);
-  const minCount = counts.length > 0 ? Math.min(...counts) : 0;
-  const maxCount = counts.length > 0 ? Math.max(...counts) : 1; // Evita divisão por zero
+  const MAPA_UF = {
+    "Acre (AC)": "AC",
+    "Alagoas (AL)": "AL",
+    "Amapá (AP)": "AP",
+    "Amazonas (AM)": "AM",
+    "Bahia (BA)": "BA",
+    "Ceará (CE)": "CE",
+    "Distrito Federal (DF)": "DF",
+    "Espírito Santo (ES)": "ES",
+    "Goiás (GO)": "GO",
+    "Maranhão (MA)": "MA",
+    "Mato Grosso (MT)": "MT",
+    "Mato Grosso do Sul (MS)": "MS",
+    "Minas Gerais (MG)": "MG",
+    "Pará (PA)": "PA",
+    "Paraíba (PB)": "PB",
+    "Paraná (PR)": "PR",
+    "Pernambuco (PE)": "PE",
+    "Piauí (PI)": "PI",
+    "Rio de Janeiro (RJ)": "RJ",
+    "Rio Grande do Norte (RN)": "RN",
+    "Rio Grande do Sul (RS)": "RS",
+    "Rondônia (RO)": "RO",
+    "Roraima (RR)": "RR",
+    "Santa Catarina (SC)": "SC",
+    "São Paulo (SP)": "SP",
+    "Sergipe (SE)": "SE",
+    "Tocantins (TO)": "TO",
+  };
 
-  // Cria a escala de cores Mapbox
-  // Gradiente: de Azul Claro (#75B4CC) para Azul Escuro (#005586)
-  const colorStops = [
-    0,
-    "#75B4CC", // Para contagem 0, use a cor mais clara
-    minCount,
-    "#75B4CC", // Mínimo
-    // Adiciona um ponto intermediário e o máximo
-    (maxCount + minCount) / 2,
-    "#48849E",
-    maxCount,
-    "#005586",
-  ];
-
-  // A Mapbox GL JS usa uma expressão de estilo para data-driven styling.
-  // Criamos o 'case' para mapear cada código UF com seu valor, caindo para a escala de cor.
-  const caseStatements = ["case"];
-  for (const ufCode in nucaDataByUF) {
-    // Adiciona a lógica: se a propriedade 'uf_code' for igual ao UF, use o valor para a escala.
-    // Aqui usamos o código UF (ex: 'SP') para buscar o valor.
-    caseStatements.push(["==", ["get", "uf_code"], ufCode]);
-    caseStatements.push(nucaDataByUF[ufCode]);
+  // Converte nomes do CSV para siglas de UF
+  const dadosConvertidos = {};
+  for (const chave in nucaDataByUF) {
+    const sigla = MAPA_UF[chave] || chave;
+    dadosConvertidos[sigla] =
+      (dadosConvertidos[sigla] || 0) + nucaDataByUF[chave];
   }
-  // Valor padrão se não for encontrado: 0
-  caseStatements.push(0);
 
-  // Combina o case com o gradiente (step)
-  const fillStyle = [
-    "step",
-    caseStatements, // Input: o valor do NUCA
-    // Output colors: A escala de cor
-    ...colorStops,
-  ];
+  let larguraTela = window.innerWidth;
 
-  // Inicialização do Mapa
+  window.addEventListener("resize", () => {
+    larguraTela = window.innerWidth;
+  });
+
+  let zoomMap;
+  let centerMap;
+
+  // Ajusta o zoom e o centro do mapa com base na largura da tela
+  if (larguraTela <= 600) {
+    zoomMap = 2.5;
+    centerMap = [-53.9212, -16.99743];
+  } else {
+    zoomMap = 3.0;
+    centerMap = [-54.26511, -15.395505];
+  }
+
   const map = new mapboxgl.Map({
     container: "mapbox-map",
     style: {
@@ -323,8 +486,8 @@ function carregarMapbox(nucaDataByUF) {
         },
       ],
     },
-    center: [-54.174281, -15.459189], // Centro do Brasil
-    zoom: 2.97,
+    center: centerMap,
+    zoom: zoomMap,
     minZoom: 1,
     projection: "mercator",
   });
@@ -337,109 +500,135 @@ function carregarMapbox(nucaDataByUF) {
     map.dragPan.disable();
   }
 
-  map.on("move", () => {
-    const center = map.getCenter(); // retorna {lng, lat}
-    const zoom = map.getZoom();
-
-    console.log(
-      `Latitude: ${center.lat.toFixed(6)}, Longitude: ${center.lng.toFixed(
-        6
-      )}, Zoom: ${zoom.toFixed(2)}`
-    );
-  });
+  // Adiciona controles de navegação
+  map.addControl(
+    new mapboxgl.NavigationControl({
+      showCompass: false,
+      showZoom: false,
+    }),
+    "top-right"
+  );
 
   map.on("load", async () => {
-    // 1. Carregar o GeoJSON dos estados
-    let geojsonData;
     try {
+      // 1. Fetch do GeoJSON dos estados
       const response = await fetch(BRAZIL_STATES_GEOJSON_URL);
-      if (!response.ok)
-        throw new Error("Falha ao carregar GeoJSON dos estados.");
-      geojsonData = await response.json();
-    } catch (e) {
-      console.error(
-        "Erro ao buscar o GeoJSON dos estados. Use um arquivo local ou GeoJSON embutido.",
-        e
-      );
-      // Exibe erro na interface
-      document.getElementById("mapbox-map").innerHTML = `
-            <div style="padding: 20px; text-align: center; color: #cc0000; background-color: #ffe6e6; border: 1px solid #cc0000; border-radius: 8px; height: 100%; display: flex; align-items: center; justify-content: center;">
-                <p><strong>ERRO DE MAPA:</strong> Não foi possível carregar as fronteiras dos estados (GeoJSON).</p>
-            </div>
-        `;
-      return;
-    }
-
-    // 2. Adicionar Fonte de Dados (Source)
-    map.addSource("brazil-states", {
-      type: "geojson",
-      data: geojsonData,
-    });
-
-    // 3. Adicionar Camada (Layer) com Estilo Dirigido por Dados (Data-Driven Styling)
-    map.addLayer({
-      id: "states-fill",
-      type: "fill",
-      source: "brazil-states",
-      paint: {
-        "fill-color": "#ca6a6a",
-        "fill-opacity": 0.8,
-      },
-    });
-
-    // 4. Adicionar Contorno (Stroke)
-    map.addLayer({
-      id: "states-border",
-      type: "line",
-      source: "brazil-states",
-      layout: {},
-      paint: {
-        "line-color": "#d12929",
-        "line-width": 1,
-      },
-    });
-
-    // 5. Adicionar Interatividade (Tooltip)
-    const popup = new mapboxgl.Popup({
-      closeButton: false,
-      closeOnClick: false,
-      anchor: "top",
-    });
-
-    map.on("mousemove", "states-fill", (e) => {
-      if (e.features.length > 0) {
-        const feature = e.features[0];
-        const ufCode = feature.properties.uf_code;
-        const ufName = feature.properties.name;
-        const count = nucaDataByUF[ufCode] || 0;
-
-        map.getCanvas().style.cursor = "pointer";
-
-        popup
-          .setLngLat(e.lngLat)
-          .setHTML(
-            `
-                    <div style="font-family: Inter, sans-serif; color: #3E3E3E; padding: 4px;">
-                        <strong>${ufName} (${ufCode})</strong><br>
-                        ${count.toLocaleString("pt-BR")} NUCAs
-                    </div>
-                 `
-          )
-          .addTo(map);
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar GeoJSON: ${response.statusText}`);
       }
-    });
+      const geojsonData = await response.json();
 
-    map.on("mouseleave", "states-fill", () => {
-      map.getCanvas().style.cursor = "";
-      popup.remove();
-    });
+      // Encontra o valor máximo para a escala de cores
+      const maxNucas = Math.max(...Object.values(dadosConvertidos), 0);
+
+      // 2. Mescla os dados do CSV nas propriedades do GeoJSON
+      geojsonData.features.forEach((feature) => {
+        const stateSigla = feature.properties.SIGLA;
+        const nucaCount = dadosConvertidos[stateSigla] || 0;
+        feature.properties.nucasCriados = nucaCount;
+
+        // NOVO: Adiciona a contagem de adolescentes
+        const possibleKeys = [
+          stateSigla,
+          feature.properties.Estado, // se o CSV usou "Acre (AC)" ou "Acre"
+          feature.properties.NOME || "", // alternativa caso o GeoJSON tenha outra propriedade de nome
+        ].filter(Boolean);
+
+        // encontra a primeira chave que exista em TEEN_COUNT_BY_UF
+        let teenCount = 0;
+        for (const k of possibleKeys) {
+          if (TEEN_COUNT_BY_UF[k] !== undefined) {
+            teenCount = TEEN_COUNT_BY_UF[k];
+            break;
+          }
+        }
+        // garante número
+        teenCount = parseInt(teenCount, 10) || 0;
+
+        feature.properties.adolescentes = teenCount;
+      });
+
+      // 3. Adiciona a fonte de dados (source) ao mapa
+      map.addSource("states-data", {
+        type: "geojson",
+        data: geojsonData,
+      });
+
+      // 4. Adiciona a camada de preenchimento (fill) para o choropleth
+      map.addLayer({
+        id: "states-fill",
+        type: "fill",
+        source: "states-data",
+        paint: {
+          "fill-color": [
+            "interpolate",
+            ["linear"],
+            ["get", "nucasCriados"],
+            0,
+            "#CFCFC0", // cinza claro para estados sem dados
+            1,
+            "#d0e3f0", // azul bem claro
+            maxNucas * 0.25,
+            "#a6cee3", // azul médio claro
+            maxNucas * 0.5,
+            "#529cb9", // azul médio (mantém o tom original)
+            maxNucas * 0.75,
+            "#1f78b4", // azul escuro saturado
+            maxNucas,
+            "#08306b", // azul mais escuro (máximo valor)
+          ],
+          "fill-opacity": 0.8,
+        },
+      });
+
+      // 5. Adiciona uma camada de borda para os estados
+      map.addLayer({
+        id: "states-borders",
+        type: "line",
+        source: "states-data",
+        layout: {},
+        paint: {
+          "line-color": "#F3F3E6",
+          "line-width": 1.5,
+        },
+      });
+
+      // 6. Cria um popup, mas não o adiciona ao mapa ainda
+      const popup = new mapboxgl.Popup({
+        closeButton: false,
+        closeOnClick: false,
+      });
+
+      // 7. Adiciona eventos de mousemove e mouseleave
+      map.on("mousemove", "states-fill", (e) => {
+        map.getCanvas().style.cursor = "pointer";
+        const properties = e.features[0].properties;
+        const nucasValue = properties.nucasCriados;
+        const stateName = properties.Estado;
+        const teenValue = properties.adolescentes;
+
+        const description = `
+          <div style="font-family: 'Lato', sans-serif; padding: 5px;">
+            <strong style="font-size: 16px;">${stateName}</strong>
+            <p style="margin: 5px 0 0 0;">NUCAs criados: <strong>${nucasValue.toLocaleString(
+              "pt-BR"
+            )}</strong></p>
+      
+          </div>`;
+
+        popup.setLngLat(e.lngLat).setHTML(description).addTo(map);
+      });
+
+      map.on("mouseleave", "states-fill", () => {
+        map.getCanvas().style.cursor = "";
+        popup.remove();
+      });
+    } catch (error) {
+      console.error("Falha ao carregar o mapa de estados:", error);
+    }
   });
 }
 
-/**
- * Cria o gráfico de barras horizontal por UF.
- * @param {object} nucaDataByUF - Objeto com a contagem de NUCAs criados por UF.
- */
 function createBarChart(nucaDataByUF) {
   const ctx = document.getElementById("nucasBarChart");
   if (!ctx) return;
@@ -548,269 +737,281 @@ function createBarChart(nucaDataByUF) {
   });
 }
 
+// --- INÍCIO: FUNÇÕES PARA A TABELA DE ADOLESCENTES ---
 
-
-// --- INÍCIO: NOVAS FUNÇÕES PARA A TABELA DE ADOLESCENTES ---
-
-const CSV_ADOLESCENTES_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSexVshsJMVGOEm37c0tw4xR5xgku8vC5Dut_hgrcAH3RTte06v2BXWb4ab2-zombbk1KFmdj_1rTko/pub?gid=1991621210&single=true&output=csv';
+const CSV_ADOLESCENTES_URL =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vSexVshsJMVGOEm37c0tw4xR5xgku8vC5Dut_hgrcAH3RTte06v2BXWb4ab2-zombbk1KFmdj_1rTko/pub?gid=1991621210&single=true&output=csv";
 let adolescentesData = [];
 let currentPage = 1;
 const rowsPerPage = 10;
 
-/**
- * Exibe uma página específica da tabela de adolescentes.
- * @param {Array} data - O array de dados completo.
- * @param {HTMLElement} tableBody - O elemento tbody da tabela.
- * @param {number} page - O número da página a ser exibida.
- */
 function displayTablePage(data, tableBody, page) {
-    tableBody.innerHTML = '';
-    page--; // Ajusta para o índice do array (base 0)
+  tableBody.innerHTML = "";
+  page--; // Ajusta para o índice do array (base 0)
 
-    const start = rowsPerPage * page;
-    const end = start + rowsPerPage;
-    const paginatedItems = data.slice(start, end);
+  const start = rowsPerPage * page;
+  const end = start + rowsPerPage;
+  const paginatedItems = data.slice(start, end);
 
-    paginatedItems.forEach(rowData => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${rowData.UF || ''}</td>
-            <td>${rowData.Municipio || ''}</td>
-            <td>${rowData.Adolescentes || ''}</td>
-            <td>${rowData.Indigenas || ''}</td>
-            <td>${rowData.Quilombolas || ''}</td>
-            <td>${rowData.Ciganos || ''}</td>
-            <td>${rowData.Status || ''}</td>
-        `;
-        tableBody.appendChild(row);
-    });
-}
+  paginatedItems.forEach((rowData) => {
+    const row = document.createElement("tr");
 
-/**
- * Configura os botões de paginação da tabela.
- * @param {Array} data - O array de dados completo.
- * @param {HTMLElement} paginationContainer - O container para os botões.
- * @param {HTMLElement} tableBody - O elemento tbody da tabela.
- */
-function setupPagination(data, paginationContainer, tableBody) {
-    paginationContainer.innerHTML = '';
-    const pageCount = Math.ceil(data.length / rowsPerPage);
-
-    for (let i = 1; i <= pageCount; i++) {
-        const btn = document.createElement('button');
-        btn.innerText = i;
-        btn.classList.add('pagination-button');
-        btn.addEventListener('click', () => {
-            currentPage = i;
-            displayTablePage(data, tableBody, currentPage);
-            
-            let currentActive = paginationContainer.querySelector('.active');
-            if (currentActive) {
-                currentActive.classList.remove('active');
-            }
-            btn.classList.add('active');
-        });
-        paginationContainer.appendChild(btn);
-    }
     
-    if (paginationContainer.firstChild) {
-        paginationContainer.firstChild.classList.add('active');
-    }
-}
+      row.innerHTML = `
+              <td>${rowData.UF || ""}</td>
+              <td>${rowData.Municipio || ""}</td>
+              <td>${rowData.Adolescentes || ""}</td>
+              <td>${rowData.Indigenas || ""}</td>
+              <td>${rowData.Quilombolas || ""}</td>
+              <td>${rowData.Ciganos || ""}</td>
+          `;
 
-/**
- * Carrega e processa os dados do CSV para a tabela de adolescentes.
- */
-
-
-function processCSVData(csvText) {
-  const rows = csvText.split("\n").slice(1);
-  rows.forEach((row) => {
-    const columns = row.split(",");
-    const [
-      timestamp,
-      uf,
-      municipio,
-      nome,
-      dataNascimento,
-      genero,
-      raca,
-      status,
-    ] = columns;
-
-    if (uf && municipio && status) {
-      const ufClean = uf.trim();
-      const municipioClean = municipio.trim();
-      const statusClean = status.trim();
-      const generoClean = genero ? genero.trim() : "Não informado";
-
-      // Processamento para o total de membros
-      DADOS_PROCESSADOS.totalMembros++;
-
-      // Processamento para status dos NUCAs
-      DADOS_PROCESSADOS.nucaStatus[statusClean] =
-        (DADOS_PROCESSADOS.nucaStatus[statusClean] || 0) + 1;
-
-      // Processamento para contagem de gênero
-      DADOS_PROCESSADOS.generoContagens[generoClean] =
-        (DADOS_PROCESSADOS.generoContagens[generoClean] || 0) + 1;
-
-      // Processamento para contagem de NUCAs por UF (se for "NUCA criado")
-      if (statusClean === "✅ NUCA criado") {
-        const stateSigla = ufClean.match(/\((.*?)\)/);
-        if (stateSigla && stateSigla[1]) {
-          const sigla = stateSigla[1];
-          NUCA_COUNT_BY_UF[sigla] = (NUCA_COUNT_BY_UF[sigla] || 0) + 1;
-        }
-      }
-    }
+      tableBody.appendChild(row);
+    
   });
 }
 
-async function loadCSVDataAndCreateCharts() {
-  try {
-    const response = await fetch(CSV_URL);
-    const csvText = await response.text();
-    processCSVData(csvText);
-    updateUI();
-    // Agora que temos os dados, criamos o mapa
-    createMap(NUCA_COUNT_BY_UF, DADOS_DETALHADOS_POR_MUNICIPIO);
-  } catch (error) {
-    console.error("Erro ao carregar ou processar o CSV:", error);
-  }
+/**
+ * --- ATUALIZAÇÃO SOLICITADA ---
+ * FUNÇÃO DE PAGINAÇÃO ATUALIZADA
+ * Configura os controles para mostrar [<-] [1] [...] [MEIO] [...] [ÚLTIMA] [->]
+ */
+function setupPagination(data, paginationContainer, tableBody) {
+    paginationContainer.innerHTML = "";
+    const pageCount = Math.ceil(data.length / rowsPerPage);
+    if (pageCount <= 1) return; // Não exibe paginação se houver apenas uma página
+
+    // Função auxiliar para criar e adicionar um botão
+    const addButton = (page, text) => {
+        const btn = document.createElement("button");
+        btn.innerText = text || page;
+        btn.classList.add("pagination-button");
+        if (page === currentPage) {
+            btn.classList.add("active");
+        }
+        btn.addEventListener("click", () => {
+            currentPage = page;
+            displayTablePage(data, tableBody, currentPage);
+            setupPagination(data, paginationContainer, tableBody); // Re-renderiza para atualizar o estado ativo
+        });
+        paginationContainer.appendChild(btn);
+    };
+
+    // Função auxiliar para adicionar "..."
+    const addEllipsis = () => {
+        const ellipsis = document.createElement("span");
+        ellipsis.innerText = "...";
+        ellipsis.className = "ellipsis";
+        paginationContainer.appendChild(ellipsis);
+    };
+
+    // Botão "Anterior"
+    const prevButton = document.createElement("button");
+    prevButton.innerText = "←";
+    prevButton.disabled = currentPage === 1;
+    prevButton.addEventListener("click", () => {
+        if (currentPage > 1) {
+            currentPage--;
+            displayTablePage(data, tableBody, currentPage);
+            setupPagination(data, paginationContainer, tableBody);
+        }
+    });
+    paginationContainer.appendChild(prevButton);
+
+    // --- INÍCIO DA NOVA LÓGICA (PRIMEIRA, MEIO, ÚLTIMA) ---
+
+    // 1. Botão da Primeira Página (Sempre aparece)
+    addButton(1);
+
+    // 2. Reticências Iniciais (...)
+    // Aparece se a página atual for maior que 2 (ou seja, a partir da 3)
+    if (currentPage > 2) {
+        addEllipsis();
+    }
+
+    // 3. Botão da Página Atual (O "Meio")
+    // Aparece se não for a primeira e nem a última página
+    if (currentPage > 1 && currentPage < pageCount) {
+        addButton(currentPage);
+    }
+
+    // 4. Reticências Finais (...)
+    // Aparece se a página atual for menor que a penúltima (pageCount - 1)
+    if (currentPage < pageCount - 1) {
+        addEllipsis();
+    }
+
+    // 5. Botão da Última Página
+    // Aparece se o total de páginas for maior que 1 (para não duplicar com a pág 1)
+    if (pageCount > 1) {
+        addButton(pageCount);
+    }
+    
+    // --- FIM DA NOVA LÓGICA ---
+
+
+    // Botão "Próximo"
+    const nextButton = document.createElement("button");
+    nextButton.innerText = "→";
+    nextButton.disabled = currentPage === pageCount;
+    nextButton.addEventListener("click", () => {
+        if (currentPage < pageCount) {
+            currentPage++;
+            displayTablePage(data, tableBody, currentPage);
+            setupPagination(data, paginationContainer, tableBody);
+        }
+    });
+    paginationContainer.appendChild(nextButton);
 }
 
-
-function updateUI() {
-  document.getElementById("total-membros").innerText =
-    DADOS_PROCESSADOS.totalMembros.toLocaleString("pt-BR");
-
-  const statusList = document.getElementById("status-list");
-  statusList.innerHTML = "";
-  for (const status in DADOS_PROCESSADOS.nucaStatus) {
-    const count = DADOS_PROCESSADOS.nucaStatus[status];
-    const statusItem = document.createElement("div");
-    statusItem.className = "status-item";
-    statusItem.innerHTML = `
-            <span>${status}</span>
-            <span class="status-count">${count.toLocaleString("pt-BR")}</span>
-        `;
-    statusList.appendChild(statusItem);
-  }
-
-  createGenderChart(DADOS_PROCESSADOS.generoContagens);
-  createBarChartNucasUF(NUCA_COUNT_BY_UF);
-}
-
-
-
-// --- FILTRO POR UF E TEXTO DINÂMICO ---
 
 function criarFiltroUF(dados) {
-    const filtroUFDiv = document.querySelector('.filter-uf');
-    if (!filtroUFDiv) return;
+  const filtroUFDiv = document.querySelector(".filter-uf");
+  if (!filtroUFDiv) return;
 
-    // Obter lista única de UFs
-    const ufs = [...new Set(dados.map(d => d.UF))].sort();
+  const ufs = [...new Set(dados.map((d) => d.UF))].sort();
 
-    // Criar o elemento <select>
-    const select = document.createElement('select');
-    select.innerHTML = `<option value="">Todos os estados</option>` + 
-        ufs.map(uf => `<option value="${uf}">${uf}</option>`).join('');
+  const select = document.createElement("select");
+  select.innerHTML =
+    `<option value="">Todos os estados</option>` +
+    ufs.map((uf) => `<option value="${uf}">${uf}</option>`).join("");
 
-    filtroUFDiv.appendChild(select);
+  filtroUFDiv.appendChild(select);
 
-    // Quando o usuário muda o filtro
-    select.addEventListener('change', (e) => {
-        const ufSelecionada = e.target.value;
-        aplicarFiltroPorUF(ufSelecionada);
-    });
+  select.addEventListener("change", (e) => {
+    const ufSelecionada = e.target.value;
+    aplicarFiltroPorUF(ufSelecionada);
+  });
 }
+
+
 
 function aplicarFiltroPorUF(uf) {
-    const tableBody = document.querySelector('.table-container tbody');
-    const paginationContainer = document.getElementById('pagination-container');
-    const textoResumo = document.querySelector('.text-space');
+  const tableBody = document.querySelector(".table-container tbody");
+  const paginationContainer = document.getElementById("pagination-container");
+  const textoResumo = document.querySelector(".text-space");
 
-    if (!tableBody || !paginationContainer || !textoResumo) return;
+  if (!tableBody || !paginationContainer || !textoResumo) return;
 
-    let dadosFiltrados = adolescentesData;
+  let dadosFiltrados = adolescentesData;
 
-    if (uf) {
-        dadosFiltrados = adolescentesData.filter(row => row.UF === uf);
-    }
+  if (uf) {
+    dadosFiltrados = adolescentesData.filter((row) => row.UF === uf);
+  }
 
-    // Atualiza a tabela
-    displayTablePage(dadosFiltrados, tableBody, 1);
-    setupPagination(dadosFiltrados, paginationContainer, tableBody);
+  currentPage = 1;
+  displayTablePage(dadosFiltrados, tableBody, currentPage);
+  setupPagination(dadosFiltrados, paginationContainer, tableBody);
 
-    // Atualiza o texto descritivo
-    if (uf) {
-        const totalNucas = dadosFiltrados.length;
-        const totalAdolescentes = dadosFiltrados.reduce((acc, item) => acc + Number(item.Adolescentes || 0), 0);
-        const nomeEstado = uf; // pode ser adaptado se quiser o nome por extenso
+  if (uf) {
+    const totalNucas = dadosFiltrados.length;
+    const totalAdolescentes = dadosFiltrados.reduce(
+      (acc, item) => acc + Number(item.Adolescentes || 0),
+      0
+    );
+    const nomeEstado = uf;
 
-        textoResumo.textContent = `No estado ${nomeEstado} foram criados ${totalNucas.toLocaleString('pt-BR')} NUCAs e há ${totalAdolescentes.toLocaleString('pt-BR')} adolescentes engajados.`;
-    } else {
-        textoResumo.textContent = `Selecione um estado para ver quantos NUCAs foram criados e o total de adolescentes engajados.`;
-    }
+    textoResumo.innerHTML = `${nomeEstado} tem no total <strong>${totalNucas.toLocaleString(
+      "pt-BR"
+    )} NUCAs</strong> criados e conta com <strong>${totalAdolescentes.toLocaleString(
+      "pt-BR"
+    )} adolescentes inscritos </strong>`;
+  } else {
+    const totalNucasNacional = adolescentesData.length;
+    const totalAdolescentesNacional = adolescentesData.reduce(
+      (acc, item) => acc + Number(item.Adolescentes || 0),
+      0
+    );
+    textoResumo.innerHTML = `No país foram criados <strong>${totalNucasNacional.toLocaleString(
+      "pt-BR"
+    )} NUCAs</strong> e conta com <strong>${totalAdolescentesNacional.toLocaleString(
+      "pt-BR"
+    )} adolescentes inscritos</strong>`;
+  }
 }
 
-// Depois que os dados forem carregados, criamos o filtro
 async function loadAdolescentesTableData() {
-    try {
-        const response = await fetch(CSV_ADOLESCENTES_URL);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const csvText = await response.text();
-        const rows = csvText.trim().split(/\r?\n/).slice(1);
-        
-        adolescentesData = rows.map(row => {
-            const cleanedRow = row.trim();
-            const columns = cleanedRow.split(',');
-            return {
-                UF: columns[0] || '',
-                Municipio: columns[1] || '',
-                Indigenas: columns[2] || '0',
-                Quilombolas: columns[3] || '0',
-                Ciganos: columns[4] || '0',
-                Adolescentes: columns[5] || '0',
-                Status: columns[6] || ''
-            };
-        }).filter(row => row.UF && row.Municipio);
-
-        const tableBody = document.querySelector('.table-container tbody');
-        const paginationContainer = document.getElementById('pagination-container');
-
-        if (tableBody && paginationContainer) {
-            displayTablePage(adolescentesData, tableBody, currentPage);
-            setupPagination(adolescentesData, paginationContainer, tableBody);
-        }
-
-        // 🆕 Cria o filtro de UF
-        criarFiltroUF(adolescentesData);
-
-    } catch (error) {
-        console.error("Erro ao carregar os dados da tabela de adolescentes:", error);
-        const tableBody = document.querySelector('.table-container tbody');
-        if (tableBody) {
-             tableBody.innerHTML = '<tr><td colspan="7">Não foi possível carregar os dados. Tente novamente mais tarde.</td></tr>';
-        }
+  try {
+    const response = await fetch(CSV_ADOLESCENTES_URL);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
+    const csvText = await response.text();
+    const rows = csvText.trim().split(/\r?\n/).slice(1);
+
+    adolescentesData = rows
+      .map((row) => {
+        const cleanedRow = row.trim();
+        const columns = cleanedRow.split(",");
+        return {
+          UF: columns[0] || "",
+          Municipio: columns[1] || "",
+          Indigenas: columns[2] || "0",
+          Quilombolas: columns[3] || "0",
+          Ciganos: columns[4] || "0",
+          Adolescentes: columns[5] || "0",
+          Status: columns[6] || "",
+        };
+      })
+      .filter((row) => row.UF && row.Municipio && row.Status === "✅ NUCA criado");
+
+    // Popula a contagem de adolescentes por UF (para o popup do mapa)
+    adolescentesData.forEach((row) => {
+      const uf = row.UF.trim();
+      const teens = parseInt(row.Adolescentes, 10) || 0;
+      if (uf) {
+        TEEN_COUNT_BY_UF[uf] = (TEEN_COUNT_BY_UF[uf] || 0) + teens;
+      }
+    });
+
+    const tableBody = document.querySelector(".table-container tbody");
+    const paginationContainer = document.getElementById("pagination-container");
+    const textoResumo = document.querySelector(".text-space");
+
+    if (textoResumo) {
+      const totalNucasNacional = adolescentesData.length;
+      const totalAdolescentesNacional = adolescentesData.reduce(
+        (acc, item) => acc + Number(item.Adolescentes || 0),
+        0
+      );
+      textoResumo.innerHTML = `No país foram criados <strong>${totalNucasNacional.toLocaleString(
+        "pt-BR"
+      )} NUCAs</strong> e conta com <strong>${totalAdolescentesNacional.toLocaleString(
+        "pt-BR"
+      )} adolescentes inscritos</strong>`;
+    }
+
+    if (tableBody && paginationContainer) {
+      displayTablePage(adolescentesData, tableBody, currentPage);
+      // CORREÇÃO: A variável aqui deve ser 'adolescentesData', que contém os dados carregados.
+      setupPagination(adolescentesData, paginationContainer, tableBody);
+    }
+
+    criarFiltroUF(adolescentesData);
+  } catch (error) {
+    console.error(
+      "Erro ao carregar os dados da tabela de adolescentes:",
+      error
+    );
+    const tableBody = document.querySelector(".table-container tbody");
+    if (tableBody) {
+      tableBody.innerHTML =
+        '<tr><td colspan="7">Não foi possível carregar os dados. Tente novamente mais tarde.</td></tr>';
+    }
+  }
 }
 
-
-// --- FIM: NOVAS FUNÇÕES ---
-
+// --- FIM: FUNÇÕES DA TABELA ---
 
 // Aguarda o carregamento completo do DOM para executar o código
-document.addEventListener("DOMContentLoaded", () => {
-  // Chama a função principal que carrega os dados e cria os gráficos
-  loadCSVDataAndCreateCharts();
-  // CHAMA A NOVA FUNÇÃO PARA CARREGAR OS DADOS DA TABELA
-  loadAdolescentesTableData();
+document.addEventListener("DOMContentLoaded", async () => {
+  // Carrega os dados da tabela (que populam TEEN_COUNT_BY_UF)
+  await loadAdolescentesTableData(); 
+  
+  // Carrega os dados principais (que populam DADOS_PROCESSADOS e DADOS_DETALHADOS_POR_MUNICIPIO)
+  await loadAndProcessData(); 
+  
+  // Configura os filtros de EZ DEPOIS que todos os dados foram carregados
+  setupEZFilters(); 
 });
-
-
 

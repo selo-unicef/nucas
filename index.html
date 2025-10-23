@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./assets/style.css">
+    <title>Dashboard - Selo Unicef</title>
+    <!-- Adição do Chart.js para os gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+
+    <!-- INÍCIO: Adições Mapbox -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.css" rel="stylesheet" />
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <!-- FIM: Adições Mapbox -->
+
+</head>
+
+<body>
+
+    <header>
+        <div class="btns-container">
+            <div class="btn active">Sobre os NUCAs</div>
+            <!-- <div class="btn">NUCAs em Ação</div>
+            <div class="btn">Outras Ações</div> -->
+        </div>
+    </header>
+
+    <h1>Panorama dos NUCAs</h1>
+
+    <section class="column-1">
+
+        <div class="container logo blue-light">
+            <img src="./imagens/selo-unicef.png" alt="Logo Selo UNICEF" srcset="">
+        </div>
+        <div class="container featured-image">
+            <img src="./imagens/imagem-destaque.png" alt="Imagem de destaque" srcset="">
+        </div>
+        <div class="container-numbers">
+            <div class="container total-nucas blue-light">
+                <!-- Os valores serão preenchidos via JavaScript -->
+                <p class="nucas-number">...</p>
+                <p>NUCAs criados</p>
+            </div>
+            <div class="container total-members blue-light ">
+                <!-- Os valores serão preenchidos via JavaScript -->
+                <p class="members-number">...</p>
+                <p>Adolescentes inscritos</p>
+            </div>
+        </div>
+
+
+    </section>
+
+    <section class="column-2">
+
+        <div class="container text bg-image">
+            <p>Os <strong>Núcleos de Cidadania de Adolescentes (NUCAs) fazem parte da metodologia do Selo
+                    UNICEF</strong> e são um indicador essencial da garantia do direito à participação de adolescentes e
+                jovens, assegurando espaço seguro para o desenvolvimento das competências e da cidadania de meninas,
+                menines e meninos em seus territórios. Saiba mais sobre os NUCAs nesta edição do Selo UNICEF 2025 -
+                2028.</p>
+        </div>
+        <div class="container graphics light">
+            <div class="filters">
+                <!-- <p>Filtre por território</p> -->
+                <!-- ATUALIZAÇÃO: Transformado de botões para dropdown -->
+                <div class="filter-ez">
+                    <select id="ez-select">
+                        <option value="todos">Todos os territórios</option>
+                        <option value="recife">EZ Recife (PE, PB e AL)</option>
+                        <option value="sao-luis">EZ São Luís (MA e PI)</option>
+                        <option value="fortaleza">EZ Fortaleza (CE e RN)</option>
+                        <option value="salvador">EZ Salvador (BA e SE)</option>
+                        <option value="manaus">EZ Manaus (AC, AM, RO)</option>
+                        <option value="belem">EZ Belém (AP, MT, PA, TO)</option>
+                        <option value="boa-vista">EZ Boa Vista (RR)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="graphics-pizza">
+                <div class="nucas">
+                    <!-- ATUALIZAÇÃO: Adicionado container para título e total -->
+                    <div class="chart-title-container">
+                        <h3 class="chart-title">Total de NUCAs</h3>
+                        <!-- <span class="chart-total" id="nucasTotal">...</span> -->
+                    </div>
+                    <canvas id="nucasChart"></canvas>
+                </div>
+                <div class="genero">
+                    <!-- ATUALIZAÇÃO: Adicionado container para título e total -->
+                    <div class="chart-title-container">
+                        <h3 class="chart-title">Gênero dos adolescentes</h3>
+                        <!-- <span class="chart-total" id="generoTotal">...</span> -->
+                    </div>
+                    <canvas id="generoChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- NOVA SEÇÃO: Mapa e Gráfico de Barras -->
+    <section class="column-3">
+        <div class="map-container">
+            <div class="title-img">
+                <img src="./imagens/escola_menina.png" alt="Logo Selo UNICEF">
+                <h3>NUCAs espelhados pelo Brasil</h3>
+            </div>
+
+            <!-- CONTAINER DO MAPBOX (substitui o SVG estático) -->
+            <div id="mapbox-map" class="mapa-brasil-container"></div>
+
+        </div>
+
+        <div class="chart-bar-container">
+            <!-- <h3 class="chart-title">NUCAs criados por estado</h3> -->
+            <div class="chart-bar-canvas">
+                <canvas id="nucasBarChart"></canvas>
+            </div>
+        </div>
+
+    </section>
+
+    <section class="column-4">
+
+
+        <div class="filter-container">
+            <div class="title-img">
+                <img src="./imagens/escola_menina.png" alt="Logo Selo UNICEF">
+                <div class="itens">
+                    <h3>Detalhes de cada NUCA registrado</h3>
+                    <div class="filter-uf">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="text">
+                <p><strong>Filtre por estado</strong> e veja quantos NUCAs já foram criados e o total de adolescentes
+                    cadastrados, engajados e transformando o seu município e seus arredores nesta edição do Selo Unicef
+                </p>
+                <p class="text-space">Carregando dados nacionais...</p>
+            </div>
+
+        </div>
+
+        <div class="table-adolescentes">
+
+
+            <!-- Container adicionado para permitir rolagem horizontal em telas pequenas -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr class="header">
+                            <th>Estado</th>
+                            <th>Município</th>
+                            <th>Adolescentes engajados</th>
+                            <th>Indígenas</th>
+                            <th>Quilombolas</th>
+                            <th>Ciganos</th>
+                            <!-- <th>Status</th> -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Conteúdo será inserido dinamicamente via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <!-- Container para os botões de paginação -->
+            <div id="pagination-container" class="pagination-container"></div>
+
+        </div>
+    </section>
+
+    <section class="column-5">
+
+        <div class="logos">
+            <div class="logo-container">
+                <p>Parcerias</p>
+                <img src="./imagens/logos-1.png" alt="" srcset="">
+            </div>
+            <div class="logo-container">
+                <p>Parcerias estratégicas</p>
+                <img src="./imagens/logos-2.png" alt="" srcset="">
+            </div>
+            <div class="logo-container">
+                <p>Parcerias técnicas</p>
+                <img src="./imagens/logos-3.png" alt="" srcset="">
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- Mantivemos apenas a chamada do script principal -->
+    <script src="./assets/main.js"></script>
+
+</body>
+
+</html>

@@ -24,7 +24,7 @@ const MAPA_EZ_UFS = {
   recife: ["Pernambuco (PE)", "Paraíba (PB)", "Alagoas (AL)"],
   "sao-luis": ["Maranhão (MA)", "Piauí (PI)"],
   fortaleza: ["Ceará (CE)", "Rio Grande do Norte (RN)"],
-  salvador: ["Bahia (BA)", "Sergipe (SE)"], // Corrigido de "SE e SE"
+  salvador: ["Bahia (BA)", "Sergipe (SE)", "Minas Gerais (MG)"], // Corrigido de "SE e SE"
   manaus: ["Amazonas (AM)", "Acre (AC)", "Rondônia (RO)"],
   belem: ["Pará (PA)", "Amapá (AP)", "Mato Grosso (MT)", "Tocantins (TO)"],
   "boa-vista": ["Roraima (RR)"],

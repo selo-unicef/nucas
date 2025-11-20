@@ -11,33 +11,43 @@ const DADOS_PROCESSADOS = {
 // Obtém a largura da tela
 let larguraTela = window.innerWidth;
 
-// NOVO: Variável global para armazenar a contagem de NUCAs criados por UF
+// Variável global para armazenar a contagem de NUCAs criados por UF
 const NUCA_COUNT_BY_UF = {};
 
-// Variável global para armazenar os dados detalhados por município
-// Esta será nossa "fonte da verdade" para os filtros
+// Variável global para armazenar os dados detalhados por município (usado em filtros e mapa)
 const DADOS_DETALHADOS_POR_MUNICIPIO = {};
 
-// NOVO: Mapeamento dos Escritórios Zonais (EZ) para as UFs correspondentes
-// As UFs devem bater exatamente com o formato vindo do CSV (ex: "Pernambuco (PE)")
+// Mapeamento para Amazônia Legal e Semiárido
 const MAPA_EZ_UFS = {
-  recife: ["Pernambuco (PE)", "Paraíba (PB)", "Alagoas (AL)"],
-  "sao-luis": ["Maranhão (MA)", "Piauí (PI)"],
-  fortaleza: ["Ceará (CE)", "Rio Grande do Norte (RN)"],
-  salvador: ["Bahia (BA)", "Sergipe (SE)", "Minas Gerais (MG)"], // Corrigido de "SE e SE"
-  manaus: ["Amazonas (AM)", "Acre (AC)", "Rondônia (RO)"],
-  belem: ["Pará (PA)", "Amapá (AP)", "Mato Grosso (MT)", "Tocantins (TO)"],
-  "boa-vista": ["Roraima (RR)"],
+  "amazonia-legal": [
+    "Amazonas (AM)", "Acre (AC)", "Rondônia (RO)",
+    "Pará (PA)", "Amapá (AP)", "Mato Grosso (MT)", "Tocantins (TO)",
+    "Roraima (RR)"
+  ],
+  "semiarido": [
+    "Pernambuco (PE)", "Paraíba (PB)", "Alagoas (AL)",
+    "Maranhão (MA)", "Piauí (PI)",
+    "Ceará (CE)", "Rio Grande do Norte (RN)",
+    "Bahia (BA)", "Sergipe (SE)", "Minas Gerais (MG)"
+  ],
 };
 
-// NOVO: Variável global para armazenar a contagem de adolescentes por UF
+// Variável global para armazenar a contagem de adolescentes por UF
 const TEEN_COUNT_BY_UF = {};
 
-// Variável Mapbox - IMPORTANTE: Substitua pelo seu token real
 const MAPBOX_ACCESS_TOKEN =
   "pk.eyJ1IjoibHVjYXN0aGF5bmFuLWVzdGFkYW8iLCJhIjoiY2xnM3N1amQzMGlqeDNrbWdla3doY2o2dCJ9.OXh3OY3_HFqAiF-zzZ6SDQ";
 
 const BRAZIL_STATES_GEOJSON_URL = "./data/brazil_states.geojson";
+
+// Variáveis globais para as tabelas
+let adolescentesData = []; // NUCAs Ativos (vindo do CSV_ADOLESCENTES_URL)
+let alertNucasData = []; // NUCAs Pendentes (agora vindo do CSV_URL)
+
+let currentPage = 1;
+let currentAlertPage = 1; 
+const rowsPerPage = 10;
+
 
 function createDoughnutChart(canvasId, labels, data, colors) {
   const ctx = document.getElementById(canvasId);
@@ -47,21 +57,13 @@ function createDoughnutChart(canvasId, labels, data, colors) {
     return;
   }
 
-  // Destrói o gráfico anterior, se existir, para criar um novo
   if (Chart.getChart(ctx)) {
     Chart.getChart(ctx).destroy();
   }
 
-  // Certifica-se de que o elemento canvas está no tamanho correto para alta resolução
   const container = ctx.closest("div");
-  // Obtém o tamanho computado para manter a responsividade do layout
   const size = Math.min(container.clientWidth, container.clientHeight);
 
-  // Ajusta o canvas para o tamanho do contêiner para que o devicePixelRatio funcione
-  ctx.width = size;
-  ctx.height = size;
-
-  // Configurações básicas para o gráfico de rosca
   const chartConfig = {
     type: "doughnut",
     data: {
@@ -70,25 +72,25 @@ function createDoughnutChart(canvasId, labels, data, colors) {
         {
           data: data,
           backgroundColor: colors,
-          hoverOffset: 8, // Aumenta o offset ao passar o mouse
+          hoverOffset: 8,
           borderWidth: 0,
         },
       ],
     },
     options: {
-      // Configurações de alta resolução (devicePixelRatio: 2)
-      responsive: false,
+      responsive: true,
+      maintainAspectRatio: false,
       devicePixelRatio: 2,
-      maintainAspectRatio: true,
 
       plugins: {
         legend: {
           position: "bottom",
           labels: {
             color: "#3E3E3E",
+            boxWidth: 12,
             font: {
               family: "Inter",
-              size: 14,
+              size: 12,
             },
           },
         },
@@ -99,7 +101,6 @@ function createDoughnutChart(canvasId, labels, data, colors) {
               if (label) {
                 label += ": ";
               }
-              // Formata o valor com separador de milhar
               const value = context.parsed.toLocaleString("pt-BR");
               label += value;
               return label;
@@ -110,26 +111,14 @@ function createDoughnutChart(canvasId, labels, data, colors) {
     },
   };
 
-  // Cria e renderiza o gráfico
   new Chart(ctx, chartConfig);
 }
 
-/**
- * ATUALIZAÇÃO: Função extraída para atualizar os gráficos de rosca.
- * Agora pode ser chamada com dados globais ou filtrados.
- */
 function updateDonutCharts(nucaStatusCounts, genderCounts) {
   // 1. Gráfico de Status NUCA
   const nucaStatusLabels = Object.keys(nucaStatusCounts);
   const nucaStatusData = Object.values(nucaStatusCounts);
   
-  // ATUALIZAÇÃO: Calcula e atualiza o total para NUCAs
-  // const totalNucas = nucaStatusData.reduce((acc, val) => acc + val, 0);
-  // const nucasTotalEl = document.getElementById('nucasTotal');
-  // if (nucasTotalEl) {
-  //     nucasTotalEl.textContent = totalNucas.toLocaleString('pt-BR');
-  // }
-
   const nucaStatusColors = [
     "#178076", // '✅ NUCA criado'
     "#D3A80A", // '⚠️ Não atende aos critérios'
@@ -147,20 +136,12 @@ function updateDonutCharts(nucaStatusCounts, genderCounts) {
   const genderLabels = Object.keys(genderCounts);
   const genderDataValues = Object.values(genderCounts);
 
-  // ATUALIZAÇÃO: Calcula e atualiza o total para Gênero
-  // const totalGenero = genderDataValues.reduce((acc, val) => acc + val, 0);
-  // const generoTotalEl = document.getElementById('generoTotal');
-  // if (generoTotalEl) {
-  //     generoTotalEl.textContent = totalGenero.toLocaleString('pt-BR');
-  // }
-
   const genderColors = [
     "#E1A38E", // 'Feminino'
     "#BCD876", // 'Masculino'
     "#958C80", // 'Não binário'
   ];
 
-  // Filtra para remover categorias com contagem 0
   const filteredGenderLabels = [];
   const filteredGenderData = [];
   const filteredGenderColors = [];
@@ -181,22 +162,83 @@ function updateDonutCharts(nucaStatusCounts, genderCounts) {
   );
 }
 
-/**
- * Função principal para buscar, processar e exibir os dados do CSV.
- */
+function updatePertencimentoChart(counts) {
+    const labels = ["Indígenas", "Quilombolas", "Ciganos"];
+    const data = [counts.Indigenas || 0, counts.Quilombolas || 0, counts.Ciganos || 0];
+    const colors = ["#E1A38E", "#BCD876", "#D3A80A"];
+
+    const filteredLabels = [];
+    const filteredData = [];
+    const filteredColors = [];
+
+    data.forEach((val, idx) => {
+        if(val > 0) {
+            filteredLabels.push(labels[idx]);
+            filteredData.push(val);
+            filteredColors.push(colors[idx]);
+        }
+    });
+
+    if(filteredData.length === 0) {
+        createDoughnutChart("pertencimentoChart", ["Sem dados"], [1], ["#F3F3E6"]);
+    } else {
+        createDoughnutChart("pertencimentoChart", filteredLabels, filteredData, filteredColors);
+    }
+}
+
+function updateRacaChart(counts) {
+    const allLabels = ["Amarela (oriental)", "Branca", "Indígena", "Parda", "Preta"];
+    const data = [
+        counts.Amarela || 0,
+        counts.Branca || 0,
+        counts.Indigena || 0,
+        counts.Parda || 0,
+        counts.Preta || 0
+    ];
+    
+    const colors = [
+        "#F2C94C", // Amarela
+        "#D3D3D3", // Branca
+        "#E1A38E", // Indígena
+        "#A87E6E", // Parda
+        "#3E3E3E"  // Preta
+    ];
+
+     const filteredLabels = [];
+     const filteredData = [];
+     const filteredColors = [];
+ 
+     data.forEach((val, idx) => {
+         if(val > 0) {
+             filteredLabels.push(allLabels[idx]);
+             filteredData.push(val);
+             filteredColors.push(colors[idx]);
+         }
+     });
+
+     if(filteredData.length === 0) {
+        createDoughnutChart("racaChart", ["Sem dados"], [1], ["#F3F3E6"]);
+     } else {
+        createDoughnutChart("racaChart", filteredLabels, filteredData, filteredColors);
+     }
+}
+
 async function loadAndProcessData() {
   try {
-    // 1. Fetch dos dados do CSV
     const response = await fetch(CSV_URL);
     if (!response.ok) {
       throw new Error(`Erro ao buscar dados: ${response.statusText}`);
     }
     const csvText = await response.text();
+    
+    // OTIMIZAÇÃO: Uso do PapaParse para processar CSV muito mais rápido que Regex
+    const results = Papa.parse(csvText, {
+      header: false, // Mantém como array de arrays para usar índices
+      skipEmptyLines: true
+    });
+    
+    const rows = results.data;
 
-    // 2. Processamento do CSV
-    const rows = csvText.split(/\r?\n/);
-
-    // Variáveis de totalização temporárias (para os dados GLOBAIS)
     let totalMembers = 0;
     const nucaStatusCounts = {
       "✅ NUCA criado": 0,
@@ -209,55 +251,52 @@ async function loadAndProcessData() {
       "Não binário": 0,
     };
 
-    // Itera pelas linhas a partir da 3ª linha (índice 2), ignorando os cabeçalhos e resumos estaduais
+    // Reinicializa a lista de alertas
+    alertNucasData = [];
+
+    // O índice começa em 2 para pular cabeçalhos (conforme lógica original)
     for (let i = 2; i < rows.length; i++) {
-      const row = rows[i].trim();
-      if (!row) continue; // Ignora linhas vazias
+      const columns = rows[i]; // PapaParse já retorna as colunas separadas
+      if (!columns || columns.length < 7) continue;
 
-      // Usando regex para dividir por vírgula fora de aspas
-      const columns = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+      const status = columns[6] ? columns[6].trim() : undefined;
 
-      // Verifica se a linha é uma linha de dados de município válida
-      const status = columns[6]
-        ? columns[6].trim().replace(/"/g, "")
-        : undefined;
+      if (status && status !== "---") {
+        const uf = columns[0].trim();
+        const municipio = columns[1].trim();
 
-      if (columns.length >= 7 && status && status !== "---") {
-        // Colunas: [0] UF, [1] Município, [2] Feminino, [3] Masculino, [4] Não binário, [5] Total membros, [6] NUCA criado?
+        const total = parseInt(columns[5], 10) || 0;
+        const feminino = parseInt(columns[2], 10) || 0;
+        const masculino = parseInt(columns[3], 10) || 0;
+        const naoBinario = parseInt(columns[4], 10) || 0;
 
-        const uf = columns[0].trim().replace(/"/g, "");
-        const municipio = columns[1].trim().replace(/"/g, "");
-
-        // Conversão de números (remove aspas e garante que são números)
-        const total = parseInt(columns[5].replace(/"/g, ""), 10) || 0;
-        const feminino = parseInt(columns[2].replace(/"/g, ""), 10) || 0;
-        const masculino = parseInt(columns[3].replace(/"/g, ""), 10) || 0;
-        const naoBinario = parseInt(columns[4].replace(/"/g, ""), 10) || 0;
-
-        // --- Contagem para os totais GLOBAIS ---
         if (status in nucaStatusCounts) {
           nucaStatusCounts[status]++;
         }
 
-        // Armazenamento da contagem de NUCAs CRIADOS por UF (para o mapa/barras)
-        // E SOMA dos totais de membros e gênero APENAS se o NUCA estiver criado.
         if (status === "✅ NUCA criado") {
-          // 3. Cálculo dos Totais Agregados (AGORA APENAS PARA NUCAS CRIADOS)
           totalMembers += total;
           
-          // Contagem de Gênero (AGORA APENAS PARA NUCAS CRIADOS)
           genderCounts["Feminino"] += feminino;
           genderCounts["Masculino"] += masculino;
           genderCounts["Não binário"] += naoBinario;
           
-          // Contagem de NUCAs por UF
           NUCA_COUNT_BY_UF[uf] = (NUCA_COUNT_BY_UF[uf] || 0) + 1;
+        } else {
+          // Se NÃO foi criado (pendente), adiciona à lista de alertas
+          if (status.includes("❌") || status.includes("⚠️") || status.includes("Membros insuficientes") || status.includes("Não atende aos critérios")) {
+              alertNucasData.push({
+                UF: uf,
+                Municipio: municipio,
+                Total: total,
+                Feminino: feminino,
+                Masculino: masculino,
+                NaoBinario: naoBinario,
+                Status: status
+              });
+          }
         }
-        // --- Fim da contagem global ---
 
-
-        // Armazenamento por município (FONTE DA VERDADE PARA FILTROS)
-        // Usamos a UF como chave principal para facilitar a filtragem por EZ
         if (!DADOS_DETALHADOS_POR_MUNICIPIO[uf]) {
             DADOS_DETALHADOS_POR_MUNICIPIO[uf] = [];
         }
@@ -273,23 +312,18 @@ async function loadAndProcessData() {
       }
     }
 
-    // --- 4. Armazenamento dos dados GLOBAIS no dicionário global DADOS_PROCESSADOS ---
     DADOS_PROCESSADOS.totalMembros = totalMembers;
     DADOS_PROCESSADOS.nucaStatus = nucaStatusCounts;
     DADOS_PROCESSADOS.generoContagens = genderCounts;
-    // --- Fim do Armazenamento ---
 
-    // 5. Atualização dos Valores no HTML (inicial com dados globais)
     const totalNucasCriados = DADOS_PROCESSADOS.nucaStatus["✅ NUCA criado"] || 0;
 
     document.querySelector(".nucas-number").textContent = totalNucasCriados.toLocaleString("pt-BR");
     document.querySelector(".members-number").textContent = DADOS_PROCESSADOS.totalMembros.toLocaleString("pt-BR");
 
-    // 6. Geração dos Gráficos com Chart.js (inicial com dados globais)
-    // ATUALIZAÇÃO: Chamando a nova função reutilizável
     updateDonutCharts(DADOS_PROCESSADOS.nucaStatus, DADOS_PROCESSADOS.generoContagens);
 
-    // --- NOVO BLOCO: Atualiza TEEN_COUNT_BY_UF com base nos mesmos dados dos gráficos ---
+    // Atualiza contagens baseadas nos dados detalhados
     for (const uf in DADOS_DETALHADOS_POR_MUNICIPIO) {
       const municipios = DADOS_DETALHADOS_POR_MUNICIPIO[uf];
       let somaAdolescentes = 0;
@@ -299,30 +333,40 @@ async function loadAndProcessData() {
           somaAdolescentes += m.total;
         }
       });
-  
-      TEEN_COUNT_BY_UF[uf] = somaAdolescentes;
+      // Nota: TEEN_COUNT_BY_UF será sobrescrito pela tabela completa se ela carregar depois, 
+      // mas isso garante dados preliminares rápidos se necessário.
     }
 
-    // 7. Geração do Mapa e Gráfico de Barras por UF
-    carregarMapbox(NUCA_COUNT_BY_UF); // Chamada da nova função do Mapbox
+    // Renderiza Gráfico de Barras (Depende apenas destes dados)
     createBarChart(NUCA_COUNT_BY_UF);
+    
+    // Renderiza Tabela de Alertas (Depende apenas destes dados)
+    const tableBodyAlert = document.getElementById("tbody-alert");
+    const paginationAlert = document.getElementById("pagination-container-alert");
+    const textoResumoAlert = document.querySelector(".text-space-alert");
+
+    if (textoResumoAlert) {
+        const totalAlert = alertNucasData.length;
+        textoResumoAlert.innerHTML = `No país, <strong>${totalAlert.toLocaleString("pt-BR")}</strong> municípios estão quase lá.`;
+    }
+
+    if (tableBodyAlert && paginationAlert) {
+        displayAlertTablePage(alertNucasData, tableBodyAlert, currentAlertPage);
+        setupAlertPagination(alertNucasData, paginationAlert, tableBodyAlert);
+    }
+
+    criarFiltroUFAlert(alertNucasData);
+
+    // OTIMIZAÇÃO: Não chamamos carregarMapbox() aqui ainda, pois ele precisa dos dados da outra tabela
+    // para os tooltips ficarem corretos. Ele será chamado no Promise.all.
+
   } catch (error) {
-    console.error("Falha ao processar os dados:", error);
-    // Exibe mensagem de erro na interface
+    console.error("Falha ao processar os dados principais:", error);
     document.querySelector(".nucas-number").textContent = "Erro";
     document.querySelector(".members-number").textContent = "Erro";
   }
-
-
-
 }
 
-// --- NOVAS FUNÇÕES DE FILTRAGEM POR EZ ---
-
-/**
- * Filtra os dados globais com base em uma chave de EZ e atualiza os cards e gráficos.
- * @param {string} ezKey - A chave do MAPA_EZ_UFS (ex: "recife", "sao-luis").
- */
 function filtrarEAtualizarPorEZ(ezKey) {
   const ufsDaEZ = MAPA_EZ_UFS[ezKey];
   if (!ufsDaEZ) {
@@ -330,7 +374,6 @@ function filtrarEAtualizarPorEZ(ezKey) {
     return;
   }
 
-  // Variáveis para os novos cálculos filtrados
   let totalMembersFiltrado = 0;
   const nucaStatusFiltrado = {
     "✅ NUCA criado": 0,
@@ -343,19 +386,15 @@ function filtrarEAtualizarPorEZ(ezKey) {
     "Não binário": 0,
   };
 
-  // Itera sobre as UFs da EZ selecionada
   ufsDaEZ.forEach(uf => {
     const municipiosDaUF = DADOS_DETALHADOS_POR_MUNICIPIO[uf];
     
     if (municipiosDaUF) {
-        // Itera sobre os municípios daquela UF
         municipiosDaUF.forEach(municipio => {
-            // 1. Contagem de Status (para todos os municípios da EZ)
             if (municipio.status in nucaStatusFiltrado) {
                 nucaStatusFiltrado[municipio.status]++;
             }
 
-            // 2. Contagem de Membros e Gênero (APENAS para NUCAs criados na EZ)
             if (municipio.status === "✅ NUCA criado") {
                 totalMembersFiltrado += municipio.total;
                 genderCountsFiltrado["Feminino"] += municipio.feminino;
@@ -366,46 +405,80 @@ function filtrarEAtualizarPorEZ(ezKey) {
     }
   });
 
-  // 3. Atualizar Cards com os totais filtrados
   document.querySelector(".nucas-number").textContent = (nucaStatusFiltrado["✅ NUCA criado"] || 0).toLocaleString("pt-BR");
   document.querySelector(".members-number").textContent = totalMembersFiltrado.toLocaleString("pt-BR");
 
-  // 4. Atualizar Gráficos de Rosca com os dados filtrados
   updateDonutCharts(nucaStatusFiltrado, genderCountsFiltrado);
+
+  const pertencimentoFiltrado = { Indigenas: 0, Quilombolas: 0, Ciganos: 0 };
+  const racaFiltrada = { Amarela: 0, Branca: 0, Indigena: 0, Parda: 0, Preta: 0 };
+
+  adolescentesData.forEach(row => {
+      const pertenceEZ = ufsDaEZ.some(ufEZ => ufEZ.includes(row.UF));
+
+      if (pertenceEZ) {
+          pertencimentoFiltrado.Indigenas += parseInt(row.Indigenas || 0, 10);
+          pertencimentoFiltrado.Quilombolas += parseInt(row.Quilombolas || 0, 10);
+          pertencimentoFiltrado.Ciganos += parseInt(row.Ciganos || 0, 10);
+          
+          // Soma Raça
+          racaFiltrada.Amarela += parseInt(row.Amarela || 0, 10);
+          racaFiltrada.Branca += parseInt(row.Branca || 0, 10);
+          racaFiltrada.Parda += parseInt(row.Parda || 0, 10);
+          racaFiltrada.Preta += parseInt(row.Preta || 0, 10);
+          racaFiltrada.Indigena += parseInt(row.IndigenaRaca || 0, 10);
+      }
+  });
+
+  updatePertencimentoChart(pertencimentoFiltrado);
+  updateRacaChart(racaFiltrada);
+
 }
 
-
-/**
- * Configura os event listeners para o dropdown de filtro da EZ.
- */
 function setupEZFilters() {
-  // ATUALIZADO: Seleciona o dropdown pelo ID
   const ezSelect = document.getElementById("ez-select");
   if (!ezSelect) {
     console.error("Dropdown de filtro EZ (#ez-select) não encontrado.");
     return;
   }
 
-  // ATUALIZADO: Muda o evento de 'click' para 'change'
   ezSelect.addEventListener("change", (event) => {
-    
-    // ATUALIZADO: Pega o valor da option selecionada
     const ezKey = event.target.value; 
     
     if (ezKey === 'todos') {
-      // Recarregar os gráficos com os dados GLOBAIS
       updateDonutCharts(DADOS_PROCESSADOS.nucaStatus, DADOS_PROCESSADOS.generoContagens);
       
-      // Atualizar cards com os totais GLOBAIS
       const totalNucasGlobal = DADOS_PROCESSADOS.nucaStatus["✅ NUCA criado"] || 0;
       document.querySelector(".nucas-number").textContent = totalNucasGlobal.toLocaleString("pt-BR");
       document.querySelector(".members-number").textContent = DADOS_PROCESSADOS.totalMembros.toLocaleString("pt-BR");
+      
+      recalcularEAtualizarGraficosExtrasGlobais();
 
     } else {
-      // Filtrar e recarregar com base na EZ
       filtrarEAtualizarPorEZ(ezKey);
     }
   });
+}
+
+function recalcularEAtualizarGraficosExtrasGlobais() {
+    const pertencimentoGlobal = { Indigenas: 0, Quilombolas: 0, Ciganos: 0 };
+    const racaGlobal = { Amarela: 0, Branca: 0, Indigena: 0, Parda: 0, Preta: 0 };
+
+    adolescentesData.forEach(row => {
+        pertencimentoGlobal.Indigenas += parseInt(row.Indigenas || 0, 10);
+        pertencimentoGlobal.Quilombolas += parseInt(row.Quilombolas || 0, 10);
+        pertencimentoGlobal.Ciganos += parseInt(row.Ciganos || 0, 10);
+        
+        // Soma Raça
+        racaGlobal.Amarela += parseInt(row.Amarela || 0, 10);
+        racaGlobal.Branca += parseInt(row.Branca || 0, 10);
+        racaGlobal.Parda += parseInt(row.Parda || 0, 10);
+        racaGlobal.Preta += parseInt(row.Preta || 0, 10);
+        racaGlobal.Indigena += parseInt(row.IndigenaRaca || 0, 10);
+    });
+
+    updatePertencimentoChart(pertencimentoGlobal);
+    updateRacaChart(racaGlobal);
 }
 
 
@@ -444,7 +517,6 @@ async function carregarMapbox(nucaDataByUF) {
     "Tocantins (TO)": "TO",
   };
 
-  // Converte nomes do CSV para siglas de UF
   const dadosConvertidos = {};
   for (const chave in nucaDataByUF) {
     const sigla = MAPA_UF[chave] || chave;
@@ -461,7 +533,6 @@ async function carregarMapbox(nucaDataByUF) {
   let zoomMap;
   let centerMap;
 
-  // Ajusta o zoom e o centro do mapa com base na largura da tela
   if (larguraTela <= 600) {
     zoomMap = 2.5;
     centerMap = [-53.9212, -16.99743];
@@ -481,7 +552,7 @@ async function carregarMapbox(nucaDataByUF) {
           id: "background",
           type: "background",
           paint: {
-            "background-color": "#F3F3E6", //#F3F3E6
+            "background-color": "#F3F3E6",
           },
         },
       ],
@@ -500,7 +571,6 @@ async function carregarMapbox(nucaDataByUF) {
     map.dragPan.disable();
   }
 
-  // Adiciona controles de navegação
   map.addControl(
     new mapboxgl.NavigationControl({
       showCompass: false,
@@ -511,30 +581,25 @@ async function carregarMapbox(nucaDataByUF) {
 
   map.on("load", async () => {
     try {
-      // 1. Fetch do GeoJSON dos estados
       const response = await fetch(BRAZIL_STATES_GEOJSON_URL);
       if (!response.ok) {
         throw new Error(`Erro ao buscar GeoJSON: ${response.statusText}`);
       }
       const geojsonData = await response.json();
 
-      // Encontra o valor máximo para a escala de cores
       const maxNucas = Math.max(...Object.values(dadosConvertidos), 0);
 
-      // 2. Mescla os dados do CSV nas propriedades do GeoJSON
       geojsonData.features.forEach((feature) => {
         const stateSigla = feature.properties.SIGLA;
         const nucaCount = dadosConvertidos[stateSigla] || 0;
         feature.properties.nucasCriados = nucaCount;
 
-        // NOVO: Adiciona a contagem de adolescentes
         const possibleKeys = [
           stateSigla,
-          feature.properties.Estado, // se o CSV usou "Acre (AC)" ou "Acre"
-          feature.properties.NOME || "", // alternativa caso o GeoJSON tenha outra propriedade de nome
+          feature.properties.Estado,
+          feature.properties.NOME || "",
         ].filter(Boolean);
 
-        // encontra a primeira chave que exista em TEEN_COUNT_BY_UF
         let teenCount = 0;
         for (const k of possibleKeys) {
           if (TEEN_COUNT_BY_UF[k] !== undefined) {
@@ -542,19 +607,16 @@ async function carregarMapbox(nucaDataByUF) {
             break;
           }
         }
-        // garante número
         teenCount = parseInt(teenCount, 10) || 0;
 
         feature.properties.adolescentes = teenCount;
       });
 
-      // 3. Adiciona a fonte de dados (source) ao mapa
       map.addSource("states-data", {
         type: "geojson",
         data: geojsonData,
       });
 
-      // 4. Adiciona a camada de preenchimento (fill) para o choropleth
       map.addLayer({
         id: "states-fill",
         type: "fill",
@@ -565,23 +627,22 @@ async function carregarMapbox(nucaDataByUF) {
             ["linear"],
             ["get", "nucasCriados"],
             0,
-            "#CFCFC0", // cinza claro para estados sem dados
+            "#CFCFC0",
             1,
-            "#d0e3f0", // azul bem claro
+            "#d0e3f0",
             maxNucas * 0.25,
-            "#a6cee3", // azul médio claro
+            "#a6cee3",
             maxNucas * 0.5,
-            "#529cb9", // azul médio (mantém o tom original)
+            "#529cb9",
             maxNucas * 0.75,
-            "#1f78b4", // azul escuro saturado
+            "#1f78b4",
             maxNucas,
-            "#08306b", // azul mais escuro (máximo valor)
+            "#08306b",
           ],
           "fill-opacity": 0.8,
         },
       });
 
-      // 5. Adiciona uma camada de borda para os estados
       map.addLayer({
         id: "states-borders",
         type: "line",
@@ -593,19 +654,16 @@ async function carregarMapbox(nucaDataByUF) {
         },
       });
 
-      // 6. Cria um popup, mas não o adiciona ao mapa ainda
       const popup = new mapboxgl.Popup({
         closeButton: false,
         closeOnClick: false,
       });
 
-      // 7. Adiciona eventos de mousemove e mouseleave
       map.on("mousemove", "states-fill", (e) => {
         map.getCanvas().style.cursor = "pointer";
         const properties = e.features[0].properties;
         const nucasValue = properties.nucasCriados;
         const stateName = properties.Estado;
-        const teenValue = properties.adolescentes;
 
         const description = `
           <div style="font-family: 'Lato', sans-serif; padding: 5px;">
@@ -633,25 +691,20 @@ function createBarChart(nucaDataByUF) {
   const ctx = document.getElementById("nucasBarChart");
   if (!ctx) return;
 
-  // Converte o objeto de contagens em um array de objetos para fácil ordenação
   let dataArray = Object.keys(nucaDataByUF).map((uf) => ({
     uf: uf,
     count: nucaDataByUF[uf],
   }));
 
-  // Filtra para manter apenas as UFs com NUCAs criados para o gráfico
   dataArray = dataArray.filter((item) => item.count > 0);
 
-  // Ordena do maior para o menor
   dataArray.sort((a, b) => b.count - a.count);
 
   const labels = dataArray.map((item) => item.uf);
   const data = dataArray.map((item) => item.count);
 
-  // Cor do tema (Azul escuro)
   const backgroundColor = "#005586";
 
-  // Destrói o gráfico anterior, se existir (para evitar duplicações em re-render)
   if (Chart.getChart(ctx)) {
     Chart.getChart(ctx).destroy();
   }
@@ -674,11 +727,11 @@ function createBarChart(nucaDataByUF) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      indexAxis: "y", // Gráfico de barras horizontal
+      indexAxis: "y",
       layout: {
         padding: {
           left: 0,
-          right: 25, // Espaço extra para o datalabel
+          right: 25,
         },
       },
       plugins: {
@@ -692,7 +745,6 @@ function createBarChart(nucaDataByUF) {
               if (label) {
                 label += ": ";
               }
-              // Formata o valor com separador de milhar
               const value = context.parsed.x.toLocaleString("pt-BR");
               label += value;
               return label;
@@ -741,13 +793,11 @@ function createBarChart(nucaDataByUF) {
 
 const CSV_ADOLESCENTES_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vSexVshsJMVGOEm37c0tw4xR5xgku8vC5Dut_hgrcAH3RTte06v2BXWb4ab2-zombbk1KFmdj_1rTko/pub?gid=1991621210&single=true&output=csv";
-let adolescentesData = [];
-let currentPage = 1;
-const rowsPerPage = 10;
+
 
 function displayTablePage(data, tableBody, page) {
   tableBody.innerHTML = "";
-  page--; // Ajusta para o índice do array (base 0)
+  page--;
 
   const start = rowsPerPage * page;
   const end = start + rowsPerPage;
@@ -755,8 +805,6 @@ function displayTablePage(data, tableBody, page) {
 
   paginatedItems.forEach((rowData) => {
     const row = document.createElement("tr");
-
-    
       row.innerHTML = `
               <td>${rowData.UF || ""}</td>
               <td>${rowData.Municipio || ""}</td>
@@ -765,23 +813,50 @@ function displayTablePage(data, tableBody, page) {
               <td>${rowData.Quilombolas || ""}</td>
               <td>${rowData.Ciganos || ""}</td>
           `;
-
       tableBody.appendChild(row);
-    
   });
 }
 
-/**
- * --- ATUALIZAÇÃO SOLICITADA ---
- * FUNÇÃO DE PAGINAÇÃO ATUALIZADA
- * Configura os controles para mostrar [<-] [1] [...] [MEIO] [...] [ÚLTIMA] [->]
- */
+// Função específica para renderizar a tabela de alertas com colunas de Gênero
+function displayAlertTablePage(data, tableBody, page) {
+  tableBody.innerHTML = "";
+  page--;
+
+  const start = rowsPerPage * page;
+  const end = start + rowsPerPage;
+  const paginatedItems = data.slice(start, end);
+
+  paginatedItems.forEach((rowData) => {
+    const row = document.createElement("tr");
+    
+    // Determina a cor do status
+    let statusClass = "";
+    if (rowData.Status && rowData.Status.includes("❌")) {
+        statusClass = "status-red";
+        row.classList.add("row-red")
+    } else if (rowData.Status && rowData.Status.includes("⚠️")) {
+        statusClass = "status-yellow";
+        row.classList.add("row-yellow")
+    }
+
+      row.innerHTML = `
+              <td>${rowData.UF || ""}</td>
+              <td>${rowData.Municipio || ""}</td>
+              <td>${rowData.Total || "0"}</td>
+              <td>${rowData.Feminino || "0"}</td>
+              <td>${rowData.Masculino || "0"}</td>
+              <td>${rowData.NaoBinario || "0"}</td>
+              <td class="${statusClass}">${rowData.Status || ""}</td>
+          `;
+      tableBody.appendChild(row);
+  });
+}
+
 function setupPagination(data, paginationContainer, tableBody) {
     paginationContainer.innerHTML = "";
     const pageCount = Math.ceil(data.length / rowsPerPage);
-    if (pageCount <= 1) return; // Não exibe paginação se houver apenas uma página
+    if (pageCount <= 1) return;
 
-    // Função auxiliar para criar e adicionar um botão
     const addButton = (page, text) => {
         const btn = document.createElement("button");
         btn.innerText = text || page;
@@ -792,12 +867,11 @@ function setupPagination(data, paginationContainer, tableBody) {
         btn.addEventListener("click", () => {
             currentPage = page;
             displayTablePage(data, tableBody, currentPage);
-            setupPagination(data, paginationContainer, tableBody); // Re-renderiza para atualizar o estado ativo
+            setupPagination(data, paginationContainer, tableBody);
         });
         paginationContainer.appendChild(btn);
     };
 
-    // Função auxiliar para adicionar "..."
     const addEllipsis = () => {
         const ellipsis = document.createElement("span");
         ellipsis.innerText = "...";
@@ -805,7 +879,6 @@ function setupPagination(data, paginationContainer, tableBody) {
         paginationContainer.appendChild(ellipsis);
     };
 
-    // Botão "Anterior"
     const prevButton = document.createElement("button");
     prevButton.innerText = "←";
     prevButton.disabled = currentPage === 1;
@@ -818,39 +891,24 @@ function setupPagination(data, paginationContainer, tableBody) {
     });
     paginationContainer.appendChild(prevButton);
 
-    // --- INÍCIO DA NOVA LÓGICA (PRIMEIRA, MEIO, ÚLTIMA) ---
-
-    // 1. Botão da Primeira Página (Sempre aparece)
     addButton(1);
 
-    // 2. Reticências Iniciais (...)
-    // Aparece se a página atual for maior que 2 (ou seja, a partir da 3)
     if (currentPage > 2) {
         addEllipsis();
     }
 
-    // 3. Botão da Página Atual (O "Meio")
-    // Aparece se não for a primeira e nem a última página
     if (currentPage > 1 && currentPage < pageCount) {
         addButton(currentPage);
     }
 
-    // 4. Reticências Finais (...)
-    // Aparece se a página atual for menor que a penúltima (pageCount - 1)
     if (currentPage < pageCount - 1) {
         addEllipsis();
     }
 
-    // 5. Botão da Última Página
-    // Aparece se o total de páginas for maior que 1 (para não duplicar com a pág 1)
     if (pageCount > 1) {
         addButton(pageCount);
     }
     
-    // --- FIM DA NOVA LÓGICA ---
-
-
-    // Botão "Próximo"
     const nextButton = document.createElement("button");
     nextButton.innerText = "→";
     nextButton.disabled = currentPage === pageCount;
@@ -859,6 +917,78 @@ function setupPagination(data, paginationContainer, tableBody) {
             currentPage++;
             displayTablePage(data, tableBody, currentPage);
             setupPagination(data, paginationContainer, tableBody);
+        }
+    });
+    paginationContainer.appendChild(nextButton);
+}
+
+
+// Duplicação da lógica de paginação para a tabela de alertas (separando estados de página)
+function setupAlertPagination(data, paginationContainer, tableBody) {
+    paginationContainer.innerHTML = "";
+    const pageCount = Math.ceil(data.length / rowsPerPage);
+    if (pageCount <= 1) return;
+
+    const addButton = (page, text) => {
+        const btn = document.createElement("button");
+        btn.innerText = text || page;
+        btn.classList.add("pagination-button");
+        if (page === currentAlertPage) {
+            btn.classList.add("active");
+        }
+        btn.addEventListener("click", () => {
+            currentAlertPage = page;
+            displayAlertTablePage(data, tableBody, currentAlertPage);
+            setupAlertPagination(data, paginationContainer, tableBody);
+        });
+        paginationContainer.appendChild(btn);
+    };
+
+    const addEllipsis = () => {
+        const ellipsis = document.createElement("span");
+        ellipsis.innerText = "...";
+        ellipsis.className = "ellipsis";
+        paginationContainer.appendChild(ellipsis);
+    };
+
+    const prevButton = document.createElement("button");
+    prevButton.innerText = "←";
+    prevButton.disabled = currentAlertPage === 1;
+    prevButton.addEventListener("click", () => {
+        if (currentAlertPage > 1) {
+            currentAlertPage--;
+            displayAlertTablePage(data, tableBody, currentAlertPage);
+            setupAlertPagination(data, paginationContainer, tableBody);
+        }
+    });
+    paginationContainer.appendChild(prevButton);
+
+    addButton(1);
+
+    if (currentAlertPage > 2) {
+        addEllipsis();
+    }
+
+    if (currentAlertPage > 1 && currentAlertPage < pageCount) {
+        addButton(currentAlertPage);
+    }
+
+    if (currentAlertPage < pageCount - 1) {
+        addEllipsis();
+    }
+
+    if (pageCount > 1) {
+        addButton(pageCount);
+    }
+    
+    const nextButton = document.createElement("button");
+    nextButton.innerText = "→";
+    nextButton.disabled = currentAlertPage === pageCount;
+    nextButton.addEventListener("click", () => {
+        if (currentAlertPage < pageCount) {
+            currentAlertPage++;
+            displayAlertTablePage(data, tableBody, currentAlertPage);
+            setupAlertPagination(data, paginationContainer, tableBody);
         }
     });
     paginationContainer.appendChild(nextButton);
@@ -884,7 +1014,25 @@ function criarFiltroUF(dados) {
   });
 }
 
+function criarFiltroUFAlert(dados) {
+  const filtroUFDiv = document.querySelector(".filter-uf-alert");
+  if (!filtroUFDiv) return;
 
+  // Pega UFs da lista de alertas
+  const ufs = [...new Set(dados.map((d) => d.UF))].sort();
+
+  const select = document.createElement("select");
+  select.innerHTML =
+    `<option value="">Todos os estados</option>` +
+    ufs.map((uf) => `<option value="${uf}">${uf}</option>`).join("");
+
+  filtroUFDiv.appendChild(select);
+
+  select.addEventListener("change", (e) => {
+    const ufSelecionada = e.target.value;
+    aplicarFiltroPorUFAlert(ufSelecionada);
+  });
+}
 
 function aplicarFiltroPorUF(uf) {
   const tableBody = document.querySelector(".table-container tbody");
@@ -915,7 +1063,7 @@ function aplicarFiltroPorUF(uf) {
       "pt-BR"
     )} NUCAs</strong> criados e conta com <strong>${totalAdolescentes.toLocaleString(
       "pt-BR"
-    )} adolescentes inscritos </strong>`;
+    )} adolescentes inscritos/as </strong>`;
   } else {
     const totalNucasNacional = adolescentesData.length;
     const totalAdolescentesNacional = adolescentesData.reduce(
@@ -926,7 +1074,33 @@ function aplicarFiltroPorUF(uf) {
       "pt-BR"
     )} NUCAs</strong> e conta com <strong>${totalAdolescentesNacional.toLocaleString(
       "pt-BR"
-    )} adolescentes inscritos</strong>`;
+    )} adolescentes inscritos/as</strong>`;
+  }
+}
+
+function aplicarFiltroPorUFAlert(uf) {
+  const tableBody = document.getElementById("tbody-alert");
+  const paginationContainer = document.getElementById("pagination-container-alert");
+  const textoResumo = document.querySelector(".text-space-alert");
+
+  if (!tableBody || !paginationContainer || !textoResumo) return;
+
+  let dadosFiltrados = alertNucasData;
+
+  if (uf) {
+    dadosFiltrados = alertNucasData.filter((row) => row.UF === uf);
+  }
+
+  currentAlertPage = 1;
+  displayAlertTablePage(dadosFiltrados, tableBody, currentAlertPage);
+  setupAlertPagination(dadosFiltrados, paginationContainer, tableBody);
+
+  // Atualiza texto resumo
+  const totalNucas = dadosFiltrados.length;
+  if (uf) {
+      textoResumo.innerHTML = `${uf}: <strong>${totalNucas.toLocaleString("pt-BR")}</strong> municípios com pendências.`;
+  } else {
+      textoResumo.innerHTML = `No país, <strong>${totalNucas.toLocaleString("pt-BR")}</strong> municípios estão quase lá.`;
   }
 }
 
@@ -937,34 +1111,94 @@ async function loadAdolescentesTableData() {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const csvText = await response.text();
-    const rows = csvText.trim().split(/\r?\n/).slice(1);
+    
+    // OTIMIZAÇÃO: Usando PapaParse também aqui
+    const results = Papa.parse(csvText, {
+      header: false,
+      skipEmptyLines: true
+    });
+    
+    const allRows = results.data;
+    
+    if (allRows.length < 2) throw new Error("CSV vazio ou sem dados.");
 
-    adolescentesData = rows
-      .map((row) => {
-        const cleanedRow = row.trim();
-        const columns = cleanedRow.split(",");
+    // 1. Cabeçalhos estão na primeira linha (índice 0)
+    const headerColumns = allRows[0].map(s => s.trim());
+    
+    const findCol = (patterns) => headerColumns.findIndex(h => patterns.some(p => h.toLowerCase().includes(p.toLowerCase())));
+
+    // Mapeamento de Índices
+    const iUF = findCol(["UF", "Estado"]);
+    const iMun = findCol(["Município", "Municipio"]);
+    const iIndigenas = findCol(["Indígenas", "Indigenas"]); // Plural (Pertencimento)
+    const iQuilombolas = findCol(["Quilombolas"]);
+    const iCiganos = findCol(["Ciganos"]);
+    const iTeen = findCol(["Adolescentes", "Total"]);
+    const iStatus = findCol(["Status", "Situação"]);
+    
+    const iAmarela = findCol(["Amarela", "Oriental"]);
+    const iBranca = findCol(["Branca"]);
+    const iParda = findCol(["Parda"]);
+    const iPreta = findCol(["Preta"]);
+    const iIndigenaRaca = findCol(["Indígena", "Cor Indígena"]); 
+
+    // 2. Mapear TODOS os dados brutos (ignora cabeçalho)
+    const rawData = allRows.slice(1)
+      .map((cols) => {
+        // PapaParse já separou as colunas, usamos direto
+        const getVal = (idx) => (idx !== -1 && cols[idx] ? cols[idx].trim() : "0");
+        const statusVal = (iStatus !== -1 && cols[iStatus]) ? cols[iStatus].trim() : "";
+
         return {
-          UF: columns[0] || "",
-          Municipio: columns[1] || "",
-          Indigenas: columns[2] || "0",
-          Quilombolas: columns[3] || "0",
-          Ciganos: columns[4] || "0",
-          Adolescentes: columns[5] || "0",
-          Status: columns[6] || "",
+          UF: getVal(iUF),
+          Municipio: getVal(iMun),
+          Indigenas: getVal(iIndigenas),
+          Quilombolas: getVal(iQuilombolas),
+          Ciganos: getVal(iCiganos),
+          Adolescentes: getVal(iTeen),
+          Status: statusVal,
+          Amarela: getVal(iAmarela),
+          Branca: getVal(iBranca),
+          Parda: getVal(iParda),
+          Preta: getVal(iPreta),
+          IndigenaRaca: getVal(iIndigenaRaca) 
         };
       })
-      .filter((row) => row.UF && row.Municipio && row.Status === "✅ NUCA criado");
+      .filter(row => row.UF && row.Municipio);
 
-    // Popula a contagem de adolescentes por UF (para o popup do mapa)
+    // 3. Separar APENAS os nucas criados para a tabela principal
+    adolescentesData = rawData.filter((row) => row.Status === "✅ NUCA criado");
+
+    // 4. Calcular totais para os gráficos (baseado APENAS nos NUCAs criados)
+    const pertencimentoCounts = { Indigenas: 0, Quilombolas: 0, Ciganos: 0 };
+    const racaCounts = { Amarela: 0, Branca: 0, Indigena: 0, Parda: 0, Preta: 0 };
+
     adolescentesData.forEach((row) => {
       const uf = row.UF.trim();
       const teens = parseInt(row.Adolescentes, 10) || 0;
       if (uf) {
         TEEN_COUNT_BY_UF[uf] = (TEEN_COUNT_BY_UF[uf] || 0) + teens;
       }
+
+      // Soma Pertencimento
+      pertencimentoCounts.Indigenas += parseInt(row.Indigenas || 0, 10);
+      pertencimentoCounts.Quilombolas += parseInt(row.Quilombolas || 0, 10);
+      pertencimentoCounts.Ciganos += parseInt(row.Ciganos || 0, 10);
+
+      // Soma Raça
+      racaCounts.Amarela += parseInt(row.Amarela || 0, 10);
+      racaCounts.Branca += parseInt(row.Branca || 0, 10);
+      racaCounts.Parda += parseInt(row.Parda || 0, 10);
+      racaCounts.Preta += parseInt(row.Preta || 0, 10);
+      racaCounts.Indigena += parseInt(row.IndigenaRaca || 0, 10);
     });
 
-    const tableBody = document.querySelector(".table-container tbody");
+    // Renderiza os gráficos extras iniciais
+    updatePertencimentoChart(pertencimentoCounts);
+    updateRacaChart(racaCounts);
+
+    // --- RENDERIZA TABELA PRINCIPAL (NUCAS CRIADOS) ---
+    const tableBody = document.querySelector(".table-container tbody"); // Seleciona o primeiro tbody
     const paginationContainer = document.getElementById("pagination-container");
     const textoResumo = document.querySelector(".text-space");
 
@@ -978,16 +1212,16 @@ async function loadAdolescentesTableData() {
         "pt-BR"
       )} NUCAs</strong> e conta com <strong>${totalAdolescentesNacional.toLocaleString(
         "pt-BR"
-      )} adolescentes inscritos</strong>`;
+      )} adolescentes inscritos/as</strong>`;
     }
 
     if (tableBody && paginationContainer) {
       displayTablePage(adolescentesData, tableBody, currentPage);
-      // CORREÇÃO: A variável aqui deve ser 'adolescentesData', que contém os dados carregados.
       setupPagination(adolescentesData, paginationContainer, tableBody);
     }
-
+    
     criarFiltroUF(adolescentesData);
+
   } catch (error) {
     console.error(
       "Erro ao carregar os dados da tabela de adolescentes:",
@@ -1003,15 +1237,18 @@ async function loadAdolescentesTableData() {
 
 // --- FIM: FUNÇÕES DA TABELA ---
 
-// Aguarda o carregamento completo do DOM para executar o código
+// OTIMIZAÇÃO: Carregamento paralelo usando Promise.all
 document.addEventListener("DOMContentLoaded", async () => {
-  // Carrega os dados da tabela (que populam TEEN_COUNT_BY_UF)
-  await loadAdolescentesTableData(); 
   
-  // Carrega os dados principais (que populam DADOS_PROCESSADOS e DADOS_DETALHADOS_POR_MUNICIPIO)
-  await loadAndProcessData(); 
-  
-  // Configura os filtros de EZ DEPOIS que todos os dados foram carregados
-  setupEZFilters(); 
-});
+  // Inicia ambos os carregamentos simultaneamente
+  const loadTopData = loadAndProcessData(); // Dados do topo + tabela alerta
+  const loadBottomData = loadAdolescentesTableData(); // Tabela principal + dados do mapa
 
+  // Aguarda o término de ambos
+  await Promise.all([loadTopData, loadBottomData]);
+
+  // Configura mapa e filtros somente quando TUDO estiver pronto para evitar dados parciais
+  // (O mapa precisa de NUCA_COUNT_BY_UF do topo E TEEN_COUNT_BY_UF da base)
+  carregarMapbox(NUCA_COUNT_BY_UF);
+  setupEZFilters();
+});

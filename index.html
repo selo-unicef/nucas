@@ -15,8 +15,10 @@
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.js"></script>
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.css" rel="stylesheet" />
     <script src="https://d3js.org/d3.v7.min.js"></script>
-
     <!-- FIM: Adições Mapbox -->
+
+    <!-- OTIMIZAÇÃO: PapaParse para leitura rápida de CSV -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
 </head>
 
@@ -49,7 +51,7 @@
             <div class="container total-members blue-light ">
                 <!-- Os valores serão preenchidos via JavaScript -->
                 <p class="members-number">...</p>
-                <p>Adolescentes inscritos</p>
+                <p>Adolescentes inscritos/as</p>
             </div>
         </div>
 
@@ -59,11 +61,7 @@
     <section class="column-2">
 
         <div class="container text bg-image">
-            <p>Os <strong>Núcleos de Cidadania de Adolescentes (NUCAs) fazem parte da metodologia do Selo
-                    UNICEF</strong> e são um indicador essencial da garantia do direito à participação de adolescentes e
-                jovens, assegurando espaço seguro para o desenvolvimento das competências e da cidadania de meninas,
-                menines e meninos em seus territórios. Saiba mais sobre os NUCAs nesta edição do Selo UNICEF 2025 -
-                2028.</p>
+            <p>Os <strong>Núcleos de Cidadania de Adolescentes (NUCAs) fazem parte da metodologia do Selo UNICEF</strong> e são um indicador essencial da garantia do direito à participação de adolescentes e jovens, assegurando espaço seguro para o desenvolvimento das competências e da cidadania de meninas, menines e meninos em seus territórios. Saiba mais sobre os NUCAs nesta edição do Selo UNICEF 2025 - 2028. <br> <a href="https://selounicef.org.br/formularios-dos-nucas-edicao-2025-2028-do-selo-unicef" target="_blank">Saiba mais</a></p>
         </div>
         <div class="container graphics light">
             <div class="filters">
@@ -72,33 +70,39 @@
                 <div class="filter-ez">
                     <select id="ez-select">
                         <option value="todos">Todos os territórios</option>
-                        <option value="recife">EZ Recife (PE, PB e AL)</option>
-                        <option value="sao-luis">EZ São Luís (MA e PI)</option>
-                        <option value="fortaleza">EZ Fortaleza (CE e RN)</option>
-                        <option value="salvador">EZ Salvador (BA, SE e MG)</option>
-                        <option value="manaus">EZ Manaus (AC, AM, RO)</option>
-                        <option value="belem">EZ Belém (AP, MT, PA, TO)</option>
-                        <option value="boa-vista">EZ Boa Vista (RR)</option>
+                        <option value="amazonia-legal">Amazônia Legal</option>
+                        <option value="semiarido">Semiárido</option>
                     </select>
                 </div>
             </div>
 
+            <!-- ATUALIZAÇÃO: Novos gráficos adicionados -->
             <div class="graphics-pizza">
                 <div class="nucas">
-                    <!-- ATUALIZAÇÃO: Adicionado container para título e total -->
                     <div class="chart-title-container">
                         <h3 class="chart-title">Total de NUCAs</h3>
-                        <!-- <span class="chart-total" id="nucasTotal">...</span> -->
                     </div>
                     <canvas id="nucasChart"></canvas>
                 </div>
                 <div class="genero">
-                    <!-- ATUALIZAÇÃO: Adicionado container para título e total -->
                     <div class="chart-title-container">
                         <h3 class="chart-title">Gênero dos adolescentes</h3>
-                        <!-- <span class="chart-total" id="generoTotal">...</span> -->
                     </div>
                     <canvas id="generoChart"></canvas>
+                </div>
+                <!-- NOVO: Gráfico de Pertencimento -->
+                <div class="pertencimento">
+                    <div class="chart-title-container">
+                        <h3 class="chart-title">Pertencimento étnico/cultural</h3>
+                    </div>
+                    <canvas id="pertencimentoChart"></canvas>
+                </div>
+                <!-- NOVO: Gráfico de Raça/Cor -->
+                <div class="raca">
+                    <div class="chart-title-container">
+                        <h3 class="chart-title">Raça/Cor</h3>
+                    </div>
+                    <canvas id="racaChart"></canvas>
                 </div>
             </div>
         </div>
@@ -109,8 +113,8 @@
     <section class="column-3">
         <div class="map-container">
             <div class="title-img">
-                <img src="./imagens/escola_menina.png" alt="Logo Selo UNICEF">
-                <h3>NUCAs espelhados pelo Brasil</h3>
+                <img src="./imagens/adolescentes_image.png" alt="Logo Selo UNICEF">
+                <h3>NUCAs espalhados pelo Brasil</h3>
             </div>
 
             <!-- CONTAINER DO MAPBOX (substitui o SVG estático) -->
@@ -127,9 +131,8 @@
 
     </section>
 
+    <!-- SEÇÃO ORIGINAL: Tabela de NUCAs Criados -->
     <section class="column-4">
-
-
         <div class="filter-container">
             <div class="title-img">
                 <img src="./imagens/comunidade.png" alt="Logo Selo UNICEF">
@@ -138,21 +141,16 @@
                     <div class="filter-uf">
                     </div>
                 </div>
-
             </div>
 
             <div class="text">
-                <p><strong>Filtre por estado</strong> e veja quantos NUCAs já foram criados e o total de adolescentes
-                    cadastrados, engajados e transformando o seu município e seus arredores nesta edição do Selo Unicef
+                <p><strong>Filtre por estado</strong> e veja quantos NUCAs já foram criados e o total de adolescentes cadastrados/as, engajados/das e transformando o seu município e seus arredores nesta edição do Selo Unicef
                 </p>
                 <p class="text-space">Carregando dados nacionais...</p>
             </div>
-
         </div>
 
         <div class="table-adolescentes">
-
-
             <!-- Container adicionado para permitir rolagem horizontal em telas pequenas -->
             <div class="table-container">
                 <table>
@@ -160,7 +158,7 @@
                         <tr class="header">
                             <th>Estado</th>
                             <th>Município</th>
-                            <th>Adolescentes engajados</th>
+                            <th>Total de adolescentes</th>
                             <th>Indígenas</th>
                             <th>Quilombolas</th>
                             <th>Ciganos</th>
@@ -174,7 +172,51 @@
             </div>
             <!-- Container para os botões de paginação -->
             <div id="pagination-container" class="pagination-container"></div>
+        </div>
+    </section>
 
+    <!-- NOVA SEÇÃO: Tabela de NUCAs "Quase Lá" -->
+    <section class="column-4" id="alert-section">
+        <div class="filter-container">
+            <div class="title-img">
+                <!-- Você pode querer trocar o ícone se tiver outro, mantive o mesmo -->
+                <img src="./imagens/casas.png" alt="Logo Selo UNICEF">
+                <div class="itens">
+                    <h3>Detalhes dos NUCAs que estão quase lá</h3>
+                    <div class="filter-uf-alert">
+                        <!-- Filtro específico para esta tabela -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="text">
+                <p>Veja a lista de municípios que iniciaram o processo de mobilização, mas que ainda apresentam pendências como <strong>membros insuficientes</strong> ou <strong>critérios não atendidos</strong> (como paridade de gênero).</p>
+                <p class="text-space-alert">Carregando dados...</p>
+            </div>
+        </div>
+
+        <div class="table-adolescentes">
+            <div class="table-container">
+                <table id="table-alert">
+                    <thead>
+                        <tr class="header">
+                            <th>Estado</th>
+                            <th>Município</th>
+                            <th>Total</th>
+                            <!-- ATUALIZADO: Colunas de Gênero em vez de Etnia -->
+                            <th>Feminino</th>
+                            <th>Masculino</th>
+                            <th>Não binário</th>
+                            <th>Status</th> 
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-alert">
+                        <!-- Conteúdo será inserido dinamicamente via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <!-- Container para os botões de paginação desta tabela específica -->
+            <div id="pagination-container-alert" class="pagination-container"></div>
         </div>
     </section>
 

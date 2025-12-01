@@ -36,7 +36,7 @@ const MAPA_EZ_UFS = {
 const TEEN_COUNT_BY_UF = {};
 
 const MAPBOX_ACCESS_TOKEN =
-  "pk.eyJ1IjoibHVjYXN0aGF5bmFuLWVzdGFkYW8iLCJhIjoiY2xnM3N1amQzMGlqeDNrbWdla3doY2o2dCJ9.OXh3OY3_HFqAiF-zzZ6SDQ";
+  "pk.eyJ1IjoibHVjYXN0aGF5bmFuLWVzdGFkYW8iLCJhIjoiY21pbmw1Z2VoMG5rYTNkb29rM200bnFwNiJ9.XnNK6daRElU24F0aYBYAzQ";
 
 const BRAZIL_STATES_GEOJSON_URL = "./data/brazil_states.geojson";
 
@@ -316,10 +316,18 @@ async function loadAndProcessData() {
     DADOS_PROCESSADOS.nucaStatus = nucaStatusCounts;
     DADOS_PROCESSADOS.generoContagens = genderCounts;
 
+    console.log("DADOS_PROCESSADOS:")
+
+    console.log(DADOS_PROCESSADOS)
+
     const totalNucasCriados = DADOS_PROCESSADOS.nucaStatus["✅ NUCA criado"] || 0;
+    const totalMunc = DADOS_PROCESSADOS.nucaStatus["✅ NUCA criado"] + DADOS_PROCESSADOS.nucaStatus["⚠️ Não atende aos critérios"] + DADOS_PROCESSADOS.nucaStatus["❌ Membros insuficientes"]
+
+    console.log(totalMunc)
 
     document.querySelector(".nucas-number").textContent = totalNucasCriados.toLocaleString("pt-BR");
     document.querySelector(".members-number").textContent = DADOS_PROCESSADOS.totalMembros.toLocaleString("pt-BR");
+    document.querySelector(".mun-number").textContent = totalMunc.toLocaleString("pt-BR");
 
     updateDonutCharts(DADOS_PROCESSADOS.nucaStatus, DADOS_PROCESSADOS.generoContagens);
 
@@ -700,6 +708,9 @@ function createBarChart(nucaDataByUF) {
 
   dataArray.sort((a, b) => b.count - a.count);
 
+  // 1. Calcular o total de NUCAs para usar na porcentagem
+  const totalCount = dataArray.reduce((sum, item) => sum + item.count, 0);
+
   const labels = dataArray.map((item) => item.uf);
   const data = dataArray.map((item) => item.count);
 
@@ -731,7 +742,7 @@ function createBarChart(nucaDataByUF) {
       layout: {
         padding: {
           left: 0,
-          right: 25,
+          right: 40, // Aumentei um pouco o padding para caber o texto extra "(xx%)"
         },
       },
       plugins: {
@@ -745,9 +756,10 @@ function createBarChart(nucaDataByUF) {
               if (label) {
                 label += ": ";
               }
-              const value = context.parsed.x.toLocaleString("pt-BR");
-              label += value;
-              return label;
+              const value = context.parsed.x;
+              // Adicionei a porcentagem também no tooltip para consistência
+              const percentage = ((value / totalCount) * 100).toFixed(1).replace('.', ',');
+              return `${label}${value} (${percentage}%)`;
             },
           },
         },
@@ -756,7 +768,13 @@ function createBarChart(nucaDataByUF) {
           align: "end",
           anchor: "end",
           color: "#3E3E3E",
-          formatter: (value) => value.toLocaleString("pt-BR"),
+          // 2. Ajuste do formatador para incluir a porcentagem
+          formatter: (value) => {
+            // Calcula a porcentagem
+            const percentage = ((value / totalCount) * 100).toFixed(1).replace('.', ','); 
+            // Retorna no formato: "90 (5,0%)"
+            return `${value} (${percentage}%)`;
+          },
           font: {
             weight: "bold",
           },
@@ -1100,9 +1118,11 @@ function aplicarFiltroPorUFAlert(uf) {
   if (uf) {
       textoResumo.innerHTML = `${uf}: <strong>${totalNucas.toLocaleString("pt-BR")}</strong> municípios com pendências.`;
   } else {
-      textoResumo.innerHTML = `No país, <strong>${totalNucas.toLocaleString("pt-BR")}</strong> municípios estão quase lá.`;
+      textoResumo.innerHTML = `No país, falta muito pouco para <strong>${totalNucas.toLocaleString("pt-BR")}</strong> terem seus NUCAs criados`;
   }
 }
+
+ 
 
 async function loadAdolescentesTableData() {
   try {

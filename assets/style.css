@@ -90,7 +90,7 @@ section {
 /* ### column 1 ### */
 
 section.column-1 {
-    height: 320px;
+    height: 365px;
     display: flex;
     flex-direction: row;
     gap: var(--gap-flex);
@@ -133,7 +133,7 @@ div.container-numbers>.container {
     align-items: center;
     justify-content: center;
     ;
-    padding: 20px;
+    padding: 5px 20px;
 }
 
 div.container-numbers p {
@@ -142,7 +142,7 @@ div.container-numbers p {
 }
 
 div.container-numbers>.container p:nth-child(1) {
-    font-size: 43px;
+    font-size: 40px;
 }
 
 div.container-numbers>.container p:nth-child(2) {
@@ -252,7 +252,8 @@ section.column-2 .container.graphics {
 .graphics-pizza canvas {
     width: 100% !important;
     height: auto !important;
-    max-width: 220px; /* Limita o tamanho máximo visual */
+    max-width: 220px;
+    /* Limita o tamanho máximo visual */
     max-height: 220px;
 }
 
@@ -266,7 +267,8 @@ section.column-2 .container.graphics {
     /* Espaço entre título e total */
     margin-bottom: 15px;
     /* Margem que antes era do .chart-title */
-    min-height: 40px; /* Garante alinhamento mesmo com títulos de 2 linhas */
+    min-height: 40px;
+    /* Garante alinhamento mesmo com títulos de 2 linhas */
 }
 
 /* ATUALIZAÇÃO: Estilo para o número total */
@@ -285,7 +287,8 @@ section.column-2 .container.graphics {
 .chart-title {
     margin-bottom: 0;
     /* ATUALIZAÇÃO: Removida margem, agora no container */
-    font-size: 1.0rem; /* Leve redução para caber melhor */
+    font-size: 1.0rem;
+    /* Leve redução para caber melhor */
     color: var(--font-color, #3E3E3E);
     text-align: center;
     font-weight: 700;
@@ -625,7 +628,8 @@ tr.header {
     min-width: 250px;
 }
 
-p.text-space, p.text-space-alert {
+p.text-space,
+p.text-space-alert {
     font-size: 20px;
     color: var(--font-title-color);
 }
@@ -714,7 +718,7 @@ section.column-5 .logos .logo-container:nth-child(2) img {
         width: 135px;
         height: fit-content;
     }
-    
+
     /* Ajuste Grid para tablets: 1 coluna ou manter 2 menores */
     .graphics-pizza {
         gap: 20px;
@@ -741,11 +745,12 @@ section.column-5 .logos .logo-container:nth-child(2) img {
         font-size: 13px;
     }
 
-    p.text-space, p.text-space-alert {
+    p.text-space,
+    p.text-space-alert {
         font-size: 16px;
         color: var(--font-title-color);
     }
-    
+
     /* Em telas médias/pequenas, uma coluna para gráficos */
     .graphics-pizza {
         grid-template-columns: 1fr;
@@ -796,13 +801,15 @@ section.column-5 .logos .logo-container:nth-child(2) img {
     }
 
     section.column-2 .container.graphics {
-        height: auto; /* Allow graphics to grow */
+        height: auto;
+        /* Allow graphics to grow */
     }
 
     /* Grid de 1 coluna mobile já definido no media query anterior, mas reforçando */
     .graphics-pizza {
         grid-template-columns: 1fr;
-        max-height: none; /* Remove limitação de altura */
+        max-height: none;
+        /* Remove limitação de altura */
     }
 
     .graphics-pizza>div {
@@ -892,6 +899,16 @@ section.column-5 .logos .logo-container:nth-child(2) img {
     section.column-5 .logos .logo-container:nth-child(1) {
         padding-left: 30px;
 
+    }
+
+    div.container-numbers>.container {
+        width: 100%;
+        height: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 15px 20px;
     }
 
 

@@ -1,5 +1,5 @@
-const CSV_URL =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vSexVshsJMVGOEm37c0tw4xR5xgku8vC5Dut_hgrcAH3RTte06v2BXWb4ab2-zombbk1KFmdj_1rTko/pub?gid=265766927&single=true&output=csv";
+// dados Nucas (API JSON):
+const API_NUCAS_URL = "https://api-selo-unicef-7574c4dde446.herokuapp.com/nucas/";
 
 // Variável global para armazenar os dados processados (resumos)
 const DADOS_PROCESSADOS = {
@@ -41,8 +41,8 @@ const MAPBOX_ACCESS_TOKEN =
 const BRAZIL_STATES_GEOJSON_URL = "./data/brazil_states.geojson";
 
 // Variáveis globais para as tabelas
-let adolescentesData = []; // NUCAs Ativos (vindo do CSV_ADOLESCENTES_URL)
-let alertNucasData = []; // NUCAs Pendentes (agora vindo do CSV_URL)
+let adolescentesData = []; // NUCAs Ativos (vindo da API ADOLESCENTES)
+let alertNucasData = []; // NUCAs Pendentes (vindo da API NUCAS)
 
 let currentPage = 1;
 let currentAlertPage = 1; 
@@ -225,19 +225,14 @@ function updateRacaChart(counts) {
 
 async function loadAndProcessData() {
   try {
-    const response = await fetch(CSV_URL);
+    const response = await fetch(API_NUCAS_URL);
     if (!response.ok) {
       throw new Error(`Erro ao buscar dados: ${response.statusText}`);
     }
-    const csvText = await response.text();
+    const data = await response.json();
     
-    // OTIMIZAÇÃO: Uso do PapaParse para processar CSV muito mais rápido que Regex
-    const results = Papa.parse(csvText, {
-      header: false, // Mantém como array de arrays para usar índices
-      skipEmptyLines: true
-    });
-    
-    const rows = results.data;
+    // Os dados agora vêm em JSON, não precisa de Papa.parse
+    const rows = data;
 
     let totalMembers = 0;
     const nucaStatusCounts = {
@@ -254,21 +249,19 @@ async function loadAndProcessData() {
     // Reinicializa a lista de alertas
     alertNucasData = [];
 
-    // O índice começa em 2 para pular cabeçalhos (conforme lógica original)
-    for (let i = 2; i < rows.length; i++) {
-      const columns = rows[i]; // PapaParse já retorna as colunas separadas
-      if (!columns || columns.length < 7) continue;
-
-      const status = columns[6] ? columns[6].trim() : undefined;
+    rows.forEach(item => {
+      // Mapeamento dos campos da API JSON (/nucas/)
+      const status = item.status ? item.status.trim() : undefined;
 
       if (status && status !== "---") {
-        const uf = columns[0].trim();
-        const municipio = columns[1].trim();
+        const uf = item.uf ? item.uf.trim() : "";
+        const municipio = item.municipio ? item.municipio.trim() : "";
 
-        const total = parseInt(columns[5], 10) || 0;
-        const feminino = parseInt(columns[2], 10) || 0;
-        const masculino = parseInt(columns[3], 10) || 0;
-        const naoBinario = parseInt(columns[4], 10) || 0;
+        // Campos numéricos mapeados da API
+        const total = parseInt(item.total_membros, 10) || 0;
+        const feminino = parseInt(item.feminino, 10) || 0;
+        const masculino = parseInt(item.masculino, 10) || 0;
+        const naoBinario = parseInt(item.nao_binario, 10) || 0;
 
         if (status in nucaStatusCounts) {
           nucaStatusCounts[status]++;
@@ -310,20 +303,18 @@ async function loadAndProcessData() {
           status: status,
         });
       }
-    }
+    });
 
     DADOS_PROCESSADOS.totalMembros = totalMembers;
     DADOS_PROCESSADOS.nucaStatus = nucaStatusCounts;
     DADOS_PROCESSADOS.generoContagens = genderCounts;
 
-    console.log("DADOS_PROCESSADOS:")
-
-    console.log(DADOS_PROCESSADOS)
+    console.log("DADOS_PROCESSADOS:", DADOS_PROCESSADOS);
 
     const totalNucasCriados = DADOS_PROCESSADOS.nucaStatus["✅ NUCA criado"] || 0;
-    const totalMunc = DADOS_PROCESSADOS.nucaStatus["✅ NUCA criado"] + DADOS_PROCESSADOS.nucaStatus["⚠️ Não atende aos critérios"] + DADOS_PROCESSADOS.nucaStatus["❌ Membros insuficientes"]
-
-    console.log(totalMunc)
+    const totalMunc = (DADOS_PROCESSADOS.nucaStatus["✅ NUCA criado"] || 0) + 
+                      (DADOS_PROCESSADOS.nucaStatus["⚠️ Não atende aos critérios"] || 0) + 
+                      (DADOS_PROCESSADOS.nucaStatus["❌ Membros insuficientes"] || 0);
 
     document.querySelector(".nucas-number").textContent = totalNucasCriados.toLocaleString("pt-BR");
     document.querySelector(".members-number").textContent = DADOS_PROCESSADOS.totalMembros.toLocaleString("pt-BR");
@@ -331,24 +322,16 @@ async function loadAndProcessData() {
 
     updateDonutCharts(DADOS_PROCESSADOS.nucaStatus, DADOS_PROCESSADOS.generoContagens);
 
-    // Atualiza contagens baseadas nos dados detalhados
+    // Atualiza contagens baseadas nos dados detalhados (redundante com a lógica acima, mas mantém consistência)
     for (const uf in DADOS_DETALHADOS_POR_MUNICIPIO) {
       const municipios = DADOS_DETALHADOS_POR_MUNICIPIO[uf];
-      let somaAdolescentes = 0;
-  
-      municipios.forEach(m => {
-        if (m.status === "✅ NUCA criado") {
-          somaAdolescentes += m.total;
-        }
-      });
-      // Nota: TEEN_COUNT_BY_UF será sobrescrito pela tabela completa se ela carregar depois, 
-      // mas isso garante dados preliminares rápidos se necessário.
+      // Note: A contagem de adolescentes por UF (TEEN_COUNT_BY_UF) será refinada no loadAdolescentesTableData
     }
 
     // Renderiza Gráfico de Barras (Depende apenas destes dados)
     createBarChart(NUCA_COUNT_BY_UF);
     
-    // Renderiza Tabela de Alertas (Depende apenas destes dados)
+    // Renderiza Tabela de Alertas
     const tableBodyAlert = document.getElementById("tbody-alert");
     const paginationAlert = document.getElementById("pagination-container-alert");
     const textoResumoAlert = document.querySelector(".text-space-alert");
@@ -364,9 +347,6 @@ async function loadAndProcessData() {
     }
 
     criarFiltroUFAlert(alertNucasData);
-
-    // OTIMIZAÇÃO: Não chamamos carregarMapbox() aqui ainda, pois ele precisa dos dados da outra tabela
-    // para os tooltips ficarem corretos. Ele será chamado no Promise.all.
 
   } catch (error) {
     console.error("Falha ao processar os dados principais:", error);
@@ -808,9 +788,8 @@ function createBarChart(nucaDataByUF) {
 }
 
 // --- INÍCIO: FUNÇÕES PARA A TABELA DE ADOLESCENTES ---
-
-const CSV_ADOLESCENTES_URL =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vSexVshsJMVGOEm37c0tw4xR5xgku8vC5Dut_hgrcAH3RTte06v2BXWb4ab2-zombbk1KFmdj_1rTko/pub?gid=1991621210&single=true&output=csv";
+// API JSON Adolescentes:
+const API_ADOLESCENTES_URL = "https://api-selo-unicef-7574c4dde446.herokuapp.com/adolescentes/";
 
 
 function displayTablePage(data, tableBody, page) {
@@ -1126,62 +1105,32 @@ function aplicarFiltroPorUFAlert(uf) {
 
 async function loadAdolescentesTableData() {
   try {
-    const response = await fetch(CSV_ADOLESCENTES_URL);
+    const response = await fetch(API_ADOLESCENTES_URL);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    const csvText = await response.text();
+    const data = await response.json();
     
-    // OTIMIZAÇÃO: Usando PapaParse também aqui
-    const results = Papa.parse(csvText, {
-      header: false,
-      skipEmptyLines: true
-    });
+    // API retorna JSON, não precisa de Papa.parse nem mapeamento de colunas por índice
+    const rows = data;
     
-    const allRows = results.data;
-    
-    if (allRows.length < 2) throw new Error("CSV vazio ou sem dados.");
-
-    // 1. Cabeçalhos estão na primeira linha (índice 0)
-    const headerColumns = allRows[0].map(s => s.trim());
-    
-    const findCol = (patterns) => headerColumns.findIndex(h => patterns.some(p => h.toLowerCase().includes(p.toLowerCase())));
-
-    // Mapeamento de Índices
-    const iUF = findCol(["UF", "Estado"]);
-    const iMun = findCol(["Município", "Municipio"]);
-    const iIndigenas = findCol(["Indígenas", "Indigenas"]); // Plural (Pertencimento)
-    const iQuilombolas = findCol(["Quilombolas"]);
-    const iCiganos = findCol(["Ciganos"]);
-    const iTeen = findCol(["Adolescentes", "Total"]);
-    const iStatus = findCol(["Status", "Situação"]);
-    
-    const iAmarela = findCol(["Amarela", "Oriental"]);
-    const iBranca = findCol(["Branca"]);
-    const iParda = findCol(["Parda"]);
-    const iPreta = findCol(["Preta"]);
-    const iIndigenaRaca = findCol(["Indígena", "Cor Indígena"]); 
-
-    // 2. Mapear TODOS os dados brutos (ignora cabeçalho)
-    const rawData = allRows.slice(1)
-      .map((cols) => {
-        // PapaParse já separou as colunas, usamos direto
-        const getVal = (idx) => (idx !== -1 && cols[idx] ? cols[idx].trim() : "0");
-        const statusVal = (iStatus !== -1 && cols[iStatus]) ? cols[iStatus].trim() : "";
-
+    // Mapear dados da API (/adolescentes/)
+    const rawData = rows.map((item) => {
         return {
-          UF: getVal(iUF),
-          Municipio: getVal(iMun),
-          Indigenas: getVal(iIndigenas),
-          Quilombolas: getVal(iQuilombolas),
-          Ciganos: getVal(iCiganos),
-          Adolescentes: getVal(iTeen),
-          Status: statusVal,
-          Amarela: getVal(iAmarela),
-          Branca: getVal(iBranca),
-          Parda: getVal(iParda),
-          Preta: getVal(iPreta),
-          IndigenaRaca: getVal(iIndigenaRaca) 
+          UF: item.uf || "",
+          Municipio: item.municipio || "",
+          Indigenas: item.indigenas || "0",
+          Quilombolas: item.quilombolas || "0",
+          Ciganos: item.ciganos || "0",
+          Adolescentes: item.adolescentes || "0",
+          Status: item.status || "",
+          Amarela: item.amarela || "0",
+          Branca: item.branca || "0",
+          Parda: item.parda || "0",
+          Preta: item.preta || "0",
+          // Assumindo que 'indigenas' no JSON é usado tanto para o campo de pertencimento quanto de raça
+          // já que não há um campo separado 'cor_indigena' no JSON de exemplo.
+          IndigenaRaca: item.indigenas || "0" 
         };
       })
       .filter(row => row.UF && row.Municipio);

@@ -62,7 +62,7 @@ function createDoughnutChart(canvasId, labels, data, colors) {
   }
 
   const container = ctx.closest("div");
-  const size = Math.min(container.clientWidth, container.clientHeight);
+  // const size = Math.min(container.clientWidth, container.clientHeight); // (Opcional se quiser forçar tamanho)
 
   const chartConfig = {
     type: "doughnut",
@@ -187,11 +187,12 @@ function updatePertencimentoChart(counts) {
 }
 
 function updateRacaChart(counts) {
+    // ATUALIZADO: Incluindo "Indígena" na lista de raças/cor
     const allLabels = ["Amarela (oriental)", "Branca", "Indígena", "Parda", "Preta"];
     const data = [
         counts.Amarela || 0,
         counts.Branca || 0,
-        counts.Indigena || 0,
+        counts.Indigena || 0, // Garante que lê a propriedade .Indigena
         counts.Parda || 0,
         counts.Preta || 0
     ];
@@ -199,7 +200,7 @@ function updateRacaChart(counts) {
     const colors = [
         "#F2C94C", // Amarela
         "#D3D3D3", // Branca
-        "#E1A38E", // Indígena
+        "#E1A38E", // Indígena (reutilizando uma cor da paleta, ajuste se necessário)
         "#A87E6E", // Parda
         "#3E3E3E"  // Preta
     ];
@@ -222,6 +223,8 @@ function updateRacaChart(counts) {
         createDoughnutChart("racaChart", filteredLabels, filteredData, filteredColors);
      }
 }
+
+let membrosTotaisBR;
 
 async function loadAndProcessData() {
   try {
@@ -267,8 +270,8 @@ async function loadAndProcessData() {
           nucaStatusCounts[status]++;
         }
 
+        totalMembers += total;
         if (status === "✅ NUCA criado") {
-          totalMembers += total;
           
           genderCounts["Feminino"] += feminino;
           genderCounts["Masculino"] += masculino;
@@ -304,6 +307,8 @@ async function loadAndProcessData() {
         });
       }
     });
+
+    membrosTotaisBR = totalMembers
 
     DADOS_PROCESSADOS.totalMembros = totalMembers;
     DADOS_PROCESSADOS.nucaStatus = nucaStatusCounts;
@@ -414,6 +419,7 @@ function filtrarEAtualizarPorEZ(ezKey) {
           racaFiltrada.Branca += parseInt(row.Branca || 0, 10);
           racaFiltrada.Parda += parseInt(row.Parda || 0, 10);
           racaFiltrada.Preta += parseInt(row.Preta || 0, 10);
+          // Soma Indígena na Raça também
           racaFiltrada.Indigena += parseInt(row.IndigenaRaca || 0, 10);
       }
   });
@@ -462,6 +468,7 @@ function recalcularEAtualizarGraficosExtrasGlobais() {
         racaGlobal.Branca += parseInt(row.Branca || 0, 10);
         racaGlobal.Parda += parseInt(row.Parda || 0, 10);
         racaGlobal.Preta += parseInt(row.Preta || 0, 10);
+        // Soma Indígena na Raça também
         racaGlobal.Indigena += parseInt(row.IndigenaRaca || 0, 10);
     });
 
@@ -1048,6 +1055,8 @@ function aplicarFiltroPorUF(uf) {
   displayTablePage(dadosFiltrados, tableBody, currentPage);
   setupPagination(dadosFiltrados, paginationContainer, tableBody);
 
+
+
   if (uf) {
     const totalNucas = dadosFiltrados.length;
     const totalAdolescentes = dadosFiltrados.reduce(
@@ -1069,7 +1078,7 @@ function aplicarFiltroPorUF(uf) {
     );
     textoResumo.innerHTML = `No país foram criados <strong>${totalNucasNacional.toLocaleString(
       "pt-BR"
-    )} NUCAs</strong> e conta com <strong>${totalAdolescentesNacional.toLocaleString(
+    )} NUCAs</strong> e conta com <strong>${DADOS_PROCESSADOS.totalMembros.toLocaleString(
       "pt-BR"
     )} adolescentes inscritos/as</strong>`;
   }
@@ -1179,7 +1188,7 @@ async function loadAdolescentesTableData() {
       );
       textoResumo.innerHTML = `No país foram criados <strong>${totalNucasNacional.toLocaleString(
         "pt-BR"
-      )} NUCAs</strong> e conta com <strong>${totalAdolescentesNacional.toLocaleString(
+      )} NUCAs</strong> e conta com <strong>${DADOS_PROCESSADOS.totalMembros.toLocaleString(
         "pt-BR"
       )} adolescentes inscritos/as</strong>`;
     }

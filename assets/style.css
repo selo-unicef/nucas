@@ -931,5 +931,20 @@ section.column-5 .logos .logo-container:nth-child(2) img {
         padding: 15px 20px;
     }
 
+    .text-nucas-uf h3 {
+        font-size: 21px;
+        margin-bottom: 10px;
+
+    }
+
+    .text-nucas-uf p {
+        font-size: 13px;
+
+    }
+
+    .chart-bar-canvas {
+        margin-top: 0px;
+    }
+
 
 }

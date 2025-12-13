@@ -53,8 +53,9 @@ const MAPBOX_ACCESS_TOKEN =
 
 const BRAZIL_STATES_GEOJSON_URL = "./data/brazil_states.geojson";
 
-// Variáveis globais para as tabelas
-let adolescentesData = []; // NUCAs Ativos (vindo da API ADOLESCENTES)
+// Variáveis globais para as tabelas e dados
+let adolescentesData = []; // NUCAs Ativos (Filtrado para a TABELA)
+let todosAdolescentesData = []; // TODOS os dados (Sem filtro, para os GRÁFICOS)
 let alertNucasData = []; // NUCAs Pendentes (vindo da API NUCAS)
 
 let currentPage = 1;
@@ -190,11 +191,11 @@ function updateDonutCharts(nucaStatusCounts, genderCounts) {
 }
 
 function updatePertencimentoChart(counts) {
-  const labels = ["Indígenas", "Quilombolas", "Ciganos"];
+  const labels = ["Indígenas", "Quilombolas", "Ribeirinhos"];
   const data = [
     counts.Indigenas || 0,
     counts.Quilombolas || 0,
-    counts.Ciganos || 0,
+    counts.Ribeirinhos || 0,
   ];
   const colors = ["#E1A38E", "#BCD876", "#D3A80A"];
 
@@ -463,15 +464,6 @@ function filtrarEAtualizarPorEZ(ezKey) {
         genderCountsFiltrado["Feminino"] += municipio.feminino;
         genderCountsFiltrado["Masculino"] += municipio.masculino;
         genderCountsFiltrado["Não binário"] += municipio.naoBinario;
-
-        /* Lógica anterior removida para não filtrar
-            if (municipio.status === "✅ NUCA criado") {
-                totalMembersFiltrado += municipio.total;
-                genderCountsFiltrado["Feminino"] += municipio.feminino;
-                genderCountsFiltrado["Masculino"] += municipio.masculino;
-                genderCountsFiltrado["Não binário"] += municipio.naoBinario;
-            }
-            */
       });
     }
   });
@@ -484,7 +476,7 @@ function filtrarEAtualizarPorEZ(ezKey) {
 
   updateDonutCharts(nucaStatusFiltrado, genderCountsFiltrado);
 
-  const pertencimentoFiltrado = { Indigenas: 0, Quilombolas: 0, Ciganos: 0 };
+  const pertencimentoFiltrado = { Indigenas: 0, Quilombolas: 0, Ribeirinhos: 0 };
   const racaFiltrada = {
     Amarela: 0,
     Branca: 0,
@@ -493,13 +485,14 @@ function filtrarEAtualizarPorEZ(ezKey) {
     Preta: 0,
   };
 
-  adolescentesData.forEach((row) => {
+  // Alterado de adolescentesData para todosAdolescentesData para incluir pendentes nos gráficos
+  todosAdolescentesData.forEach((row) => {
     const pertenceEZ = ufsDaEZ.some((ufEZ) => ufEZ.includes(row.UF));
 
     if (pertenceEZ) {
       pertencimentoFiltrado.Indigenas += parseInt(row.Indigenas || 0, 10);
       pertencimentoFiltrado.Quilombolas += parseInt(row.Quilombolas || 0, 10);
-      pertencimentoFiltrado.Ciganos += parseInt(row.Ciganos || 0, 10);
+      pertencimentoFiltrado.Ribeirinhos += parseInt(row.Ribeirinhos || 0, 10);
 
       // Soma Raça
       racaFiltrada.Amarela += parseInt(row.Amarela || 0, 10);
@@ -546,13 +539,14 @@ function setupEZFilters() {
 }
 
 function recalcularEAtualizarGraficosExtrasGlobais() {
-  const pertencimentoGlobal = { Indigenas: 0, Quilombolas: 0, Ciganos: 0 };
+  const pertencimentoGlobal = { Indigenas: 0, Quilombolas: 0, Ribeirinhos: 0 };
   const racaGlobal = { Amarela: 0, Branca: 0, Indigena: 0, Parda: 0, Preta: 0 };
 
-  adolescentesData.forEach((row) => {
+  // Alterado de adolescentesData para todosAdolescentesData para incluir pendentes
+  todosAdolescentesData.forEach((row) => {
     pertencimentoGlobal.Indigenas += parseInt(row.Indigenas || 0, 10);
     pertencimentoGlobal.Quilombolas += parseInt(row.Quilombolas || 0, 10);
-    pertencimentoGlobal.Ciganos += parseInt(row.Ciganos || 0, 10);
+    pertencimentoGlobal.Ribeirinhos += parseInt(row.Ribeirinhos || 0, 10);
 
     // Soma Raça
     racaGlobal.Amarela += parseInt(row.Amarela || 0, 10);
@@ -936,7 +930,7 @@ function displayTablePage(data, tableBody, page) {
               <td>${rowData.Adolescentes || ""}</td>
               <td>${rowData.Indigenas || ""}</td>
               <td>${rowData.Quilombolas || ""}</td>
-              <td>${rowData.Ciganos || ""}</td>
+              <td>${rowData.Ribeirinhos || ""}</td>
           `;
     tableBody.appendChild(row);
   });
@@ -1252,7 +1246,7 @@ async function loadAdolescentesTableData() {
           Municipio: item.municipio || "",
           Indigenas: item.indigenas || "0",
           Quilombolas: item.quilombolas || "0",
-          Ciganos: item.ciganos || "0",
+          Ribeirinhos: item.ribeirinhos || "0",
           Adolescentes: item.adolescentes || "0",
           Status: item.status || "",
           Amarela: item.amarela || "0",
@@ -1266,13 +1260,16 @@ async function loadAdolescentesTableData() {
       })
       .filter((row) => row.UF && row.Municipio);
 
+    // Salva todos os dados para uso nos gráficos (sem filtro de status)
+    todosAdolescentesData = rawData;
+
     // 3. Separar APENAS os nucas criados para a tabela principal
     adolescentesData = rawData.filter((row) => row.Status === "✅ NUCA criado");
 
-    console.log(adolescentesData)
+    console.log(adolescentesData);
 
-    // 4. Calcular totais para os gráficos (baseado APENAS nos NUCAs criados)
-    const pertencimentoCounts = { Indigenas: 0, Quilombolas: 0, Ciganos: 0 };
+    // 4. Calcular totais para os gráficos (baseado em TODOS os dados, usando todosAdolescentesData)
+    const pertencimentoCounts = { Indigenas: 0, Quilombolas: 0, Ribeirinhos: 0 };
     const racaCounts = {
       Amarela: 0,
       Branca: 0,
@@ -1281,17 +1278,19 @@ async function loadAdolescentesTableData() {
       Preta: 0,
     };
 
-    adolescentesData.forEach((row) => {
+    // ALTERADO: Loop agora usa todosAdolescentesData em vez de adolescentesData
+    todosAdolescentesData.forEach((row) => {
       const uf = row.UF.trim();
       const teens = parseInt(row.Adolescentes, 10) || 0;
       if (uf) {
+        // Isso também atualiza o mapa para mostrar o total de adolescentes independentemente do status
         TEEN_COUNT_BY_UF[uf] = (TEEN_COUNT_BY_UF[uf] || 0) + teens;
       }
 
       // Soma Pertencimento
       pertencimentoCounts.Indigenas += parseInt(row.Indigenas || 0, 10);
       pertencimentoCounts.Quilombolas += parseInt(row.Quilombolas || 0, 10);
-      pertencimentoCounts.Ciganos += parseInt(row.Ciganos || 0, 10);
+      pertencimentoCounts.Ribeirinhos += parseInt(row.Ribeirinhos || 0, 10);
 
       // Soma Raça
       racaCounts.Amarela += parseInt(row.Amarela || 0, 10);
@@ -1306,6 +1305,7 @@ async function loadAdolescentesTableData() {
     updateRacaChart(racaCounts);
 
     // --- RENDERIZA TABELA PRINCIPAL (NUCAS CRIADOS) ---
+    // A tabela continua usando adolescentesData (filtrado)
     const tableBody = document.querySelector(".table-container tbody"); // Seleciona o primeiro tbody
     const paginationContainer = document.getElementById("pagination-container");
     const textoResumo = document.querySelector(".text-space");

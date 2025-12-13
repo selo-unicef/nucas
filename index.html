@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./assets/style.css">
+    <link rel="icon" href="./imagens/selo-unicef.png" type="image/png">
     <title>Dashboard - Selo Unicef</title>
     <!-- Adição do Chart.js para os gráficos -->
      <!-- novo comentário -->
@@ -35,6 +36,8 @@
 
     <h1>Panorama dos NUCAs</h1>
 
+    <h4><a href="http://" target="_blank">Clique aqui</a> e confira o status e pontuação do seu município em 28/11/2025</h4>
+
     <section class="column-1">
 
         <div class="container logo blue-light">
@@ -44,11 +47,6 @@
             <img src="./imagens/imagem-destaque.png" alt="Imagem de destaque" srcset="">
         </div>
         <div class="container-numbers">
-            <div class="container total-nucas blue-light">
-                <!-- Os valores serão preenchidos via JavaScript -->
-                <p class="nucas-number">...</p>
-                <p>NUCAs criados</p>
-            </div>
             <div class="container total-members blue-light ">
                 <!-- Os valores serão preenchidos via JavaScript -->
                 <p class="members-number">...</p>
@@ -57,7 +55,12 @@
             <div class="container total-mun blue-light ">
                 <!-- Os valores serão preenchidos via JavaScript -->
                 <p class="mun-number">...</p>
-                <p>Municípios que iniciaram as inscrições</p>
+                <p>Municípios com adolescentes inscritos/as</p>
+            </div>
+            <div class="container total-nucas blue-light">
+                <!-- Os valores serão preenchidos via JavaScript -->
+                <p class="nucas-number">...</p>
+                <p>NUCAs criados</p>
             </div>
         </div>
 
@@ -120,7 +123,10 @@
         <div class="map-container">
             <div class="title-img">
                 <img src="./imagens/adolescentes_image.png" alt="Logo Selo UNICEF">
-                <h3>NUCAs espalhados pelo Brasil</h3>
+                <div class="text-nucas-uf">
+                    <h3>NUCAs espalhados pelo Brasil</h3>
+                <p>Veja o quantitativo de NUCAs criados e o percentual em relação aos municípios inscritos em cada estado nesta edição do Selo UNICEF</p>
+                </div>
             </div>
 
             <!-- CONTAINER DO MAPBOX (substitui o SVG estático) -->
@@ -150,7 +156,7 @@
             </div>
 
             <div class="text">
-                <p><strong>Filtre por estado</strong> e veja quantos NUCAs já foram criados e o total de adolescentes cadastrados/as, engajados/das e transformando o seu município e seus arredores nesta edição do Selo Unicef
+                <p><strong>Filtre por estado</strong> e veja quantos NUCAs já foram criados e o total de adolescentes cadastrados/as, engajados/das e transformando o seu município e seus arredores nesta edição do Selo UNICEF
                 </p>
                 <p class="text-space">Carregando dados nacionais...</p>
             </div>
@@ -196,7 +202,7 @@
             </div>
 
             <div class="text">
-                <p>Confira a lista de municípios que iniciaram a inscrição de adolescentes dentro do prazo (28/11) e que podem garantir 2 pontos nesta entrega, desde que concluam a criação do NUCA, atendendo todos os critérios, até o fim da edição do Selo UNICEF. Esses municípios ainda têm pendências, como número insuficiente de membros ou falta de paridade de gênero, e terão até o encerramento da edição para regularizar todas as exigências.</p>
+                <p>Confira a lista de municípios que iniciaram a inscrição de adolescentes dentro do prazo (28/11) e que podem garantir 2 pontos nesta entrega, desde que concluam a criação do NUCA, atendendo todos os critérios, até o fim da edição do Selo UNICEF. Estes municípios ainda apresentam pendências, como número insuficiente de membros ou falta de paridade de gênero, e terão até o encerramento desta edição do Selo UNICEF.</p>
                 <p class="text-space-alert">Carregando dados...</p>
             </div>
         </div>

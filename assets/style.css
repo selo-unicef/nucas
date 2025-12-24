@@ -39,6 +39,9 @@ header {
     justify-content: center;
     height: 87px;
     background-color: var(--bg-container-blue-dark);
+    max-width: var(--max-page);
+    border-radius: 12px;
+    margin-top: 10px;
 }
 
 header .btns-container {

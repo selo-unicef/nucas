@@ -756,6 +756,13 @@ section.column-5 .logos .logo-container:nth-child(2) img {
 
 
 @media (max-width: 960px) {
+
+    header {
+        margin-top: 0px;
+        border-radius: 0px;
+    }
+
+
     h3 {
         font-size: 20px;
 

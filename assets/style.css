@@ -103,19 +103,20 @@ h4 a {
     max-width: var(--max-page);
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     gap: 16px;
 }
 
 .info-titulo > div:first-child {
     width: 120px;
+    display: none;
 }
 
 .translate {
-    display: flex;
+    display: none;
     align-items: center;
     gap: 8px;
-    opacity: 0;
+    /* opacity: 0; */
 }
 
 .translate .lang-pt,

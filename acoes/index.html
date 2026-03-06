@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./assets/style.css?v=1.1">
+    <link rel="stylesheet" href="./assets/style.css?v=2.0">
     <link rel="icon" href="./imagens/selo-unicef.png" type="image/png">
     <title>Dashboard - Selo Unicef</title>
     <!-- Adição do Chart.js para os gráficos -->
@@ -25,18 +25,19 @@
 
 <body>
 
-    <header>
-        <div class="btns-container">
+    <!-- <header> -->
+        <!-- <div class="btns-container"> -->
             <!-- <div class="btn active">Sobre os NUCAs</div> -->
             <!-- <div class="btn">NUCAs em Ação</div>
             <div class="btn">Outras Ações</div> -->
-            <h4><a href="https://docs.google.com/spreadsheets/d/1hGOlbHZnNqLMpWoksYPZCawfadpJi-aN/edit?gid=1628412039#gid=1628412039" target="_blank">Clique aqui</a> e confira o status e pontuação do seu município em 28/11/2025</h4>
-        </div>
-    </header>
+            <!-- <h4><a href="https://docs.google.com/spreadsheets/d/1hGOlbHZnNqLMpWoksYPZCawfadpJi-aN/edit?gid=1628412039#gid=1628412039" target="_blank">Clique aqui</a> e confira o status e pontuação do seu município em 28/11/2025</h4>
+        </div> -->
+    <!-- </header> -->
+
 
     <div class="info-titulo">
         <div class="space"></div>
-        <h1>Panorama dos NUCAs</h1>
+        <h1>Ações desenvolvidas nos NUCAs</h1>
         <div class="translate">
             <div class="lang-pt active">Português</div>
             <div class="lang-en">English</div>
@@ -56,12 +57,17 @@
             <div class="container total-members blue-light ">
                 <!-- Os valores serão preenchidos via JavaScript -->
                 <p class="members-number">...</p>
-                <p>Adolescentes inscritos/as</p>
+                <p>Ações realizadas</p>
             </div>
             <div class="container total-mun blue-light ">
                 <!-- Os valores serão preenchidos via JavaScript -->
                 <p class="mun-number">...</p>
-                <p>Municípios com adolescentes inscritos/as</p>
+                <p>PESSOAS MOBILIZADAS NOS TERRITÓRIOS</p>
+            </div>
+            <div class="container total-nucas blue-light">
+                <!-- Os valores serão preenchidos via JavaScript -->
+                <p class="adolescentes-number">...</p>
+                <p>Adolescentes dos NUCAs participando</p>
             </div>
             <div class="container total-nucas blue-light">
                 <!-- Os valores serão preenchidos via JavaScript -->
@@ -76,9 +82,10 @@
     <section class="column-2">
 
         <div class="container text bg-image">
-            <p>Os <strong>Núcleos de Cidadania de Adolescentes (NUCAs)</strong> fazem parte da metodologia do Selo UNICEF e são um indicador essencial da garantia do direito à participação de adolescentes e jovens, assegurando espaço seguro para o desenvolvimento das competências e da cidadania de meninas, menines e meninos em seus territórios. </p>
-            <p>Este painel interativo reflete o movimento dos NUCAs na edição do Selo UNICEF 2025-2028. A pessoa mobilizadora de adolescentes deve colaborar com a alimentação desta ferramenta através da utilização dos formulários oficiais de registro de adolescentes e de atividades dos NUCAs. <a href="https://selounicef.org.br/formularios-dos-nucas-edicao-2025-2028-do-selo-unicef" target="_blank">Clique aqui</a> e saiba mais.</p>
-      
+            <p>Uma nova geração de adolescentes do Semiárido e da Amazônia Legal se engajou na Edição 2025-2028 do Selo UNICEF. </p>
+
+            <p>Meninas, menines e meninos, de 12 a 18 anos, vem implementando ações com grande potencial de transformação em seus territórios.​ Venha conferir todas as atividades!. <a href="https://selounicef.org.br/formularios-dos-nucas-edicao-2025-2028-do-selo-unicef" target="_blank">Clique aqui</a> e saiba mais.</p>
+                
                 
 
         </div>
@@ -88,40 +95,23 @@
                 <!-- ATUALIZAÇÃO: Transformado de botões para dropdown -->
                 <div class="filter-ez">
                     <select id="ez-select">
-                        <option value="todos">Todos os territórios</option>
-                        <option value="amazonia-legal">Amazônia Legal</option>
-                        <option value="semiarido">Semiárido</option>
+                        <option value="todos">Todos os anos</option>
                     </select>
                 </div>
             </div>
 
-            <!-- ATUALIZAÇÃO: Novos gráficos adicionados -->
             <div class="graphics-pizza">
                 <div class="nucas">
                     <div class="chart-title-container">
-                        <h3 class="chart-title">Total de NUCAs</h3>
+                        <h3 class="chart-title">Top 5 temas das ações</h3>
                     </div>
-                    <canvas id="nucasChart"></canvas>
+                    <canvas id="temasChart"></canvas>
                 </div>
                 <div class="genero">
                     <div class="chart-title-container">
-                        <h3 class="chart-title">Gênero dos adolescentes</h3>
+                        <h3 class="chart-title">Top 5 locais das ações</h3>
                     </div>
-                    <canvas id="generoChart"></canvas>
-                </div>
-                <!-- NOVO: Gráfico de Pertencimento -->
-                <div class="pertencimento">
-                    <div class="chart-title-container">
-                        <h3 class="chart-title">Pertencimento étnico/cultural</h3>
-                    </div>
-                    <canvas id="pertencimentoChart"></canvas>
-                </div>
-                <!-- NOVO: Gráfico de Raça/Cor -->
-                <div class="raca">
-                    <div class="chart-title-container">
-                        <h3 class="chart-title">Raça/Cor</h3>
-                    </div>
-                    <canvas id="racaChart"></canvas>
+                    <canvas id="locaisChart"></canvas>
                 </div>
             </div>
         </div>
@@ -134,8 +124,8 @@
             <div class="title-img">
                 <img src="./imagens/adolescentes_image.png" alt="Logo Selo UNICEF">
                 <div class="text-nucas-uf">
-                    <h3>NUCAs espalhados pelo Brasil</h3>
-                <p>Veja o quantitativo de NUCAs criados e o percentual em relação aos municípios inscritos em cada estado nesta edição do Selo UNICEF</p>
+                    <h3>Ações registradas por estado</h3>
+                <p>Veja a distribuição das ações desenvolvidas nos NUCAs por unidade da federação.</p>
                 </div>
             </div>
 
@@ -159,15 +149,14 @@
             <div class="title-img">
                 <img src="./imagens/comunidade.png" alt="Logo Selo UNICEF">
                 <div class="itens">
-                    <h3>Detalhes de cada NUCA registrado</h3>
+                    <h3>Panorama das ações por município</h3>
                     <div class="filter-uf">
                     </div>
                 </div>
             </div>
 
             <div class="text">
-                <p><strong>Filtre por estado</strong> e veja quantos NUCAs já foram criados e o total de adolescentes cadastrados/as, engajados/das e transformando o seu município e seus arredores nesta edição do Selo UNICEF
-                </p>
+                <p><strong>Filtre por estado</strong> e veja, por município, o total de ações realizadas, adolescentes engajados e pessoas mobilizadas.</p>
                 <p class="text-space">Carregando dados nacionais...</p>
             </div>
         </div>
@@ -180,11 +169,9 @@
                         <tr class="header">
                             <th>Estado</th>
                             <th>Município</th>
-                            <th>Total de adolescentes</th>
-                            <th>Indígenas</th>
-                            <th>Quilombolas</th>
-                            <th>Ribeirinhos</th>
-                            <!-- <th>Status</th> -->
+                            <th>Ações totais realizadas</th>
+                            <th>Adolescentes totais engajados</th>
+                            <th>Pessoas mobilizadas</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -204,7 +191,7 @@
                 <!-- Você pode querer trocar o ícone se tiver outro, mantive o mesmo -->
                 <img src="./imagens/casas.png" alt="Logo Selo UNICEF">
                 <div class="itens">
-                    <h3>Detalhes dos NUCAs que estão quase lá</h3>
+                    <h3>Detalhes das ações registradas</h3>
                     <div class="filter-uf-alert">
                         <!-- Filtro específico para esta tabela -->
                     </div>
@@ -212,7 +199,7 @@
             </div>
 
             <div class="text">
-                <p>Estes municípios ainda apresentam pendências, como número insuficiente de membros ou falta de paridade de gênero, e terão até o encerramento desta edição do Selo UNICEF para regularizar todas as exigências.</p>
+                <p>Confira os registros individuais das ações lançadas pelos municípios, com tema, local, ano, alcance estimado e link de divulgação quando informado.</p>
                 <p class="text-space-alert">Carregando dados...</p>
             </div>
         </div>
@@ -224,12 +211,11 @@
                         <tr class="header">
                             <th>Estado</th>
                             <th>Município</th>
-                            <th>Total</th>
-                            <!-- ATUALIZADO: Colunas de Gênero em vez de Etnia -->
-                            <th>Feminino</th>
-                            <th>Masculino</th>
-                            <th>Não binário</th>
-                            <th>Status</th> 
+                            <th>Tema</th>
+                            <th>Local</th>
+                            <th>Ano</th>
+                            <th>Pessoas mobilizadas</th>
+                            <th>Divulgação</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-alert">
@@ -263,7 +249,7 @@
     </section> -->
 
     <!-- Mantivemos apenas a chamada do script principal -->
-    <script src="./assets/main.js?v=1.1"></script>
+    <script src="./assets/main.js?v=2.0"></script>
 
 </body>
 

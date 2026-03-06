@@ -6,7 +6,7 @@
     --font-text-color: #FFFFFF;
     --font-title-color: #005980;
     --bg-container-light: #F3F3E6;
-    --bg-container-blue-light: #75B4CC;
+    --bg-container-blue-light: #E1A38E;
     --bg-container-blue-dark: #005586;
     --max-page: 1200px;
     --gap-flex: 13px;
@@ -201,11 +201,11 @@ div.container-numbers p {
 }
 
 div.container-numbers>.container p:nth-child(1) {
-    font-size: 40px;
+    font-size: 37px;
 }
 
 div.container-numbers>.container p:nth-child(2) {
-    font-size: 15px;
+    font-size: 13px;
     text-transform: uppercase;
 }
 
@@ -1021,4 +1021,28 @@ section.column-5 .logos .logo-container:nth-child(2) img {
     }
 
 
+}
+/* Ajustes para a versão de ações */
+.graphics-pizza {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+}
+
+.graphics-pizza > div {
+    min-height: 300px;
+}
+
+.graphics-pizza canvas {
+    height: 260px !important;
+    max-height: 260px;
+}
+
+.chart-bar-canvas {
+    margin-top: 30px;
+}
+
+#table-alert a {
+    color: var(--font-title-color);
+    font-weight: 700;
+    text-decoration: underline;
 }

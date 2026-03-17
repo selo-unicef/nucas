@@ -416,11 +416,11 @@ section.column-3 .title-img {
     gap: 20px;
     align-items: center;
     max-width: 100%;
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */
 }
 
 section.column-3 .title-img img {
-    width: 135px;
+    width: 180px;
     height: auto;
 }
 
@@ -454,7 +454,7 @@ h3 {
 }
 
 .text-nucas-uf h3 {
-    font-size: 27px;
+    font-size: 33px;
     margin-bottom: 10px;
 
 }
@@ -598,15 +598,15 @@ a:hover {
 }
 
 .filter-container .title-img .itens {
-    margin-top: 20px;
+    /* margin-top: 20px; */
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
 .filter-container .title-img img {
-    width: 135px;
-    height: 135px;
+    /* width: 135px; */
+    height: 130px;
 }
 
 .filter-container .text {
@@ -690,12 +690,19 @@ tr.header {
 }
 
 
-/* filtro */
+.filters-alert-row {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 
-/* ATUALIZAÇÃO: Aplicando o mesmo estilo ao novo dropdown .filter-ez */
+.filter-theme-alert {
+    width: 200px;
+}
 .filter-uf select,
 .filter-ez select,
-.filter-uf-alert select {
+.filter-uf-alert select,
+.filter-theme-alert select {
     padding: 8px 12px;
     border-radius: 8px;
     border: 1px solid #005980;
@@ -769,6 +776,169 @@ section.column-5 .logos .logo-container:nth-child(2) img {
 }
 
 
+/* Ajustes para a versão de ações */
+.graphics-pizza {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+}
+
+.graphics-pizza > div {
+    min-height: 300px;
+}
+
+.graphics-pizza canvas {
+    height: 260px !important;
+    max-height: 260px;
+}
+
+.chart-bar-canvas {
+    margin-top: 30px;
+}
+
+#table-alert a {
+    color: var(--font-title-color);
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+#table-alert {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+#table-alert th,
+#table-alert td {
+    padding: 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 14.5px;
+}
+
+/* === Ajustes gráficos verticais e filtro por território === */
+.territory-filters {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-top: 6px;
+}
+
+.territory-filters p {
+    font-size: 15px;
+    color: var(--font-color);
+    font-weight: 600;
+}
+
+.territory-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+.territory-btn {
+    border: none;
+    border-radius: 8px;
+    background-color: #BFC3C6;
+    color: #FFFFFF;
+    font-family: "Inter", sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 10px 16px;
+    min-width: 155px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.territory-btn.active {
+    background-color: #005980;
+    color: #FFFFFF;
+}
+
+.territory-btn:hover {
+    opacity: 0.92;
+}
+
+section.column-2 .container.graphics {
+    /* width: 64%; */
+    padding: 28px 34px;
+}
+
+.graphics-pizza {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    padding: 10px 0 0 0;
+    margin-top: 10px;
+    width: 100%;
+    align-items: start;
+}
+
+.graphics-pizza > div {
+    min-height: 320px;
+    align-items: stretch;
+}
+
+.graphics-pizza canvas {
+    width: 100% !important;
+    height: 300px !important;
+    max-height: 300px;
+}
+
+.chart-title-container {
+    justify-content: flex-start;
+    margin-bottom: 12px;
+    min-height: auto;
+}
+
+.chart-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #3E3E3E;
+    text-align: left;
+}
+
+
+
+.filter-uf-alert,
+.filter-theme-alert {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.filter-uf-alert,
+.filter-theme-alert {
+    display: flex;
+    gap: 10px;
+}
+
+@media (max-width: 840px) {
+    .territory-buttons {
+        width: 100%;
+        gap: 10px;
+    }
+
+    .territory-btn {
+        min-width: unset;
+        width: 100%;
+    }
+
+    .graphics-pizza {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .graphics-pizza canvas {
+        height: 260px !important;
+        max-height: 260px;
+    }
+
+    .translate {
+        display: none;
+    }
+}
+
 
 
 
@@ -824,7 +994,8 @@ section.column-5 .logos .logo-container:nth-child(2) img {
 
     .filter-uf select,
     .filter-ez select,
-    .filter-uf-alert select {
+    .filter-uf-alert select,
+    .filter-theme-alert select {
         min-width: 150px;
         width: 170px;
     }
@@ -880,7 +1051,7 @@ section.column-5 .logos .logo-container:nth-child(2) img {
 
     h1 {
 
-        margin: 20px 0px 0px 0px;
+        margin: 20px 20px;
         font-size: 25px;
 
     }
@@ -1033,149 +1204,10 @@ section.column-5 .logos .logo-container:nth-child(2) img {
         margin-top: 0px;
     }
 
-
-}
-/* Ajustes para a versão de ações */
-.graphics-pizza {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto;
-}
-
-.graphics-pizza > div {
-    min-height: 300px;
-}
-
-.graphics-pizza canvas {
-    height: 260px !important;
-    max-height: 260px;
-}
-
-.chart-bar-canvas {
-    margin-top: 30px;
-}
-
-#table-alert a {
-    color: var(--font-title-color);
-    font-weight: 700;
-    text-decoration: underline;
-}
-
-#table-alert {
+    #table-alert {
     width: 100%;
-    table-layout: fixed;
+    table-layout: auto;
     border-collapse: collapse;
 }
 
-#table-alert th,
-#table-alert td {
-    padding: 8px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: 14.5px;
-}
-
-/* === Ajustes gráficos verticais e filtro por território === */
-.territory-filters {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-    margin-top: 6px;
-}
-
-.territory-filters p {
-    font-size: 15px;
-    color: var(--font-color);
-    font-weight: 600;
-}
-
-.territory-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 14px;
-}
-
-.territory-btn {
-    border: none;
-    border-radius: 8px;
-    background-color: #BFC3C6;
-    color: #FFFFFF;
-    font-family: "Inter", sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    padding: 10px 16px;
-    min-width: 155px;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-}
-
-.territory-btn.active {
-    background-color: #005980;
-    color: #FFFFFF;
-}
-
-.territory-btn:hover {
-    opacity: 0.92;
-}
-
-section.column-2 .container.graphics {
-    /* width: 64%; */
-    padding: 28px 34px;
-}
-
-.graphics-pizza {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
-    padding: 10px 0 0 0;
-    margin-top: 10px;
-    width: 100%;
-    align-items: start;
-}
-
-.graphics-pizza > div {
-    min-height: 320px;
-    align-items: stretch;
-}
-
-.graphics-pizza canvas {
-    width: 100% !important;
-    height: 300px !important;
-    max-height: 300px;
-}
-
-.chart-title-container {
-    justify-content: flex-start;
-    margin-bottom: 12px;
-    min-height: auto;
-}
-
-.chart-title {
-    font-size: 18px;
-    font-weight: 700;
-    color: #3E3E3E;
-    text-align: left;
-}
-
-@media (max-width: 840px) {
-    .territory-buttons {
-        width: 100%;
-        gap: 10px;
-    }
-
-    .territory-btn {
-        min-width: unset;
-        width: 100%;
-    }
-
-    .graphics-pizza {
-        grid-template-columns: 1fr;
-        gap: 24px;
-    }
-
-    .graphics-pizza canvas {
-        height: 260px !important;
-        max-height: 260px;
-    }
 }

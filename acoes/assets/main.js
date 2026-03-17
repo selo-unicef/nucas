@@ -465,12 +465,37 @@ function populateUfFilter(containerSelector, selectId, onChange) {
   container.querySelector("select")?.addEventListener("change", onChange);
 }
 
+function populateThemeFilter(containerSelector, selectId, onChange) {
+  const container = document.querySelector(containerSelector);
+  if (!container) return;
+
+  const temas = [
+    ...new Set(
+      rawData
+        .map((item) => item.tema)
+        .filter((tema) => tema && tema.trim() && tema !== "Não informado"),
+    ),
+  ].sort((a, b) => a.localeCompare(b, "pt-BR"));
+
+  container.innerHTML = `
+    <select id="${selectId}">
+      <option value="todos">Todos os temas</option>
+      ${temas.map((tema) => `<option value="${escapeHtml(tema)}">${escapeHtml(tema)}</option>`).join("")}
+    </select>
+  `;
+  container.querySelector("select")?.addEventListener("change", onChange);
+}
+
+function getFilteredAlertRows(data) {
+  const uf = document.getElementById("filter-uf-alert-select")?.value || "todos";
+  const tema = document.getElementById("filter-theme-alert-select")?.value || "todos";
+
+  return [...data]
+    .filter((item) => (uf === "todos" || item.uf === uf))
+    .filter((item) => (tema === "todos" || item.tema === tema));
+}
+
 function updateSummaryTexts(data) {
-  const totalMunicipios = new Set(
-    data
-      .filter((i) => i.municipio)
-      .map((item) => `${item.uf}__${item.municipio}`),
-  ).size;
   const totalAcoes = data.length;
   const totalPublico = data.reduce((sum, item) => sum + item.publico, 0);
 
@@ -479,8 +504,20 @@ function updateSummaryTexts(data) {
   if (textMain) {
     textMain.innerHTML = `<strong>${formatNumber(totalAcoes)}</strong> ações registradas e <strong>${formatNumber(totalPublico)}</strong> pessoas mobilizadas pelo país`;
   }
+
   if (textAlert) {
-    textAlert.innerHTML = `Detalhes das <strong>${formatNumber(data.length)} ações </strong> realizadas nos NUCAs pelo Brasil`;
+    const uf = document.getElementById("filter-uf-alert-select")?.value || "todos";
+    const tema = document.getElementById("filter-theme-alert-select")?.value || "todos";
+    const alertRows = getFilteredAlertRows(data);
+    const totalAlertPublico = alertRows.reduce((sum, item) => sum + item.publico, 0);
+
+    const partes = [];
+    if (uf !== "todos") partes.push(`no estado <strong>${escapeHtml(uf)}</strong>`);
+    if (tema !== "todos") partes.push(`no tema <strong>${escapeHtml(tema)}</strong>`);
+
+    const complemento = partes.length ? ` ${partes.join(" e ")}` : " no Brasil";
+
+    textAlert.innerHTML = `Detalhes de <strong>${formatNumber(alertRows.length)} ações</strong>${complemento}, com <strong>${formatNumber(totalAlertPublico)}</strong> pessoas mobilizadas`;
   }
 }
 
@@ -521,15 +558,11 @@ function renderMunicipioTable(data, page = 1) {
 }
 
 function renderActionTable(data, page = 1) {
-  const uf =
-    document.getElementById("filter-uf-alert-select")?.value || "todos";
-  const rows = [...data]
-    .filter((item) => uf === "todos" || item.uf === uf)
-    .sort(
-      (a, b) =>
-        b.ano_acao - a.ano_acao ||
-        a.municipio.localeCompare(b.municipio, "pt-BR"),
-    );
+  const rows = getFilteredAlertRows(data).sort(
+    (a, b) =>
+      b.ano_acao - a.ano_acao ||
+      a.municipio.localeCompare(b.municipio, "pt-BR"),
+  );
 
   const tbody = document.getElementById("tbody-alert");
   const pagination = document.getElementById("pagination-container-alert");
@@ -902,9 +935,14 @@ async function init() {
     populateUfFilter(".filter-uf", "filter-uf-main", () =>
       renderMunicipioTable(filteredData, 1),
     );
-    populateUfFilter(".filter-uf-alert", "filter-uf-alert-select", () =>
-      renderActionTable(filteredData, 1),
-    );
+    populateUfFilter(".filter-uf-alert", "filter-uf-alert-select", () => {
+      updateSummaryTexts(filteredData);
+      renderActionTable(filteredData, 1);
+    });
+    populateThemeFilter(".filter-theme-alert", "filter-theme-alert-select", () => {
+      updateSummaryTexts(filteredData);
+      renderActionTable(filteredData, 1);
+    });
 
     applyFilters();
   } catch (error) {

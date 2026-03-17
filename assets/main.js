@@ -62,7 +62,6 @@ let currentPage = 1;
 let currentAlertPage = 1;
 const rowsPerPage = 10;
 
-
 let currentLanguage = localStorage.getItem("dashboardLanguage") || "pt";
 
 const I18N = {
@@ -78,7 +77,7 @@ const I18N = {
     cardMunicipalities: "Municípios com adolescentes inscritos/as",
     cardNucas: "NUCAs criados",
     intro1:
-      'Os <strong>Núcleos de Cidadania de Adolescentes (NUCAs)</strong> fazem parte da metodologia do Selo UNICEF e são um indicador essencial da garantia do direito à participação de adolescentes e jovens, assegurando espaço seguro para o desenvolvimento das competências e da cidadania de meninas, menines e meninos em seus territórios.',
+      "Os <strong>Núcleos de Cidadania de Adolescentes (NUCAs)</strong> fazem parte da metodologia do Selo UNICEF e são um indicador essencial da garantia do direito à participação de adolescentes e jovens, assegurando espaço seguro para o desenvolvimento das competências e da cidadania de meninas, menines e meninos em seus territórios.",
     intro2:
       'Este painel interativo reflete o movimento dos NUCAs na edição do Selo UNICEF 2025-2028. A pessoa mobilizadora de adolescentes deve colaborar com a alimentação desta ferramenta através da utilização dos formulários oficiais de registro de adolescentes e de atividades dos NUCAs. <a href="https://selounicef.org.br/formularios-dos-nucas-edicao-2025-2028-do-selo-unicef" target="_blank">Clique aqui</a> e saiba mais.',
     ez_all: "Todos os territórios",
@@ -93,11 +92,11 @@ const I18N = {
       "Veja o quantitativo de NUCAs criados e o percentual em relação aos municípios inscritos em cada estado nesta edição do Selo UNICEF",
     detailsTitle: "Detalhes de cada NUCA registrado",
     detailsText:
-      '<strong>Filtre por estado</strong> e veja quantos NUCAs já foram criados e o total de adolescentes cadastrados/as, engajados/das e transformando o seu município e seus arredores nesta edição do Selo UNICEF',
+      "<strong>Filtre por estado</strong> e veja quantos NUCAs já foram criados e o total de adolescentes cadastrados/as, engajados/das e transformando o seu município e seus arredores nesta edição do Selo UNICEF",
     loadingNational: "Carregando dados nacionais...",
-    almostThereTitle: 'Detalhes dos NUCAs que estão quase lá',
+    almostThereTitle: "Detalhes dos NUCAs que estão quase lá",
     almostThereText:
-      'Estes municípios ainda apresentam pendências, como número insuficiente de membros ou falta de paridade de gênero, e terão até o encerramento desta edição do Selo UNICEF para regularizar todas as exigências.',
+      "Estes municípios ainda apresentam pendências, como número insuficiente de membros ou falta de paridade de gênero, e terão até o encerramento desta edição do Selo UNICEF para regularizar todas as exigências.",
     loadingData: "Carregando dados...",
     th_state: "Estado",
     th_city: "Município",
@@ -126,17 +125,23 @@ const I18N = {
     race_black: "Preta",
     no_data: "Sem dados",
     all_states: "Todos os estados",
-    municipalities_almost_there: 'No país, <strong>{count}</strong> municípios estão "quase lá"',
-    country_almost_there: 'No país, falta muito pouco para <strong>{count}</strong> terem seus NUCAs criados',
-    state_pending: '{uf}: <strong>{count}</strong> municípios com pendências.',
-    country_created: 'No país foram criados <strong>{countNucas} NUCAs</strong> que contam com <strong>{countTeens} adolescentes neles inscritos/as</strong>',
-    state_created: '{uf} tem no total <strong>{countNucas} NUCAs criados</strong> que contam com <strong>{countTeens} adolescentes neles inscritos/as</strong>',
+    municipalities_almost_there:
+      'No país, <strong>{count}</strong> municípios estão "quase lá"',
+    country_almost_there:
+      "No país, falta muito pouco para <strong>{count}</strong> terem seus NUCAs criados",
+    state_pending: "{uf}: <strong>{count}</strong> municípios com pendências.",
+    country_created:
+      "No país foram criados <strong>{countNucas} NUCAs</strong> que contam com <strong>{countTeens} adolescentes neles inscritos/as</strong>",
+    state_created:
+      "{uf} tem no total <strong>{countNucas} NUCAs criados</strong> que contam com <strong>{countTeens} adolescentes neles inscritos/as</strong>",
     map_popup_state: "NUCAs criados",
     bar_dataset: "NUCAs Criados",
     bar_axis: "Contagem de NUCAs",
-    bar_tooltip: 'NUCAs Criados: {value} ({percentage}% dos municípios inscritos)',
-    chart_tooltip_prefix: ': ',
-    error_load_data: 'Não foi possível carregar os dados. Tente novamente mais tarde.'
+    bar_tooltip:
+      "NUCAs Criados: {value} ({percentage}% dos municípios inscritos)",
+    chart_tooltip_prefix: ": ",
+    error_load_data:
+      "Não foi possível carregar os dados. Tente novamente mais tarde.",
   },
   en: {
     locale: "en-US",
@@ -150,7 +155,7 @@ const I18N = {
     cardMunicipalities: "Municipalities with registered adolescents",
     cardNucas: "Created NUCAs",
     intro1:
-      'The <strong>Adolescent Citizenship Centers (NUCAs)</strong> are part of the UNICEF Seal methodology and are an essential indicator of the right of adolescents and young people to participate, ensuring a safe space for girls, boys, and non-binary adolescents to develop skills and citizenship in their territories.',
+      "The <strong>Adolescent Citizenship Centers (NUCAs)</strong> are part of the UNICEF Seal methodology and are an essential indicator of the right of adolescents and young people to participate, ensuring a safe space for girls, boys, and non-binary adolescents to develop skills and citizenship in their territories.",
     intro2:
       'This interactive dashboard shows the movement of NUCAs in the 2025-2028 UNICEF Seal edition. The adolescent mobilizer should help keep this tool updated by using the official forms to register adolescents and NUCA activities. <a href="https://selounicef.org.br/formularios-dos-nucas-edicao-2025-2028-do-selo-unicef" target="_blank">Click here</a> to learn more.',
     ez_all: "All territories",
@@ -165,11 +170,11 @@ const I18N = {
       "See the number of created NUCAs and the percentage compared to participating municipalities in each state in this UNICEF Seal edition",
     detailsTitle: "Details of each registered NUCA",
     detailsText:
-      '<strong>Filter by state</strong> to see how many NUCAs have already been created and the total number of registered adolescents engaged in transforming their municipality and surrounding areas in this UNICEF Seal edition',
+      "<strong>Filter by state</strong> to see how many NUCAs have already been created and the total number of registered adolescents engaged in transforming their municipality and surrounding areas in this UNICEF Seal edition",
     loadingNational: "Loading national data...",
-    almostThereTitle: 'Details of NUCAs that are almost there',
+    almostThereTitle: "Details of NUCAs that are almost there",
     almostThereText:
-      'These municipalities still have pending issues, such as an insufficient number of members or a lack of gender parity, and will have until the end of this UNICEF Seal edition to meet all requirements.',
+      "These municipalities still have pending issues, such as an insufficient number of members or a lack of gender parity, and will have until the end of this UNICEF Seal edition to meet all requirements.",
     loadingData: "Loading data...",
     th_state: "State",
     th_city: "Municipality",
@@ -198,17 +203,23 @@ const I18N = {
     race_black: "Black",
     no_data: "No data",
     all_states: "All states",
-    municipalities_almost_there: 'Nationwide, <strong>{count}</strong> municipalities are "almost there"',
-    country_almost_there: 'Nationwide, only a little is left for <strong>{count}</strong> municipalities to have their NUCAs created',
-    state_pending: '{uf}: <strong>{count}</strong> municipalities with pending issues.',
-    country_created: 'Nationwide, <strong>{countNucas} NUCAs</strong> have been created, with <strong>{countTeens} registered adolescents</strong>',
-    state_created: '{uf} has a total of <strong>{countNucas} created NUCAs</strong> with <strong>{countTeens} registered adolescents</strong>',
+    municipalities_almost_there:
+      'Nationwide, <strong>{count}</strong> municipalities are "almost there"',
+    country_almost_there:
+      "Nationwide, only a little is left for <strong>{count}</strong> municipalities to have their NUCAs created",
+    state_pending:
+      "{uf}: <strong>{count}</strong> municipalities with pending issues.",
+    country_created:
+      "Nationwide, <strong>{countNucas} NUCAs</strong> have been created, with <strong>{countTeens} registered adolescents</strong>",
+    state_created:
+      "{uf} has a total of <strong>{countNucas} created NUCAs</strong> with <strong>{countTeens} registered adolescents</strong>",
     map_popup_state: "Created NUCAs",
     bar_dataset: "Created NUCAs",
     bar_axis: "NUCA count",
-    bar_tooltip: 'Created NUCAs: {value} ({percentage}% of participating municipalities)',
-    chart_tooltip_prefix: ': ',
-    error_load_data: 'Could not load the data. Please try again later.'
+    bar_tooltip:
+      "Created NUCAs: {value} ({percentage}% of participating municipalities)",
+    chart_tooltip_prefix: ": ",
+    error_load_data: "Could not load the data. Please try again later.",
   },
 };
 
@@ -231,8 +242,10 @@ function formatNumber(value) {
 function translateStatus(status = "") {
   const normalized = status.trim();
   if (normalized === "✅ NUCA criado") return t("chart_status_created");
-  if (normalized === "⚠️ Não atende aos critérios") return t("chart_status_warning");
-  if (normalized === "❌ Membros insuficientes") return t("chart_status_insufficient");
+  if (normalized === "⚠️ Não atende aos critérios")
+    return t("chart_status_warning");
+  if (normalized === "❌ Membros insuficientes")
+    return t("chart_status_insufficient");
   return status;
 }
 
@@ -266,7 +279,8 @@ function applyStaticTranslations() {
     ".column-3 .text-nucas-uf h3": "mapTitle",
     ".column-3 .text-nucas-uf p": "mapSubtitle",
     ".column-4:not(#alert-section) .title-img h3": "detailsTitle",
-    ".column-4:not(#alert-section) .filter-container .text p:first-child": "detailsText",
+    ".column-4:not(#alert-section) .filter-container .text p:first-child":
+      "detailsText",
     "#alert-section .title-img h3": "almostThereTitle",
     "#alert-section .filter-container .text p:first-child": "almostThereText",
     ".column-4:not(#alert-section) th:nth-child(1)": "th_state",
@@ -293,7 +307,7 @@ function applyStaticTranslations() {
     } else {
       element.textContent = content;
     }
-});
+  });
 
   const textSpace = document.querySelector(".text-space");
   if (textSpace && !adolescentesData.length) {
@@ -310,8 +324,12 @@ function applyStaticTranslations() {
 }
 
 function updateLanguageButtons() {
-  document.querySelector(".lang-pt")?.classList.toggle("active", currentLanguage === "pt");
-  document.querySelector(".lang-en")?.classList.toggle("active", currentLanguage === "en");
+  document
+    .querySelector(".lang-pt")
+    ?.classList.toggle("active", currentLanguage === "pt");
+  document
+    .querySelector(".lang-en")
+    ?.classList.toggle("active", currentLanguage === "en");
 }
 
 function updateEZSelectOptions() {
@@ -331,7 +349,8 @@ function refreshDynamicTranslations() {
   createBarChart(NUCA_COUNT_BY_UF);
 
   const currentUf = document.querySelector(".filter-uf select")?.value || "";
-  const currentUfAlert = document.querySelector(".filter-uf-alert select")?.value || "";
+  const currentUfAlert =
+    document.querySelector(".filter-uf-alert select")?.value || "";
   const ezValue = document.getElementById("ez-select")?.value || "todos";
 
   if (adolescentesData.length) {
@@ -349,13 +368,20 @@ function refreshDynamicTranslations() {
   }
 
   if (ezValue === "todos") {
-    updateDonutCharts(DADOS_PROCESSADOS.nucaStatus, DADOS_PROCESSADOS.generoContagens);
-    document.querySelector(".nucas-number").textContent = formatNumber(DADOS_PROCESSADOS.nucaStatus["✅ NUCA criado"] || 0);
-    document.querySelector(".members-number").textContent = formatNumber(DADOS_PROCESSADOS.totalMembros || 0);
+    updateDonutCharts(
+      DADOS_PROCESSADOS.nucaStatus,
+      DADOS_PROCESSADOS.generoContagens,
+    );
+    document.querySelector(".nucas-number").textContent = formatNumber(
+      DADOS_PROCESSADOS.nucaStatus["✅ NUCA criado"] || 0,
+    );
+    document.querySelector(".members-number").textContent = formatNumber(
+      DADOS_PROCESSADOS.totalMembros || 0,
+    );
     document.querySelector(".mun-number").textContent = formatNumber(
       (DADOS_PROCESSADOS.nucaStatus["✅ NUCA criado"] || 0) +
-      (DADOS_PROCESSADOS.nucaStatus["⚠️ Não atende aos critérios"] || 0) +
-      (DADOS_PROCESSADOS.nucaStatus["❌ Membros insuficientes"] || 0)
+        (DADOS_PROCESSADOS.nucaStatus["⚠️ Não atende aos critérios"] || 0) +
+        (DADOS_PROCESSADOS.nucaStatus["❌ Membros insuficientes"] || 0),
     );
     recalcularEAtualizarGraficosExtrasGlobais();
   } else {
@@ -371,8 +397,12 @@ function setLanguage(language) {
 }
 
 function setupLanguageSwitcher() {
-  document.querySelector(".lang-pt")?.addEventListener("click", () => setLanguage("pt"));
-  document.querySelector(".lang-en")?.addEventListener("click", () => setLanguage("en"));
+  document
+    .querySelector(".lang-pt")
+    ?.addEventListener("click", () => setLanguage("pt"));
+  document
+    .querySelector(".lang-en")
+    ?.addEventListener("click", () => setLanguage("en"));
 }
 
 function createDoughnutChart(canvasId, labels, data, colors) {
@@ -449,14 +479,16 @@ function createDoughnutChart(canvasId, labels, data, colors) {
 
 function updateDonutCharts(nucaStatusCounts, genderCounts) {
   // 1. Gráfico de Status NUCA
-  const nucaStatusLabels = Object.keys(nucaStatusCounts).map((label) => translateStatus(label));
+  const nucaStatusLabels = Object.keys(nucaStatusCounts).map((label) =>
+    translateStatus(label),
+  );
   const nucaStatusData = Object.values(nucaStatusCounts);
 
   // Cria labels formatados com a contagem: "Label (1.234)"
   const nucaStatusLabelsWithCounts = nucaStatusLabels.map((label, index) => {
     const val = nucaStatusData[index];
     return `${label} (${formatNumber(val)})`;
-});
+  });
 
   const nucaStatusColors = [
     "#178076", // '✅ NUCA criado'
@@ -468,7 +500,7 @@ function updateDonutCharts(nucaStatusCounts, genderCounts) {
     "nucasChart",
     nucaStatusLabelsWithCounts,
     nucaStatusData,
-    nucaStatusColors
+    nucaStatusColors,
   );
 
   // 2. Gráfico de Gênero
@@ -489,22 +521,28 @@ function updateDonutCharts(nucaStatusCounts, genderCounts) {
     const val = genderDataValues[index];
     if (val > 0) {
       // Adiciona a contagem ao label: "Feminino (12.345)"
-      filteredGenderLabels.push(`${translateGender(label)} (${formatNumber(val)})`);
+      filteredGenderLabels.push(
+        `${translateGender(label)} (${formatNumber(val)})`,
+      );
       filteredGenderData.push(val);
       filteredGenderColors.push(genderColors[index]);
     }
-});
+  });
 
   createDoughnutChart(
     "generoChart",
     filteredGenderLabels,
     filteredGenderData,
-    filteredGenderColors
+    filteredGenderColors,
   );
 }
 
 function updatePertencimentoChart(counts) {
-  const labels = [t("belonging_indigenous"), t("belonging_quilombola"), t("belonging_riverside")];
+  const labels = [
+    t("belonging_indigenous"),
+    t("belonging_quilombola"),
+    t("belonging_riverside"),
+  ];
   const data = [
     counts.Indigenas || 0,
     counts.Quilombolas || 0,
@@ -523,7 +561,7 @@ function updatePertencimentoChart(counts) {
       filteredData.push(val);
       filteredColors.push(colors[idx]);
     }
-});
+  });
 
   if (filteredData.length === 0) {
     createDoughnutChart("pertencimentoChart", [t("no_data")], [1], ["#F3F3E6"]);
@@ -532,7 +570,7 @@ function updatePertencimentoChart(counts) {
       "pertencimentoChart",
       filteredLabels,
       filteredData,
-      filteredColors
+      filteredColors,
     );
   }
 }
@@ -573,7 +611,7 @@ function updateRacaChart(counts) {
       filteredData.push(val);
       filteredColors.push(colors[idx]);
     }
-});
+  });
 
   if (filteredData.length === 0) {
     createDoughnutChart("racaChart", [t("no_data")], [1], ["#F3F3E6"]);
@@ -582,7 +620,7 @@ function updateRacaChart(counts) {
       "racaChart",
       filteredLabels,
       filteredData,
-      filteredColors
+      filteredColors,
     );
   }
 }
@@ -661,7 +699,7 @@ async function loadAndProcessData() {
               Masculino: masculino,
               NaoBinario: naoBinario,
               Status: status,
-});
+            });
           }
         }
 
@@ -676,9 +714,9 @@ async function loadAndProcessData() {
           naoBinario: naoBinario,
           total: total,
           status: status,
-});
+        });
       }
-});
+    });
 
     membrosTotaisBR = totalMembers;
 
@@ -698,14 +736,14 @@ async function loadAndProcessData() {
 
     document.querySelector(".nucas-number").textContent =
       formatNumber(totalNucasCriados);
-    document.querySelector(".members-number").textContent =
-      formatNumber(DADOS_PROCESSADOS.totalMembros);
-    document.querySelector(".mun-number").textContent =
-      formatNumber(totalMunc);
+    document.querySelector(".members-number").textContent = formatNumber(
+      DADOS_PROCESSADOS.totalMembros,
+    );
+    document.querySelector(".mun-number").textContent = formatNumber(totalMunc);
 
     updateDonutCharts(
       DADOS_PROCESSADOS.nucaStatus,
-      DADOS_PROCESSADOS.generoContagens
+      DADOS_PROCESSADOS.generoContagens,
     );
 
     // Atualiza contagens baseadas nos dados detalhados (redundante com a lógica acima, mas mantém consistência)
@@ -720,13 +758,15 @@ async function loadAndProcessData() {
     // Renderiza Tabela de Alertas
     const tableBodyAlert = document.getElementById("tbody-alert");
     const paginationAlert = document.getElementById(
-      "pagination-container-alert"
+      "pagination-container-alert",
     );
     const textoResumoAlert = document.querySelector(".text-space-alert");
 
     if (textoResumoAlert) {
       const totalAlert = alertNucasData.length;
-      textoResumoAlert.innerHTML = t("municipalities_almost_there", { count: formatNumber(totalAlert) });
+      textoResumoAlert.innerHTML = t("municipalities_almost_there", {
+        count: formatNumber(totalAlert),
+      });
     }
 
     if (tableBodyAlert && paginationAlert) {
@@ -775,19 +815,23 @@ function filtrarEAtualizarPorEZ(ezKey) {
         genderCountsFiltrado["Feminino"] += municipio.feminino;
         genderCountsFiltrado["Masculino"] += municipio.masculino;
         genderCountsFiltrado["Não binário"] += municipio.naoBinario;
-  });
+      });
     }
-});
+  });
 
   document.querySelector(".nucas-number").textContent = formatNumber(
-    nucaStatusFiltrado["✅ NUCA criado"] || 0
+    nucaStatusFiltrado["✅ NUCA criado"] || 0,
   );
   document.querySelector(".members-number").textContent =
     totalMembersFiltrado.toLocaleString("pt-BR");
 
   updateDonutCharts(nucaStatusFiltrado, genderCountsFiltrado);
 
-  const pertencimentoFiltrado = { Indigenas: 0, Quilombolas: 0, Ribeirinhos: 0 };
+  const pertencimentoFiltrado = {
+    Indigenas: 0,
+    Quilombolas: 0,
+    Ribeirinhos: 0,
+  };
   const racaFiltrada = {
     Amarela: 0,
     Branca: 0,
@@ -813,7 +857,7 @@ function filtrarEAtualizarPorEZ(ezKey) {
       // Soma Indígena na Raça também
       racaFiltrada.Indigena += parseInt(row.IndigenaRaca || 0, 10);
     }
-});
+  });
 
   updatePertencimentoChart(pertencimentoFiltrado);
   updateRacaChart(racaFiltrada);
@@ -832,21 +876,22 @@ function setupEZFilters() {
     if (ezKey === "todos") {
       updateDonutCharts(
         DADOS_PROCESSADOS.nucaStatus,
-        DADOS_PROCESSADOS.generoContagens
+        DADOS_PROCESSADOS.generoContagens,
       );
 
       const totalNucasGlobal =
         DADOS_PROCESSADOS.nucaStatus["✅ NUCA criado"] || 0;
       document.querySelector(".nucas-number").textContent =
         totalNucasGlobal.toLocaleString("pt-BR");
-      document.querySelector(".members-number").textContent =
-        formatNumber(DADOS_PROCESSADOS.totalMembros);
+      document.querySelector(".members-number").textContent = formatNumber(
+        DADOS_PROCESSADOS.totalMembros,
+      );
 
       recalcularEAtualizarGraficosExtrasGlobais();
     } else {
       filtrarEAtualizarPorEZ(ezKey);
     }
-});
+  });
 }
 
 function recalcularEAtualizarGraficosExtrasGlobais() {
@@ -866,15 +911,17 @@ function recalcularEAtualizarGraficosExtrasGlobais() {
     racaGlobal.Preta += parseInt(row.Preta || 0, 10);
     // Soma Indígena na Raça também
     racaGlobal.Indigena += parseInt(row.IndigenaRaca || 0, 10);
-});
+  });
 
   updatePertencimentoChart(pertencimentoGlobal);
   updateRacaChart(racaGlobal);
 }
 
 // --- FUNÇÕES DO MAPBOX ---
+// console para nucaDataByUF:
 
 async function carregarMapbox(nucaDataByUF) {
+  console.log("Dados de NUCA por UF:", nucaDataByUF);
   mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
 
   const MAPA_UF = {
@@ -914,11 +961,14 @@ async function carregarMapbox(nucaDataByUF) {
       (dadosConvertidos[sigla] || 0) + nucaDataByUF[chave];
   }
 
+  
+  console.log("Dados convertidos para siglas:", dadosConvertidos);
+
   let larguraTela = window.innerWidth;
 
   window.addEventListener("resize", () => {
     larguraTela = window.innerWidth;
-});
+  });
 
   let zoomMap;
   let centerMap;
@@ -951,7 +1001,7 @@ async function carregarMapbox(nucaDataByUF) {
     zoom: zoomMap,
     minZoom: 1,
     projection: "mercator",
-});
+  });
 
   if (larguraTela <= 600) {
     map.scrollZoom.disable();
@@ -966,7 +1016,7 @@ async function carregarMapbox(nucaDataByUF) {
       showCompass: false,
       showZoom: false,
     }),
-    "top-right"
+    "top-right",
   );
 
   map.on("load", async () => {
@@ -1000,12 +1050,12 @@ async function carregarMapbox(nucaDataByUF) {
         teenCount = parseInt(teenCount, 10) || 0;
 
         feature.properties.adolescentes = teenCount;
-  });
+      });
 
       map.addSource("states-data", {
         type: "geojson",
         data: geojsonData,
-  });
+      });
 
       map.addLayer({
         id: "states-fill",
@@ -1031,7 +1081,7 @@ async function carregarMapbox(nucaDataByUF) {
           ],
           "fill-opacity": 0.8,
         },
-  });
+      });
 
       map.addLayer({
         id: "states-borders",
@@ -1042,12 +1092,12 @@ async function carregarMapbox(nucaDataByUF) {
           "line-color": "#F3F3E6",
           "line-width": 1.5,
         },
-  });
+      });
 
       const popup = new mapboxgl.Popup({
         closeButton: false,
         closeOnClick: false,
-  });
+      });
 
       map.on("mousemove", "states-fill", (e) => {
         map.getCanvas().style.cursor = "pointer";
@@ -1059,21 +1109,21 @@ async function carregarMapbox(nucaDataByUF) {
           <div style="font-family: 'Lato', sans-serif; padding: 5px;">
             <strong style="font-size: 16px;">${stateName}</strong>
             <p style="margin: 5px 0 0 0;">${t("map_popup_state")}: <strong>${formatNumber(
-              nucasValue
+              nucasValue,
             )}</strong></p>
           </div>`;
 
         popup.setLngLat(e.lngLat).setHTML(description).addTo(map);
-  });
+      });
 
       map.on("mouseleave", "states-fill", () => {
         map.getCanvas().style.cursor = "";
         popup.remove();
-  });
+      });
     } catch (error) {
       console.error("Falha ao carregar o mapa de estados:", error);
     }
-});
+  });
 }
 
 const municipiosInscritoUF = {
@@ -1096,7 +1146,6 @@ const municipiosInscritoUF = {
   "Sergipe (SE)": 62,
   "Tocantins (TO)": 139,
 };
-
 
 function createBarChart(nucaDataByUF) {
   const ctx = document.getElementById("nucasBarChart");
@@ -1165,7 +1214,10 @@ function createBarChart(nucaDataByUF) {
                 .toFixed(1)
                 .replace(".", ",");
 
-              return t("bar_tooltip", { value: formatNumber(value), percentage });
+              return t("bar_tooltip", {
+                value: formatNumber(value),
+                percentage,
+              });
             },
           },
         },
@@ -1243,7 +1295,7 @@ function displayTablePage(data, tableBody, page) {
               <td>${rowData.Ribeirinhos || ""}</td>
           `;
     tableBody.appendChild(row);
-});
+  });
 }
 
 // Função específica para renderizar a tabela de alertas com colunas de Gênero
@@ -1278,7 +1330,7 @@ function displayAlertTablePage(data, tableBody, page) {
               <td class="${statusClass}">${translateStatus(rowData.Status || "")}</td>
           `;
     tableBody.appendChild(row);
-});
+  });
 }
 
 function setupPagination(data, paginationContainer, tableBody) {
@@ -1297,7 +1349,7 @@ function setupPagination(data, paginationContainer, tableBody) {
       currentPage = page;
       displayTablePage(data, tableBody, currentPage);
       setupPagination(data, paginationContainer, tableBody);
-});
+    });
     paginationContainer.appendChild(btn);
   };
 
@@ -1317,7 +1369,7 @@ function setupPagination(data, paginationContainer, tableBody) {
       displayTablePage(data, tableBody, currentPage);
       setupPagination(data, paginationContainer, tableBody);
     }
-});
+  });
   paginationContainer.appendChild(prevButton);
 
   addButton(1);
@@ -1347,7 +1399,7 @@ function setupPagination(data, paginationContainer, tableBody) {
       displayTablePage(data, tableBody, currentPage);
       setupPagination(data, paginationContainer, tableBody);
     }
-});
+  });
   paginationContainer.appendChild(nextButton);
 }
 
@@ -1368,7 +1420,7 @@ function setupAlertPagination(data, paginationContainer, tableBody) {
       currentAlertPage = page;
       displayAlertTablePage(data, tableBody, currentAlertPage);
       setupAlertPagination(data, paginationContainer, tableBody);
-});
+    });
     paginationContainer.appendChild(btn);
   };
 
@@ -1388,7 +1440,7 @@ function setupAlertPagination(data, paginationContainer, tableBody) {
       displayAlertTablePage(data, tableBody, currentAlertPage);
       setupAlertPagination(data, paginationContainer, tableBody);
     }
-});
+  });
   paginationContainer.appendChild(prevButton);
 
   addButton(1);
@@ -1418,7 +1470,7 @@ function setupAlertPagination(data, paginationContainer, tableBody) {
       displayAlertTablePage(data, tableBody, currentAlertPage);
       setupAlertPagination(data, paginationContainer, tableBody);
     }
-});
+  });
   paginationContainer.appendChild(nextButton);
 }
 
@@ -1439,7 +1491,7 @@ function criarFiltroUF(dados) {
   select.addEventListener("change", (e) => {
     const ufSelecionada = e.target.value;
     aplicarFiltroPorUF(ufSelecionada);
-});
+  });
 }
 
 function criarFiltroUFAlert(dados) {
@@ -1460,7 +1512,7 @@ function criarFiltroUFAlert(dados) {
   select.addEventListener("change", (e) => {
     const ufSelecionada = e.target.value;
     aplicarFiltroPorUFAlert(ufSelecionada);
-});
+  });
 }
 
 function aplicarFiltroPorUF(uf) {
@@ -1484,25 +1536,32 @@ function aplicarFiltroPorUF(uf) {
     const totalNucas = dadosFiltrados.length;
     const totalAdolescentes = dadosFiltrados.reduce(
       (acc, item) => acc + Number(item.Adolescentes || 0),
-      0
+      0,
     );
     const nomeEstado = uf;
 
-    textoResumo.innerHTML = t("state_created", { uf: nomeEstado, countNucas: formatNumber(totalNucas), countTeens: formatNumber(totalAdolescentes) });
+    textoResumo.innerHTML = t("state_created", {
+      uf: nomeEstado,
+      countNucas: formatNumber(totalNucas),
+      countTeens: formatNumber(totalAdolescentes),
+    });
   } else {
     const totalNucasNacional = adolescentesData.length;
     const totalAdolescentesNacional = adolescentesData.reduce(
       (acc, item) => acc + Number(item.Adolescentes || 0),
-      0
+      0,
     );
-    textoResumo.innerHTML = t("country_created", { countNucas: formatNumber(totalNucasNacional), countTeens: formatNumber(DADOS_PROCESSADOS.totalMembrosNucaCriado) });
+    textoResumo.innerHTML = t("country_created", {
+      countNucas: formatNumber(totalNucasNacional),
+      countTeens: formatNumber(DADOS_PROCESSADOS.totalMembrosNucaCriado),
+    });
   }
 }
 
 function aplicarFiltroPorUFAlert(uf) {
   const tableBody = document.getElementById("tbody-alert");
   const paginationContainer = document.getElementById(
-    "pagination-container-alert"
+    "pagination-container-alert",
   );
   const textoResumo = document.querySelector(".text-space-alert");
 
@@ -1521,9 +1580,14 @@ function aplicarFiltroPorUFAlert(uf) {
   // Atualiza texto resumo
   const totalNucas = dadosFiltrados.length;
   if (uf) {
-    textoResumo.innerHTML = t("state_pending", { uf, count: formatNumber(totalNucas) });
+    textoResumo.innerHTML = t("state_pending", {
+      uf,
+      count: formatNumber(totalNucas),
+    });
   } else {
-    textoResumo.innerHTML = t("country_almost_there", { count: formatNumber(totalNucas) });
+    textoResumo.innerHTML = t("country_almost_there", {
+      count: formatNumber(totalNucas),
+    });
   }
 }
 
@@ -1569,7 +1633,11 @@ async function loadAdolescentesTableData() {
     console.log(adolescentesData);
 
     // 4. Calcular totais para os gráficos (baseado em TODOS os dados, usando todosAdolescentesData)
-    const pertencimentoCounts = { Indigenas: 0, Quilombolas: 0, Ribeirinhos: 0 };
+    const pertencimentoCounts = {
+      Indigenas: 0,
+      Quilombolas: 0,
+      Ribeirinhos: 0,
+    };
     const racaCounts = {
       Amarela: 0,
       Branca: 0,
@@ -1598,7 +1666,7 @@ async function loadAdolescentesTableData() {
       racaCounts.Parda += parseInt(row.Parda || 0, 10);
       racaCounts.Preta += parseInt(row.Preta || 0, 10);
       racaCounts.Indigena += parseInt(row.IndigenaRaca || 0, 10);
-});
+    });
 
     // Renderiza os gráficos extras iniciais
     updatePertencimentoChart(pertencimentoCounts);
@@ -1614,9 +1682,12 @@ async function loadAdolescentesTableData() {
       const totalNucasNacional = adolescentesData.length;
       const totalAdolescentesNacional = adolescentesData.reduce(
         (acc, item) => acc + Number(item.Adolescentes || 0),
-        0
+        0,
       );
-      textoResumo.innerHTML = t("country_created", { countNucas: formatNumber(totalNucasNacional), countTeens: formatNumber(DADOS_PROCESSADOS.totalMembrosNucaCriado) });
+      textoResumo.innerHTML = t("country_created", {
+        countNucas: formatNumber(totalNucasNacional),
+        countTeens: formatNumber(DADOS_PROCESSADOS.totalMembrosNucaCriado),
+      });
     }
 
     if (tableBody && paginationContainer) {
@@ -1628,12 +1699,11 @@ async function loadAdolescentesTableData() {
   } catch (error) {
     console.error(
       "Erro ao carregar os dados da tabela de adolescentes:",
-      error
+      error,
     );
     const tableBody = document.querySelector(".table-container tbody");
     if (tableBody) {
-      tableBody.innerHTML =
-        `<tr><td colspan="7">${t("error_load_data")}</td></tr>`;
+      tableBody.innerHTML = `<tr><td colspan="7">${t("error_load_data")}</td></tr>`;
     }
   }
 }

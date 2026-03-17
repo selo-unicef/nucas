@@ -201,7 +201,7 @@ div.container-numbers p {
 }
 
 div.container-numbers>.container p:nth-child(1) {
-    font-size: 37px;
+    font-size: 33px;
 }
 
 div.container-numbers>.container p:nth-child(2) {
@@ -249,7 +249,7 @@ div.container.light {
 section.column-2 {
     /* ATUALIZADO: Altura automática para acomodar o Grid */
     height: auto;
-    min-height: 600px;
+    min-height: 510px;
     display: flex;
     flex-direction: row;
     gap: var(--gap-flex);
@@ -259,14 +259,14 @@ section.column-2 .container.text.bg-image {
     width: 36%;
     padding: 60px 60px;
     color: var(--font-text-color);
-    line-height: 25px;
-    font-size: 17.5px;
+    line-height: 26px;
+    font-size: 18.5px;
     font-weight: 350;
     /* Ajustei o caminho da imagem de fundo para ser relativo à raiz do CSS */
     background-image: url("../imagens/bg-blue.png");
     background-size: cover;
     /* preenche proporcionalmente */
-    background-position: center;
+    background-position: bottom;
     /* centraliza a imagem */
     background-repeat: no-repeat;
     /* evita repetição */
@@ -627,6 +627,17 @@ a:hover {
     -webkit-overflow-scrolling: touch;
     /* Melhora a experiência de rolagem em iOS */
     border-radius: 12px;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.table-container th,
+.table-container td {
+    padding: 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 14.5px;
 }
 
 /* Container dos botões de paginação */
@@ -887,6 +898,7 @@ section.column-5 .logos .logo-container:nth-child(2) img {
         display: flex;
         flex-direction: column;
         gap: var(--gap-flex);
+        width: 100%;
     }
 
     section.column-2 .container.graphics,
@@ -896,6 +908,7 @@ section.column-5 .logos .logo-container:nth-child(2) img {
 
     section.column-2 .container.graphics {
         height: auto;
+        width: 100%;
         /* Allow graphics to grow */
     }
 
@@ -1045,4 +1058,124 @@ section.column-5 .logos .logo-container:nth-child(2) img {
     color: var(--font-title-color);
     font-weight: 700;
     text-decoration: underline;
+}
+
+#table-alert {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+#table-alert th,
+#table-alert td {
+    padding: 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 14.5px;
+}
+
+/* === Ajustes gráficos verticais e filtro por território === */
+.territory-filters {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-top: 6px;
+}
+
+.territory-filters p {
+    font-size: 15px;
+    color: var(--font-color);
+    font-weight: 600;
+}
+
+.territory-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+.territory-btn {
+    border: none;
+    border-radius: 8px;
+    background-color: #BFC3C6;
+    color: #FFFFFF;
+    font-family: "Inter", sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 10px 16px;
+    min-width: 155px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.territory-btn.active {
+    background-color: #005980;
+    color: #FFFFFF;
+}
+
+.territory-btn:hover {
+    opacity: 0.92;
+}
+
+section.column-2 .container.graphics {
+    /* width: 64%; */
+    padding: 28px 34px;
+}
+
+.graphics-pizza {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    padding: 10px 0 0 0;
+    margin-top: 10px;
+    width: 100%;
+    align-items: start;
+}
+
+.graphics-pizza > div {
+    min-height: 320px;
+    align-items: stretch;
+}
+
+.graphics-pizza canvas {
+    width: 100% !important;
+    height: 300px !important;
+    max-height: 300px;
+}
+
+.chart-title-container {
+    justify-content: flex-start;
+    margin-bottom: 12px;
+    min-height: auto;
+}
+
+.chart-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #3E3E3E;
+    text-align: left;
+}
+
+@media (max-width: 840px) {
+    .territory-buttons {
+        width: 100%;
+        gap: 10px;
+    }
+
+    .territory-btn {
+        min-width: unset;
+        width: 100%;
+    }
+
+    .graphics-pizza {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .graphics-pizza canvas {
+        height: 260px !important;
+        max-height: 260px;
+    }
 }

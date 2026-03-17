@@ -56,12 +56,12 @@
         <div class="container-numbers">
             <div class="container total-members blue-light ">
                 <!-- Os valores serão preenchidos via JavaScript -->
-                <p class="members-number">...</p>
+                <p class="acoes-number">...</p>
                 <p>Ações realizadas</p>
             </div>
             <div class="container total-mun blue-light ">
                 <!-- Os valores serão preenchidos via JavaScript -->
-                <p class="mun-number">...</p>
+                <p class="mobilizacao-number">...</p>
                 <p>PESSOAS MOBILIZADAS NOS TERRITÓRIOS</p>
             </div>
             <div class="container total-nucas blue-light">
@@ -90,26 +90,25 @@
 
         </div>
         <div class="container graphics light">
-            <div class="filters">
-                <!-- <p>Filtre por território</p> -->
-                <!-- ATUALIZAÇÃO: Transformado de botões para dropdown -->
-                <div class="filter-ez">
-                    <select id="ez-select">
-                        <option value="todos">Todos os anos</option>
-                    </select>
+            <div class="filters territory-filters">
+                <p>Filtre por território</p>
+                <div class="territory-buttons" id="territory-filters">
+                    <button class="territory-btn active" data-territory="todos">Todos os territórios</button>
+                    <button class="territory-btn" data-territory="semiarido">Semiárido</button>
+                    <button class="territory-btn" data-territory="amazonia-legal">Amazônia Legal</button>
                 </div>
             </div>
 
             <div class="graphics-pizza">
                 <div class="nucas">
                     <div class="chart-title-container">
-                        <h3 class="chart-title">Top 5 temas das ações</h3>
+                        <h3 class="chart-title">Temas das ações</h3>
                     </div>
                     <canvas id="temasChart"></canvas>
                 </div>
                 <div class="genero">
                     <div class="chart-title-container">
-                        <h3 class="chart-title">Top 5 locais das ações</h3>
+                        <h3 class="chart-title">Local de realização</h3>
                     </div>
                     <canvas id="locaisChart"></canvas>
                 </div>

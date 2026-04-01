@@ -366,7 +366,7 @@ section.column-2 .container.graphics {
 /* ### COLUMN 3 (MAPA E BAR CHART) ### */
 
 section.column-3 {
-    height: 750px;
+    height: 770px;
     display: flex;
     flex-direction: row;
     gap: var(--gap-flex);
@@ -390,9 +390,9 @@ section.column-3 .chart-bar-container {
 /* Estilos do Mapa Container */
 .mapa-brasil-container {
     width: 100%;
-    max-width: 450px;
+    max-width: 500px;
     height: 500px;
-    margin-top: 20px;
+    /* margin-top: 20px; */
     flex-grow: 1;
     /* As propriedades 'display: flex' e alinhamento foram removidas para garantir a interatividade correta do Mapbox. */
 }
@@ -416,6 +416,7 @@ section.column-3 .title-img {
     gap: 20px;
     align-items: center;
     max-width: 100%;
+    margin-bottom: 20px;
     /* margin-bottom: 20px; */
 }
 
@@ -916,10 +917,9 @@ section.column-2 .container.graphics {
 
 .logo-entre-no-clima {
     position: relative;
-    bottom: 10px;
     left: -178px;
-    width: 174px;
-    height: 135px;
+        width: 161px;
+    height: 124px;
 }
 .logo-entre-no-clima img {
     width: 100%;
@@ -1127,6 +1127,9 @@ section.column-2 .container.graphics {
         display: flex;
         flex-direction: column;
         align-items: center;
+    }
+    section.column-3 .map-container {
+        gap: 20px;
     }
 
     .filter-container .title-img img,

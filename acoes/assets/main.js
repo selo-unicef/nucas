@@ -52,8 +52,6 @@ const MAPA_EZ_UFS = {
   ],
 };
 
-
-
 function formatNumber(value) {
   return Number(value || 0).toLocaleString("pt-BR");
 }
@@ -241,16 +239,31 @@ function createVerticalBarChart(canvasId, labels, values, barColor) {
 
   destroyChart(canvasId);
 
+  // --- Processamento de Dados: 7 itens + Outros ---
+  let finalLabels = [...labels];
+  let finalValues = [...values];
+
+  if (labels.length > 7) {
+    const limit = 7;
+    finalLabels = labels.slice(0, limit);
+    finalValues = values.slice(0, limit);
+
+    const othersValue = values
+      .slice(limit)
+      .reduce((acc, curr) => acc + (curr || 0), 0);
+
+    finalLabels.push("Outros");
+    finalValues.push(othersValue);
+  }
+
   const wrapLabel = (label, maxChars = 22, maxLines = 3) => {
     if (!label) return "";
-
     const words = String(label).split(" ");
     const lines = [];
     let currentLine = "";
 
     words.forEach((word) => {
       const testLine = currentLine ? `${currentLine} ${word}` : word;
-
       if (testLine.length > maxChars) {
         if (currentLine) lines.push(currentLine);
         currentLine = word;
@@ -260,24 +273,24 @@ function createVerticalBarChart(canvasId, labels, values, barColor) {
     });
 
     if (currentLine) lines.push(currentLine);
-
     return lines.slice(0, maxLines);
   };
 
   chartInstances[canvasId] = new Chart(ctx, {
     type: "bar",
     data: {
-      labels,
+      labels: finalLabels,
       datasets: [
         {
-          data: values,
+          data: finalValues,
           backgroundColor: barColor,
           borderRadius: 0,
           borderSkipped: false,
+          // Ajustado barThickness e barPercentage para aumentar o espaçamento
           barThickness: 30,
-          maxBarThickness: 36,
-          categoryPercentage: 0.9,
-          barPercentage: 0.9,
+          maxBarThickness: 28,
+          categoryPercentage: 0.8,
+          barPercentage: 0.1, // Reduzido de 0.9 para 0.6 para mais respiro
         },
       ],
     },
@@ -313,15 +326,15 @@ function createVerticalBarChart(canvasId, labels, values, barColor) {
       layout: {
         padding: {
           top: 8,
-          right: 40,
+          right: 20, // Aumentado levemente para não cortar labels longos
           bottom: 8,
-          left: 8,
+          left: 10,
         },
       },
       scales: {
         x: {
           beginAtZero: true,
-          grace: "10%",
+          grace: "15%", // Aumentado para dar mais espaço ao datalabel
           grid: {
             display: false,
             drawBorder: false,
@@ -410,11 +423,11 @@ function createHorizontalBarChart(canvasId, labels, values, labelName) {
 function renderTopCharts(data) {
   const temas = topNWithOthers(
     aggregateByKey(data, (item) => item.tema),
-    6,
+    7,
   );
   const locais = topNWithOthers(
     aggregateByKey(data, (item) => item.local_acao),
-    6,
+    7,
   );
 
   createVerticalBarChart(
@@ -487,12 +500,14 @@ function populateThemeFilter(containerSelector, selectId, onChange) {
 }
 
 function getFilteredAlertRows(data) {
-  const uf = document.getElementById("filter-uf-alert-select")?.value || "todos";
-  const tema = document.getElementById("filter-theme-alert-select")?.value || "todos";
+  const uf =
+    document.getElementById("filter-uf-alert-select")?.value || "todos";
+  const tema =
+    document.getElementById("filter-theme-alert-select")?.value || "todos";
 
   return [...data]
-    .filter((item) => (uf === "todos" || item.uf === uf))
-    .filter((item) => (tema === "todos" || item.tema === tema));
+    .filter((item) => uf === "todos" || item.uf === uf)
+    .filter((item) => tema === "todos" || item.tema === tema);
 }
 
 function updateSummaryTexts(data) {
@@ -506,14 +521,21 @@ function updateSummaryTexts(data) {
   }
 
   if (textAlert) {
-    const uf = document.getElementById("filter-uf-alert-select")?.value || "todos";
-    const tema = document.getElementById("filter-theme-alert-select")?.value || "todos";
+    const uf =
+      document.getElementById("filter-uf-alert-select")?.value || "todos";
+    const tema =
+      document.getElementById("filter-theme-alert-select")?.value || "todos";
     const alertRows = getFilteredAlertRows(data);
-    const totalAlertPublico = alertRows.reduce((sum, item) => sum + item.publico, 0);
+    const totalAlertPublico = alertRows.reduce(
+      (sum, item) => sum + item.publico,
+      0,
+    );
 
     const partes = [];
-    if (uf !== "todos") partes.push(`no estado <strong>${escapeHtml(uf)}</strong>`);
-    if (tema !== "todos") partes.push(`no tema <strong>${escapeHtml(tema)}</strong>`);
+    if (uf !== "todos")
+      partes.push(`no estado <strong>${escapeHtml(uf)}</strong>`);
+    if (tema !== "todos")
+      partes.push(`no tema <strong>${escapeHtml(tema)}</strong>`);
 
     const complemento = partes.length ? ` ${partes.join(" e ")}` : " no Brasil";
 
@@ -578,10 +600,15 @@ function renderActionTable(data, page = 1) {
   tbody.innerHTML =
     pageRows
       .map((row) => {
-        const link =
-          row.link_acao && row.link_acao.toLowerCase() !== "não"
-            ? `<a href="${escapeHtml(row.link_acao)}" target="_blank" rel="noopener noreferrer">Ver post</a>`
-            : "-";
+        const hasLink =
+          row.link_acao &&
+          String(row.link_acao).trim() !== "" &&
+          String(row.link_acao).toLowerCase() !== "não";
+
+        const link = hasLink
+          ? `<a href="${escapeHtml(row.link_acao)}" target="_blank" rel="noopener noreferrer">Ver post</a>`
+          : "";
+
         return `
       <tr>
         <td>${escapeHtml(row.uf || "-")}</td>
@@ -939,10 +966,14 @@ async function init() {
       updateSummaryTexts(filteredData);
       renderActionTable(filteredData, 1);
     });
-    populateThemeFilter(".filter-theme-alert", "filter-theme-alert-select", () => {
-      updateSummaryTexts(filteredData);
-      renderActionTable(filteredData, 1);
-    });
+    populateThemeFilter(
+      ".filter-theme-alert",
+      "filter-theme-alert-select",
+      () => {
+        updateSummaryTexts(filteredData);
+        renderActionTable(filteredData, 1);
+      },
+    );
 
     applyFilters();
   } catch (error) {

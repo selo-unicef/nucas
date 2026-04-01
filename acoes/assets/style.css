@@ -259,8 +259,8 @@ section.column-2 .container.text.bg-image {
     width: 36%;
     padding: 60px 60px;
     color: var(--font-text-color);
-    line-height: 26px;
-    font-size: 18.5px;
+        line-height: 24px;
+    font-size: 16.7px;
     font-weight: 350;
     /* Ajustei o caminho da imagem de fundo para ser relativo à raiz do CSS */
     background-image: url("../imagens/bg-blue.png");
@@ -787,8 +787,8 @@ section.column-5 .logos .logo-container:nth-child(2) img {
 }
 
 .graphics-pizza canvas {
-    height: 260px !important;
-    max-height: 260px;
+    height: 460px !important;
+    max-height: 460px;
 }
 
 .chart-bar-canvas {
@@ -882,8 +882,8 @@ section.column-2 .container.graphics {
 
 .graphics-pizza canvas {
     width: 100% !important;
-    height: 300px !important;
-    max-height: 300px;
+    height: 460px !important;
+    max-height: 460px;
 }
 
 .chart-title-container {
@@ -913,6 +913,19 @@ section.column-2 .container.graphics {
     gap: 10px;
 }
 
+
+.logo-entre-no-clima {
+    position: relative;
+    bottom: 10px;
+    left: -178px;
+    width: 174px;
+    height: 135px;
+}
+.logo-entre-no-clima img {
+    width: 100%;
+    height: auto;
+}
+
 @media (max-width: 840px) {
     .territory-buttons {
         width: 100%;
@@ -930,8 +943,8 @@ section.column-2 .container.graphics {
     }
 
     .graphics-pizza canvas {
-        height: 260px !important;
-        max-height: 260px;
+        height: 460px !important;
+        max-height: 460px;
     }
 
     .translate {
@@ -1208,6 +1221,14 @@ section.column-2 .container.graphics {
     width: 100%;
     table-layout: auto;
     border-collapse: collapse;
+}
+
+.logo-entre-no-clima {
+   position: relative;
+        bottom: 30px;
+        left: -83.5px;
+        width: 134px;
+        height: 135px;
 }
 
 }

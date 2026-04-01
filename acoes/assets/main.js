@@ -376,14 +376,39 @@ function createVerticalBarChart(canvasId, labels, values, barColor) {
 function createHorizontalBarChart(canvasId, labels, values, labelName) {
   const ctx = document.getElementById(canvasId);
   if (!ctx) return;
+
   destroyChart(canvasId);
+
+  function toTitleCasePT(text) {
+    if (!text) return "";
+
+    const lowerWords = [
+      "de", "da", "do", "das", "dos",
+      "e", "em", "para", "por", "com",
+      "no", "na", "nos", "nas"
+    ];
+
+    return String(text)
+      .toLowerCase()
+      .split(" ")
+      .map((word, index) => {
+        if (index === 0 || !lowerWords.includes(word)) {
+          return word.charAt(0).toUpperCase() + word.slice(1);
+        }
+        return word;
+      })
+      .join(" ");
+  }
+
+  const formattedLabels = labels.map((label) => toTitleCasePT(label));
+
   chartInstances[canvasId] = new Chart(ctx, {
     type: "bar",
     data: {
-      labels,
+      labels: formattedLabels,
       datasets: [
         {
-          label: labelName,
+          label: toTitleCasePT(labelName),
           data: values,
           backgroundColor: COLORS.primary,
           borderRadius: 3,
@@ -399,24 +424,50 @@ function createHorizontalBarChart(canvasId, labels, values, labelName) {
         legend: { display: false },
         tooltip: {
           callbacks: {
-            label: (ctx) => `${labelName}: ${formatNumber(ctx.parsed.x)}`,
+            title: (items) => items?.[0]?.label || "",
+            label: (ctx) => `${toTitleCasePT(labelName)}: ${formatNumber(ctx.parsed.x)}`,
           },
+        },
+        datalabels: {
+          anchor: "end",
+          align: "right",
+          offset: 6,
+          color: "#3E3E3E",
+          font: {
+            weight: "700",
+            size: 12,
+            family: "Inter",
+          },
+          formatter: (value) => formatNumber(value),
+        },
+      },
+      layout: {
+        padding: {
+          right: 40,
         },
       },
       scales: {
         x: {
           beginAtZero: true,
+          grace: "10%",
           ticks: {
             color: "#3E3E3E",
             callback: (value) => formatNumber(value),
           },
+          grid: {
+            display: false,
+          },
         },
         y: {
-          ticks: { color: "#3E3E3E", font: { family: "Inter", size: 12 } },
+          ticks: {
+            color: "#3E3E3E",
+            font: { family: "Inter", size: 13 },
+          },
           grid: { display: false },
         },
       },
     },
+    plugins: [ChartDataLabels],
   });
 }
 

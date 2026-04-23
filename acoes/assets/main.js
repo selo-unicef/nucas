@@ -1,7 +1,7 @@
 const API_ACOES_URL =
-  "https://api-selo-unicef-supabase-733cd76b2c05.herokuapp.com/acoes-nuca/";
+  "https://api-selo-unicef-cloudrun-839032982303.us-central1.run.app//acoes-nuca/";
 const API_NUCAS_URL =
-  "https://api-selo-unicef-supabase-733cd76b2c05.herokuapp.com/nucas/";
+  "https://api-selo-unicef-cloudrun-839032982303.us-central1.run.app//nucas/";
 const BRAZIL_STATES_GEOJSON_URL = "./data/brazil_states.geojson";
 const MAPBOX_ACCESS_TOKEN =
   "pk.eyJ1IjoibHVjYXN0aGF5bmFuLWVzdGFkYW8iLCJhIjoiY21tZmRrdXk1MDZpajJ0cHMyZW01aDg3MCJ9.1WXDZqllxNPv95_HuEEedA";

@@ -1,6 +1,6 @@
 // dados Nucas (API JSON):
 const API_NUCAS_URL =
-  "https://api-selo-unicef-supabase-733cd76b2c05.herokuapp.com/nucas/";
+  "https://api-selo-unicef-cloudrun-839032982303.us-central1.run.app//nucas/";
 
 // Variável global para armazenar os dados processados (resumos)
 const DADOS_PROCESSADOS = {
@@ -1274,7 +1274,7 @@ function createBarChart(nucaDataByUF) {
 // --- INÍCIO: FUNÇÕES PARA A TABELA DE ADOLESCENTES ---
 // API JSON Adolescentes:
 const API_ADOLESCENTES_URL =
-  "https://api-selo-unicef-supabase-733cd76b2c05.herokuapp.com/adolescentes/";
+  "https://api-selo-unicef-cloudrun-839032982303.us-central1.run.app//adolescentes/";
 
 function displayTablePage(data, tableBody, page) {
   tableBody.innerHTML = "";

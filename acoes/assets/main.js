@@ -17,6 +17,98 @@ let actionsMap = null;
 let ufMap = {};
 const chartInstances = {};
 
+let currentLanguage = localStorage.getItem("dashboardLanguage") || "pt";
+
+const I18N = {
+  pt: {
+    locale: "pt-BR",
+    pageTitle: "Dashboard - Selo Unicef",
+    pageHeading: "NUCAs em ação",
+    languagePt: "🇧🇷 Português",
+    languageEn: "🇺🇸 English",
+    cardActions: "Ações realizadas",
+    cardPeople: "PESSOAS MOBILIZADAS NOS TERRITÓRIOS",
+    cardTeens: "Adolescentes dos NUCAs participando",
+    cardNucas: "NUCAs criados",
+    intro1: "Os Núcleos de Cidadania de Adolescentes (NUCAs) fazem parte da metodologia do Selo UNICEF e são um indicador essencial da garantia do direito à participação de adolescentes e jovens, assegurando espaço seguro para o desenvolvimento das competências e da cidadania de meninas, menines e meninos em seus territórios.",
+    intro2: 'Este painel interativo reflete o movimento dos NUCAs na edição do Selo UNICEF 2025-2028. A pessoa mobilizadora de adolescentes deve colaborar com a alimentação desta ferramenta através da utilização dos formulários oficiais de registro de adolescentes e de atividades dos NUCAs. <a href="https://selounicef.org.br/formularios-dos-nucas-edicao-2025-2028-do-selo-unicef" target="_blank">Clique aqui</a> e saiba mais.',
+    territoryFilter: "Filtre por território",
+    territoryAll: "Todos os territórios",
+    territorySemiarid: "Semiárido",
+    territoryAmazon: "Amazônia Legal",
+    chartThemes: "Temas das ações",
+    chartPlaces: "Local de realização",
+    mapTitle: "Ações pelo Brasil",
+    mapSubtitle: "Veja a distribuição das ações desenvolvidas nos NUCAs por estado",
+    carouselTitle: "Registros das Ações",
+    carouselSubtitle: "Acompanhe como as atividades realizadas dos NUCAs foram desenvolvidas pelo Brasil",
+    detailsTitle: "Panorama das ações por município",
+    detailsText: "<strong>Filtre por estado</strong> e veja, por município, o total de ações realizadas, adolescentes engajados e pessoas mobilizadas.",
+    loadingNational: "Carregando dados nacionais...",
+    registeredTitle: "Detalhes das ações registradas",
+    registeredText: "Confira os registros individuais das ações lançadas pelos municípios, com tema, local, ano, alcance estimado e link de divulgação quando informado.",
+    loadingData: "Carregando dados...",
+    thState: "Estado", thCity: "Município", thTotalActions: "Ações totais realizadas", thTotalTeens: "Adolescentes totais engajados", thPeople: "Pessoas mobilizadas", thTheme: "Tema", thPlace: "Local", thYear: "Ano", thDisclosure: "Divulgação",
+    allYears: "Todos os anos", allStates: "Todos os estados", allThemes: "Todos os temas", noInfo: "Não informado", others: "Outros", noData: "Nenhum dado encontrado.", seePost: "Ver post", actionsLabel: "Ações",
+    summaryMain: "<strong>{actions}</strong> ações registradas e <strong>{people}</strong> pessoas mobilizadas pelo país",
+    summaryAlert: "Detalhes de <strong>{actions}</strong> ações{where}, com <strong>{people}</strong> pessoas mobilizadas",
+    inBrazil: " no Brasil", inState: "no estado <strong>{uf}</strong>", inTheme: "no tema <strong>{theme}</strong>", mapPopupActions: "Ações"
+  },
+  en: {
+    locale: "en-US",
+    pageTitle: "Dashboard - UNICEF Seal",
+    pageHeading: "NUCAs in action",
+    languagePt: "🇧🇷 Portuguese",
+    languageEn: "🇺🇸 English",
+    cardActions: "Actions carried out",
+    cardPeople: "PEOPLE MOBILIZED IN THE TERRITORIES",
+    cardTeens: "Adolescents participating in NUCAs",
+    cardNucas: "Created NUCAs",
+    intro1: "The Adolescent Citizenship Centers (NUCAs) are part of the UNICEF Seal methodology and are an essential indicator of adolescents’ and young people’s right to participate, ensuring a safe space for girls, boys, and non-binary adolescents to develop skills and citizenship in their territories.",
+    intro2: 'This interactive dashboard reflects the NUCA movement in the 2025-2028 UNICEF Seal edition. The adolescent mobilizer should help keep this tool updated by using the official forms to register adolescents and NUCA activities. <a href="https://selounicef.org.br/formularios-dos-nucas-edicao-2025-2028-do-selo-unicef" target="_blank">Click here</a> to learn more.',
+    territoryFilter: "Filter by territory",
+    territoryAll: "All territories",
+    territorySemiarid: "Semi-arid Region",
+    territoryAmazon: "Legal Amazon",
+    chartThemes: "Action themes",
+    chartPlaces: "Action location",
+    mapTitle: "Actions across Brazil",
+    mapSubtitle: "See the distribution of actions developed in NUCAs by state",
+    carouselTitle: "Action records",
+    carouselSubtitle: "Follow how NUCA activities were developed across Brazil",
+    detailsTitle: "Overview of actions by municipality",
+    detailsText: "<strong>Filter by state</strong> and see, by municipality, the total number of actions carried out, adolescents engaged, and people mobilized.",
+    loadingNational: "Loading national data...",
+    registeredTitle: "Details of registered actions",
+    registeredText: "Check the individual records of actions submitted by municipalities, including theme, location, year, estimated reach, and dissemination link when provided.",
+    loadingData: "Loading data...",
+    thState: "State", thCity: "Municipality", thTotalActions: "Total actions carried out", thTotalTeens: "Total adolescents engaged", thPeople: "People mobilized", thTheme: "Theme", thPlace: "Location", thYear: "Year", thDisclosure: "Dissemination",
+    allYears: "All years", allStates: "All states", allThemes: "All themes", noInfo: "Not informed", others: "Others", noData: "No data found.", seePost: "View post", actionsLabel: "Actions",
+    summaryMain: "<strong>{actions}</strong> registered actions and <strong>{people}</strong> people mobilized nationwide",
+    summaryAlert: "Details of <strong>{actions}</strong> actions{where}, with <strong>{people}</strong> people mobilized",
+    inBrazil: " in Brazil", inState: "in the state of <strong>{uf}</strong>", inTheme: "in the theme <strong>{theme}</strong>", mapPopupActions: "Actions"
+  }
+};
+
+function t(key, vars = {}) {
+  let value = I18N[currentLanguage]?.[key] ?? I18N.pt[key] ?? key;
+  Object.entries(vars).forEach(([varKey, varValue]) => {
+    value = value.replaceAll(`{${varKey}}`, varValue);
+  });
+  return value;
+}
+
+function getLocale() {
+  return I18N[currentLanguage]?.locale || "pt-BR";
+}
+
+function translateLabel(label = "") {
+  if (label === "Não informado" || label === "Not informed") return t("noInfo");
+  if (label === "Outros" || label === "Others") return t("others");
+  return label;
+}
+
+
 const COLORS = {
   primary: "#E1A38E",
   secondary: "#E1A38E",
@@ -53,7 +145,7 @@ const MAPA_EZ_UFS = {
 };
 
 function formatNumber(value) {
-  return Number(value || 0).toLocaleString("pt-BR");
+  return Number(value || 0).toLocaleString(getLocale());
 }
 
 function safeInt(value) {
@@ -114,7 +206,7 @@ function normalizeAction(row) {
 
 function aggregateByKey(data, keyFn, valueFn = () => 1) {
   return data.reduce((acc, item) => {
-    const key = keyFn(item) || "Não informado";
+    const key = keyFn(item) || t("noInfo");
     acc[key] = (acc[key] || 0) + valueFn(item);
     return acc;
   }, {});
@@ -134,7 +226,7 @@ function topNWithOthers(obj, limit = 5) {
     .slice(limit)
     .reduce((sum, [, value]) => sum + value, 0);
 
-  if (othersTotal > 0) top.push(["Outros", othersTotal]);
+  if (othersTotal > 0) top.push([t("others"), othersTotal]);
 
   return top;
 }
@@ -252,7 +344,7 @@ function createVerticalBarChart(canvasId, labels, values, barColor) {
       .slice(limit)
       .reduce((acc, curr) => acc + (curr || 0), 0);
 
-    finalLabels.push("Outros");
+    finalLabels.push(t("others"));
     finalValues.push(othersValue);
   }
 
@@ -307,7 +399,7 @@ function createVerticalBarChart(canvasId, labels, values, barColor) {
           displayColors: false,
           callbacks: {
             title: (items) => items?.[0]?.label || "",
-            label: (ctx) => `Ações: ${formatNumber(ctx.parsed.x)}`,
+            label: (ctx) => `${t("actionsLabel")}: ${formatNumber(ctx.parsed.x)}`,
           },
         },
         datalabels: {
@@ -473,11 +565,11 @@ function createHorizontalBarChart(canvasId, labels, values, labelName) {
 
 function renderTopCharts(data) {
   const temas = topNWithOthers(
-    aggregateByKey(data, (item) => item.tema),
+    aggregateByKey(data, (item) => translateLabel(item.tema)),
     7,
   );
   const locais = topNWithOthers(
-    aggregateByKey(data, (item) => item.local_acao),
+    aggregateByKey(data, (item) => translateLabel(item.local_acao)),
     7,
   );
 
@@ -507,7 +599,7 @@ function populateYearFilter(data) {
   if (!select) return;
   const years = getYearOptions(data);
   select.innerHTML =
-    '<option value="todos">Todos os anos</option>' +
+    `<option value="todos">${t("allYears")}</option>` +
     years.map((year) => `<option value="${year}">${year}</option>`).join("");
   select.addEventListener("change", applyFilters);
 }
@@ -522,7 +614,7 @@ function populateUfFilter(containerSelector, selectId, onChange) {
   ].sort();
   container.innerHTML = `
     <select id="${selectId}">
-      <option value="todos">Todos os estados</option>
+      <option value="todos">${t("allStates")}</option>
       ${ufs.map((uf) => `<option value="${uf}">${uf}</option>`).join("")}
     </select>
   `;
@@ -537,13 +629,13 @@ function populateThemeFilter(containerSelector, selectId, onChange) {
     ...new Set(
       rawData
         .map((item) => item.tema)
-        .filter((tema) => tema && tema.trim() && tema !== "Não informado"),
+        .filter((tema) => tema && tema.trim() && tema !== "Não informado" && tema !== "Not informed"),
     ),
   ].sort((a, b) => a.localeCompare(b, "pt-BR"));
 
   container.innerHTML = `
     <select id="${selectId}">
-      <option value="todos">Todos os temas</option>
+      <option value="todos">${t("allThemes")}</option>
       ${temas.map((tema) => `<option value="${escapeHtml(tema)}">${escapeHtml(tema)}</option>`).join("")}
     </select>
   `;
@@ -568,7 +660,7 @@ function updateSummaryTexts(data) {
   const textMain = document.querySelector(".text-space");
   const textAlert = document.querySelector(".text-space-alert");
   if (textMain) {
-    textMain.innerHTML = `<strong>${formatNumber(totalAcoes)}</strong> ações registradas e <strong>${formatNumber(totalPublico)}</strong> pessoas mobilizadas pelo país`;
+    textMain.innerHTML = t("summaryMain", { actions: formatNumber(totalAcoes), people: formatNumber(totalPublico) });
   }
 
   if (textAlert) {
@@ -584,13 +676,13 @@ function updateSummaryTexts(data) {
 
     const partes = [];
     if (uf !== "todos")
-      partes.push(`no estado <strong>${escapeHtml(uf)}</strong>`);
+      partes.push(t("inState", { uf: escapeHtml(uf) }));
     if (tema !== "todos")
-      partes.push(`no tema <strong>${escapeHtml(tema)}</strong>`);
+      partes.push(t("inTheme", { theme: escapeHtml(tema) }));
 
-    const complemento = partes.length ? ` ${partes.join(" e ")}` : " no Brasil";
+    const complemento = partes.length ? ` ${partes.join(currentLanguage === "en" ? " and " : " e ")}` : t("inBrazil");
 
-    textAlert.innerHTML = `Detalhes de <strong>${formatNumber(alertRows.length)} ações</strong>${complemento}, com <strong>${formatNumber(totalAlertPublico)}</strong> pessoas mobilizadas`;
+    textAlert.innerHTML = t("summaryAlert", { actions: formatNumber(alertRows.length), where: complemento, people: formatNumber(totalAlertPublico) });
   }
 }
 
@@ -623,7 +715,7 @@ function renderMunicipioTable(data, page = 1) {
     </tr>
   `,
       )
-      .join("") || `<tr><td colspan="5">Nenhum dado encontrado.</td></tr>`;
+      .join("") || `<tr><td colspan="5">${t("noData")}</td></tr>`;
 
   renderPagination(pagination, totalPages, currentPage, (newPage) =>
     renderMunicipioTable(data, newPage),
@@ -657,7 +749,7 @@ function renderActionTable(data, page = 1) {
           String(row.link_acao).toLowerCase() !== "não";
 
         const link = hasLink
-          ? `<a href="${escapeHtml(row.link_acao)}" target="_blank" rel="noopener noreferrer">Ver post</a>`
+          ? `<a href="${escapeHtml(row.link_acao)}" target="_blank" rel="noopener noreferrer">${t("seePost")}</a>`
           : "";
 
         return `
@@ -672,7 +764,7 @@ function renderActionTable(data, page = 1) {
       </tr>
     `;
       })
-      .join("") || `<tr><td colspan="7">Nenhum dado encontrado.</td></tr>`;
+      .join("") || `<tr><td colspan="7">${t("noData")}</td></tr>`;
 
   renderPagination(pagination, totalPages, currentAlertPage, (newPage) =>
     renderActionTable(data, newPage),
@@ -886,7 +978,7 @@ async function carregarMapbox(stateRows) {
         const description = `
   <div style="font-family: 'Lato', sans-serif; padding: 5px;">
     <strong style="font-size: 16px;">${stateName}</strong>
-    <p style="margin: 5px 0 0 0;">Ações: <strong>${formatNumber(nucasValue)}</strong></p>
+    <p style="margin: 5px 0 0 0;">${t("mapPopupActions")}: <strong>${formatNumber(nucasValue)}</strong></p>
   </div>`;
 
         popup.setLngLat(e.lngLat).setHTML(description).addTo(map);
@@ -960,15 +1052,97 @@ function applyFilters() {
   renderActionTable(filteredData, 1);
 }
 
-function setupLanguageButtons() {
-  const pt = document.querySelector(".lang-pt");
-  const en = document.querySelector(".lang-en");
-  const toggleActive = (target) => {
-    pt?.classList.toggle("active", target === "pt");
-    en?.classList.toggle("active", target === "en");
+function setElementContent(selector, key) {
+  const element = document.querySelector(selector);
+  if (!element) return;
+  const content = t(key);
+  if (content.includes("<")) element.innerHTML = content;
+  else element.textContent = content;
+}
+
+function applyStaticTranslations() {
+  document.documentElement.lang = currentLanguage === "en" ? "en" : "pt-BR";
+  document.title = t("pageTitle");
+
+  const selectors = {
+    ".info-titulo h1": "pageHeading",
+    ".lang-pt": "languagePt",
+    ".lang-en": "languageEn",
+    ".total-members p:nth-child(2)": "cardActions",
+    ".total-mun p:nth-child(2)": "cardPeople",
+    ".container-numbers .total-nucas:nth-of-type(3) p:nth-child(2)": "cardTeens",
+    ".container-numbers .total-nucas:nth-of-type(4) p:nth-child(2)": "cardNucas",
+    ".column-2 .container.text.bg-image p:nth-child(1)": "intro1",
+    ".column-2 .container.text.bg-image p:nth-child(2)": "intro2",
+    ".territory-filters > p": "territoryFilter",
+    ".territory-btn[data-territory='todos']": "territoryAll",
+    ".territory-btn[data-territory='semiarido']": "territorySemiarid",
+    ".territory-btn[data-territory='amazonia-legal']": "territoryAmazon",
+    ".nucas .chart-title": "chartThemes",
+    ".genero .chart-title": "chartPlaces",
+    ".column-3:not(.carrossel-section) .text-nucas-uf h3": "mapTitle",
+    ".column-3:not(.carrossel-section) .text-nucas-uf p": "mapSubtitle",
+    ".carrossel-section .carousel-header h3": "carouselTitle",
+    ".carrossel-section .carousel-header p": "carouselSubtitle",
+    ".column-4:not(#alert-section) .title-img h3": "detailsTitle",
+    ".column-4:not(#alert-section) .filter-container .text p:first-child": "detailsText",
+    "#alert-section .title-img h3": "registeredTitle",
+    "#alert-section .filter-container .text p:first-child": "registeredText",
+    ".column-4:not(#alert-section) th:nth-child(1)": "thState",
+    ".column-4:not(#alert-section) th:nth-child(2)": "thCity",
+    ".column-4:not(#alert-section) th:nth-child(3)": "thTotalActions",
+    ".column-4:not(#alert-section) th:nth-child(4)": "thTotalTeens",
+    ".column-4:not(#alert-section) th:nth-child(5)": "thPeople",
+    "#table-alert th:nth-child(1)": "thState",
+    "#table-alert th:nth-child(2)": "thCity",
+    "#table-alert th:nth-child(3)": "thTheme",
+    "#table-alert th:nth-child(4)": "thPlace",
+    "#table-alert th:nth-child(5)": "thYear",
+    "#table-alert th:nth-child(6)": "thPeople",
+    "#table-alert th:nth-child(7)": "thDisclosure",
   };
-  pt?.addEventListener("click", () => toggleActive("pt"));
-  en?.addEventListener("click", () => toggleActive("en"));
+
+  Object.entries(selectors).forEach(([selector, key]) => setElementContent(selector, key));
+
+  const textSpace = document.querySelector(".text-space");
+  if (textSpace && !filteredData.length) textSpace.textContent = t("loadingNational");
+
+  const textSpaceAlert = document.querySelector(".text-space-alert");
+  if (textSpaceAlert && !filteredData.length) textSpaceAlert.textContent = t("loadingData");
+
+  updateLanguageButtons();
+}
+
+function updateLanguageButtons() {
+  document.querySelector(".lang-pt")?.classList.toggle("active", currentLanguage === "pt");
+  document.querySelector(".lang-en")?.classList.toggle("active", currentLanguage === "en");
+}
+
+function refreshAfterLanguageChange() {
+  applyStaticTranslations();
+  populateYearFilter(rawData);
+  populateUfFilter(".filter-uf", "filter-uf-main", () => renderMunicipioTable(filteredData, 1));
+  populateUfFilter(".filter-uf-alert", "filter-uf-alert-select", () => {
+    updateSummaryTexts(filteredData);
+    renderActionTable(filteredData, 1);
+  });
+  populateThemeFilter(".filter-theme-alert", "filter-theme-alert-select", () => {
+    updateSummaryTexts(filteredData);
+    renderActionTable(filteredData, 1);
+  });
+  if (rawData.length) applyFilters();
+}
+
+function setLanguage(language) {
+  currentLanguage = language;
+  localStorage.setItem("dashboardLanguage", language);
+  refreshAfterLanguageChange();
+}
+
+function setupLanguageButtons() {
+  document.querySelector(".lang-pt")?.addEventListener("click", () => setLanguage("pt"));
+  document.querySelector(".lang-en")?.addEventListener("click", () => setLanguage("en"));
+  applyStaticTranslations();
 }
 
 async function init() {
@@ -1033,3 +1207,120 @@ async function init() {
 }
 
 document.addEventListener("DOMContentLoaded", init);
+
+
+
+// carrossel
+
+
+const track = document.getElementById("carousel-track");
+const modal = document.getElementById("media-modal");
+const modalContent = document.getElementById("modal-content");
+const closeModal = document.getElementById("modal-close");
+
+function getYoutubeId(url) {
+  if (!url) return "";
+
+  const patterns = [
+    /youtube\.com\/watch\?v=([^&]+)/,
+    /youtu\.be\/([^?&]+)/,
+    /youtube\.com\/embed\/([^?&]+)/,
+    /youtube\.com\/shorts\/([^?&]+)/
+  ];
+
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match) return match[1];
+  }
+
+  return "";
+}
+
+function createCarouselItem(item) {
+  const div = document.createElement("div");
+  div.className = "carousel-item";
+
+  const isVideo = item.url_video && item.url_video.trim() !== "";
+  const isPhoto = item.url_foto && item.url_foto.trim() !== "";
+
+  if (isVideo) {
+    const videoId = getYoutubeId(item.url_video);
+
+    div.innerHTML = `
+      <div class="video-thumb">
+        <img src="https://img.youtube.com/vi/${videoId}/hqdefault.jpg" alt="${item.descricao}">
+        <div class="play-icon">▶</div>
+      </div>
+      <div class="carousel-caption">${item.descricao}</div>
+    `;
+
+    div.addEventListener("click", () => {
+      modalContent.innerHTML = `
+        <iframe
+          src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0"
+          title="${item.descricao}"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      `;
+      modal.classList.add("active");
+    });
+  } else if (isPhoto) {
+    div.innerHTML = `
+      <img src="${item.url_foto}" alt="${item.descricao}">
+      <div class="carousel-caption">${item.descricao}</div>
+    `;
+
+    div.addEventListener("click", () => {
+      modalContent.innerHTML = `
+        <img src="${item.url_foto}" alt="${item.descricao}">
+      `;
+      modal.classList.add("active");
+    });
+  }
+
+  return div;
+}
+
+fetch("./data/carrossel.json")
+  .then(response => response.json())
+  .then(data => {
+    data.forEach(item => {
+      if (item.url_foto || item.url_video) {
+        track.appendChild(createCarouselItem(item));
+      }
+    });
+  });
+
+function scrollCarousel(direction) {
+  const item = track.querySelector(".carousel-item");
+  if (!item) return;
+
+  const gap = 16;
+  const itemWidth = item.offsetWidth + gap;
+
+  track.scrollBy({
+    left: direction * itemWidth,
+    behavior: "smooth"
+  });
+}
+
+document.querySelector(".carousel-btn.next").addEventListener("click", () => {
+  scrollCarousel(1);
+});
+
+document.querySelector(".carousel-btn.prev").addEventListener("click", () => {
+  scrollCarousel(-1);
+});
+
+closeModal.addEventListener("click", () => {
+  modal.classList.remove("active");
+  modalContent.innerHTML = "";
+});
+
+modal.addEventListener("click", event => {
+  if (event.target === modal) {
+    modal.classList.remove("active");
+    modalContent.innerHTML = "";
+  }
+});

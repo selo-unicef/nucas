@@ -71,8 +71,8 @@ const I18N = {
     headerHtml:
       '<a href="https://docs.google.com/spreadsheets/d/1hGOlbHZnNqLMpWoksYPZCawfadpJi-aN/edit?gid=1628412039#gid=1628412039" target="_blank">Clique aqui</a> e confira o status e pontuação do seu município em 28/11/2025',
     pageHeading: "Panorama dos NUCAs",
-    languagePt: "Português",
-    languageEn: "English",
+    languagePt: "🇧🇷 Português",
+    languageEn: "🇺🇸 Inglês",
     cardMembers: "Adolescentes inscritos/as",
     cardMunicipalities: "Municípios com adolescentes inscritos/as",
     cardNucas: "NUCAs criados",
@@ -149,8 +149,8 @@ const I18N = {
     headerHtml:
       '<a href="https://docs.google.com/spreadsheets/d/1hGOlbHZnNqLMpWoksYPZCawfadpJi-aN/edit?gid=1628412039#gid=1628412039" target="_blank">Click here</a> to check your municipality\'s status and score on 11/28/2025',
     pageHeading: "NUCA Overview",
-    languagePt: "Portuguese",
-    languageEn: "English",
+    languagePt: "🇧🇷 Português",
+    languageEn: "🇺🇸 Inglês",
     cardMembers: "Registered adolescents",
     cardMunicipalities: "Municipalities with registered adolescents",
     cardNucas: "Created NUCAs",
@@ -1727,3 +1727,5 @@ document.addEventListener("DOMContentLoaded", async () => {
   setupEZFilters();
   refreshDynamicTranslations();
 });
+
+

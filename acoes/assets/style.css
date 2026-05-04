@@ -1163,7 +1163,7 @@ section.column-3.carrossel-section {
 .table-container table td:nth-child(2),
 #table-alert th:nth-child(2),
 #table-alert td:nth-child(2) {
-    width: 24%;
+    width: 20%;
 }
 
 .table-container table th:nth-child(3),
@@ -1181,14 +1181,14 @@ section.column-3.carrossel-section {
 .table-container table td:nth-child(5),
 #table-alert th:nth-child(5),
 #table-alert td:nth-child(5) {
-    width: 10%;
+    width: 14%;
 }
 
 .table-container table th:nth-child(6),
 .table-container table td:nth-child(6),
 #table-alert th:nth-child(6),
 #table-alert td:nth-child(6) {
-    width: 12%;
+    width: 14%;
 }
 
 #table-alert th:nth-child(7),

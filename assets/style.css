@@ -502,13 +502,13 @@ th {
 .status-red {
     color: #D32F2F;
     font-weight: bold;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .status-yellow {
     color: #F57F17;
     font-weight: bold;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 tr.row-red {
@@ -807,15 +807,15 @@ section.column-5 .logos .logo-container:nth-child(2) img {
 .table-container table td:nth-child(5),
 .table-container table th:nth-child(6),
 .table-container table td:nth-child(6) {
-    width: 12%;
+    width: 16%;
 }
 
 .table-container table th:nth-child(7),
 .table-container table td:nth-child(7),
 #table-alert th:nth-child(7),
 #table-alert td:nth-child(7) {
-    width: 16%;
-    font-size: 12.5px;
+    width: 18%;
+    
 }
 
 .pagination-container {

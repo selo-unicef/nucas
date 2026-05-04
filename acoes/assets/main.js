@@ -1031,19 +1031,22 @@ function setupTerritoryButtons() {
 function applyFilters() {
   const ufValue = document.getElementById("ez-select")?.value || "todos";
 
-  filteredData = rawData.filter((item) => {
+  const chartFilteredData = rawData.filter((item) => {
     return ufValue === "todos" || item.uf === ufValue;
   });
 
-  updateCounters(filteredData);
-  renderTopCharts(filteredData);
-  updateSummaryTexts(filteredData);
+  filteredData = rawData;
 
-  const stateRows = buildStateRows(filteredData);
+  updateCounters(chartFilteredData);
+  renderTopCharts(chartFilteredData);
+  updateSummaryTexts(chartFilteredData);
+
+  const stateRows = buildStateRows(rawData);
   carregarMapbox(stateRows);
   renderStateBarChart(stateRows);
-  renderMunicipioTable(filteredData, 1);
-  renderActionTable(filteredData, 1);
+
+  renderMunicipioTable(rawData, 1);
+  renderActionTable(rawData, 1);
 }
 
 function setElementContent(selector, key) {

@@ -7,32 +7,30 @@
     <link rel="stylesheet" href="./assets/style.css?v=2.0">
     <link rel="icon" href="./imagens/selo-unicef.png" type="image/png">
     <title>Dashboard - Selo Unicef</title>
-    <!-- Adição do Chart.js para os gráficos -->
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
     <script
         src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 
-    <!-- INÍCIO: Adições Mapbox -->
+    
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.js"></script>
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.css" rel="stylesheet" />
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <!-- FIM: Adições Mapbox -->
+    
 
-    <!-- OTIMIZAÇÃO: PapaParse para leitura rápida de CSV -->
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
 </head>
 
 <body>
 
-    <!-- <header> -->
-    <!-- <div class="btns-container"> -->
-    <!-- <div class="btn active">Sobre os NUCAs</div> -->
-    <!-- <div class="btn">NUCAs em Ação</div>
-            <div class="btn">Outras Ações</div> -->
-    <!-- <h4><a href="https://docs.google.com/spreadsheets/d/1hGOlbHZnNqLMpWoksYPZCawfadpJi-aN/edit?gid=1628412039#gid=1628412039" target="_blank">Clique aqui</a> e confira o status e pontuação do seu município em 28/11/2025</h4>
-        </div> -->
-    <!-- </header> -->
+    
+    
+    
+    
+    
+    
 
 
     <div class="info-titulo">
@@ -55,22 +53,22 @@
         </div>
         <div class="container-numbers">
             <div class="container total-members blue-light ">
-                <!-- Os valores serão preenchidos via JavaScript -->
+                
                 <p class="acoes-number">...</p>
                 <p>Ações realizadas</p>
             </div>
             <div class="container total-mun blue-light ">
-                <!-- Os valores serão preenchidos via JavaScript -->
+                
                 <p class="mobilizacao-number">...</p>
                 <p>PESSOAS MOBILIZADAS NOS TERRITÓRIOS</p>
             </div>
             <div class="container total-nucas blue-light">
-                <!-- Os valores serão preenchidos via JavaScript -->
+                
                 <p class="adolescentes-number">...</p>
                 <p>Adolescentes dos NUCAs participando</p>
             </div>
             <div class="container total-nucas blue-light">
-                <!-- Os valores serão preenchidos via JavaScript -->
+                
                 <p class="nucas-number">...</p>
                 <p>NUCAs criados</p>
             </div>
@@ -94,15 +92,14 @@
                     target="_blank">Clique aqui</a> e saiba mais.</p>
 
 
-
         </div>
         <div class="container graphics light">
             <div class="filters territory-filters">
-                <p>Filtre por território</p>
-                <div class="territory-buttons" id="territory-filters">
-                    <button class="territory-btn active" data-territory="todos">Todos os territórios</button>
-                    <button class="territory-btn" data-territory="semiarido">Semiárido</button>
-                    <button class="territory-btn" data-territory="amazonia-legal">Amazônia Legal</button>
+                <p>Filtre por estado</p>
+                <div class="filter-ez">
+                    <select id="ez-select">
+                        <option value="todos">Todos os estados</option>
+                    </select>
                 </div>
             </div>
 
@@ -124,7 +121,7 @@
 
     </section>
 
-    <!-- NOVA SEÇÃO: Mapa e Gráfico de Barras -->
+    
     <section class="column-3">
         <div class="map-container">
             <div class="title-img">
@@ -135,7 +132,7 @@
                 </div>
             </div>
 
-            <!-- CONTAINER DO MAPBOX (substitui o SVG estático) -->
+            
             <div id="mapbox-map" class="mapa-brasil-container"></div>
 
             <div class="logo-entre-no-clima">
@@ -144,12 +141,11 @@
         </div>
 
         <div class="chart-bar-container">
-            <!-- <h3 class="chart-title">NUCAs criados por estado</h3> -->
+            
             <div class="chart-bar-canvas">
                 <canvas id="nucasBarChart"></canvas>
             </div>
         </div>
-
 
 
     </section>
@@ -176,7 +172,7 @@
         <div class="modal-content" id="modal-content"></div>
     </div>
 
-    <!-- SEÇÃO ORIGINAL: Tabela de NUCAs Criados -->
+    
     <section class="column-4">
         <div class="filter-container">
             <div class="title-img">
@@ -196,7 +192,7 @@
         </div>
 
         <div class="table-adolescentes">
-            <!-- Container adicionado para permitir rolagem horizontal em telas pequenas -->
+            
             <div class="table-container">
                 <table>
                     <thead>
@@ -209,29 +205,29 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Conteúdo será inserido dinamicamente via JavaScript -->
+                        
                     </tbody>
                 </table>
             </div>
-            <!-- Container para os botões de paginação -->
+            
             <div id="pagination-container" class="pagination-container"></div>
         </div>
     </section>
 
-    <!-- NOVA SEÇÃO: Tabela de NUCAs "Quase Lá" -->
+    
     <section class="column-4" id="alert-section">
         <div class="filter-container">
             <div class="title-img">
-                <!-- Você pode querer trocar o ícone se tiver outro, mantive o mesmo -->
+                
                 <img src="./imagens/imagem2.png" alt="Logo Selo UNICEF">
                 <div class="itens">
                     <h3>Detalhes das ações registradas</h3>
                     <div class="filters-alert-row">
                         <div class="filter-uf-alert">
-                            <!-- Filtro por estado -->
+                            
                         </div>
                         <div class="filter-theme-alert">
-                            <!-- Filtro por tema -->
+                            
                         </div>
                     </div>
                 </div>
@@ -259,36 +255,18 @@
                         </tr>
                     </thead>
                     <tbody id="tbody-alert">
-                        <!-- Conteúdo será inserido dinamicamente via JavaScript -->
+                        
                     </tbody>
                 </table>
             </div>
-            <!-- Container para os botões de paginação desta tabela específica -->
+            
             <div id="pagination-container-alert" class="pagination-container"></div>
         </div>
     </section>
 
-    <!-- <section class="column-5">
+    
 
-        <div class="logos">
-            <div class="logo-container">
-                <p>Parcerias</p>
-                <img src="./imagens/logos-1.png" alt="" srcset="">
-            </div>
-            <div class="logo-container">
-                <p>Parcerias estratégicas</p>
-                <img src="./imagens/logos-2.png" alt="" srcset="">
-            </div>
-            <div class="logo-container">
-                <p>Parcerias técnicas</p>
-                <img src="./imagens/logos-3.png" alt="" srcset="">
-            </div>
-
-        </div>
-
-    </section> -->
-
-    <!-- Mantivemos apenas a chamada do script principal -->
+    
     <script src="./assets/main.js?v=2.0"></script>
 
 </body>

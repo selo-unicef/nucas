@@ -32,7 +32,7 @@ const I18N = {
     cardNucas: "NUCAs criados",
     intro1: "Os Núcleos de Cidadania de Adolescentes (NUCAs) fazem parte da metodologia do Selo UNICEF e são um indicador essencial da garantia do direito à participação de adolescentes e jovens, assegurando espaço seguro para o desenvolvimento das competências e da cidadania de meninas, menines e meninos em seus territórios.",
     intro2: 'Este painel interativo reflete o movimento dos NUCAs na edição do Selo UNICEF 2025-2028. A pessoa mobilizadora de adolescentes deve colaborar com a alimentação desta ferramenta através da utilização dos formulários oficiais de registro de adolescentes e de atividades dos NUCAs. <a href="https://selounicef.org.br/formularios-dos-nucas-edicao-2025-2028-do-selo-unicef" target="_blank">Clique aqui</a> e saiba mais.',
-    territoryFilter: "Filtre por território",
+    territoryFilter: "Filtre por estado",
     territoryAll: "Todos os territórios",
     territorySemiarid: "Semiárido",
     territoryAmazon: "Amazônia Legal",
@@ -66,7 +66,7 @@ const I18N = {
     cardNucas: "Created NUCAs",
     intro1: "The Adolescent Citizenship Centers (NUCAs) are part of the UNICEF Seal methodology and are an essential indicator of adolescents’ and young people’s right to participate, ensuring a safe space for girls, boys, and non-binary adolescents to develop skills and citizenship in their territories.",
     intro2: 'This interactive dashboard reflects the NUCA movement in the 2025-2028 UNICEF Seal edition. The adolescent mobilizer should help keep this tool updated by using the official forms to register adolescents and NUCA activities. <a href="https://selounicef.org.br/formularios-dos-nucas-edicao-2025-2028-do-selo-unicef" target="_blank">Click here</a> to learn more.',
-    territoryFilter: "Filter by territory",
+    territoryFilter: "Filter by state",
     territoryAll: "All territories",
     territorySemiarid: "Semi-arid Region",
     territoryAmazon: "Legal Amazon",
@@ -118,7 +118,6 @@ const COLORS = {
   gray: "#958C80",
 };
 
-// Mapeamento para Amazônia Legal e Semiárido
 const MAPA_EZ_UFS = {
   "amazonia-legal": [
     "AMAZONAS",
@@ -151,22 +150,16 @@ function formatNumber(value) {
 function safeInt(value) {
   if (value === null || value === undefined || value === "") return 0;
 
-  // Se já for número, retorna o inteiro
   if (typeof value === "number") return Math.floor(value);
 
-  // Tratamento de String
   let str = String(value).trim();
 
-  // Se contiver vírgula e ponto (ex: 1.250,50), remove o ponto e troca vírgula por nada (para contagens inteiras)
   if (str.includes(",") && str.includes(".")) {
     str = str.replace(/\./g, "").replace(/,/g, "");
   }
-  // Se contiver apenas vírgula (ex: 1250,50), remove a parte decimal
   else if (str.includes(",")) {
     str = str.split(",")[0];
   }
-  // Se contiver apenas ponto e parecer separador de milhar (ex: 1.250)
-  // Estratégia: se o ponto estiver seguido de 3 dígitos, removemos (milhar)
   else if (/\.\d{3}$/.test(str)) {
     str = str.replace(/\./g, "");
   }
@@ -177,11 +170,32 @@ function safeInt(value) {
 
 function escapeHtml(value) {
   return String(value ?? "")
-    // .replace(/&/g, "&amp;")
-    // .replace(/</g, "&lt;")
-    // .replace(/>/g, "&gt;")
-    // .replace(/"/g, "&quot;")
-    // .replace(/'/g, "&#39;");
+}
+
+
+function normalizeSearchText(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+}
+
+function municipioMatchesSearch(row, searchValue) {
+  const term = normalizeSearchText(searchValue);
+  if (!term) return true;
+  return normalizeSearchText(row.municipio).includes(term);
+}
+
+function createMunicipioSearchInput(id, onInput) {
+  const input = document.createElement("input");
+  input.type = "search";
+  input.id = id;
+  input.className = "municipio-search";
+  input.placeholder = currentLanguage === "en" ? "Search municipality" : "Buscar município...";
+  input.setAttribute("aria-label", input.placeholder);
+  input.addEventListener("input", onInput);
+  return input;
 }
 
 function normalizeAction(row) {
@@ -234,7 +248,6 @@ function topNWithOthers(obj, limit = 5) {
 function buildMunicipioRows(data) {
   const grouped = {};
   data.forEach((item) => {
-    // Para a tabela, ainda precisamos agrupar, mas ignoramos itens sem local na listagem por município
     if (!item.uf || !item.municipio) return;
 
     const key = `${item.uf}__${item.municipio}`;
@@ -296,19 +309,15 @@ function setCounter(selector, value) {
 }
 
 function updateCounters(data) {
-  // 1. Ações realizadas (Total absoluto de registros)
   const totalAcoes = data.length;
 
-  // 2. Pessoas mobilizadas (Soma total)
   const totalPublico = data.reduce((sum, item) => sum + item.publico, 0);
 
-  // 3. Adolescentes participando (Soma total)
   const totalAdolescentes = data.reduce(
     (sum, item) => sum + item.adoles_parcipantes,
     0,
   );
 
-  // 4. NUCAs criados (Vem da API secundária)
   const totalNucasCriados = nucasData.filter(
     (n) => n.status && n.status.includes("✅"),
   ).length;
@@ -331,7 +340,6 @@ function createVerticalBarChart(canvasId, labels, values, barColor) {
 
   destroyChart(canvasId);
 
-  // --- Processamento de Dados: 7 itens + Outros ---
   let finalLabels = [...labels];
   let finalValues = [...values];
 
@@ -378,11 +386,10 @@ function createVerticalBarChart(canvasId, labels, values, barColor) {
           backgroundColor: barColor,
           borderRadius: 0,
           borderSkipped: false,
-          // Ajustado barThickness e barPercentage para aumentar o espaçamento
           barThickness: 30,
           maxBarThickness: 28,
           categoryPercentage: 0.8,
-          barPercentage: 0.1, // Reduzido de 0.9 para 0.6 para mais respiro
+          barPercentage: 0.1, 
         },
       ],
     },
@@ -418,7 +425,7 @@ function createVerticalBarChart(canvasId, labels, values, barColor) {
       layout: {
         padding: {
           top: 8,
-          right: 20, // Aumentado levemente para não cortar labels longos
+          right: 20, 
           bottom: 8,
           left: 10,
         },
@@ -426,7 +433,7 @@ function createVerticalBarChart(canvasId, labels, values, barColor) {
       scales: {
         x: {
           beginAtZero: true,
-          grace: "15%", // Aumentado para dar mais espaço ao datalabel
+          grace: "15%", 
           grid: {
             display: false,
             drawBorder: false,
@@ -597,11 +604,13 @@ function getYearOptions(data) {
 function populateYearFilter(data) {
   const select = document.getElementById("ez-select");
   if (!select) return;
-  const years = getYearOptions(data);
+  const ufs = [
+    ...new Set(data.map((item) => item.uf).filter((u) => u && u !== "NÃO INFORMADO")),
+  ].sort();
   select.innerHTML =
-    `<option value="todos">${t("allYears")}</option>` +
-    years.map((year) => `<option value="${year}">${year}</option>`).join("");
-  select.addEventListener("change", applyFilters);
+    `<option value="todos">${t("allStates")}</option>` +
+    ufs.map((uf) => `<option value="${uf}">${uf}</option>`).join("");
+  select.onchange = applyFilters;
 }
 
 function populateUfFilter(containerSelector, selectId, onChange) {
@@ -618,6 +627,8 @@ function populateUfFilter(containerSelector, selectId, onChange) {
       ${ufs.map((uf) => `<option value="${uf}">${uf}</option>`).join("")}
     </select>
   `;
+  const searchId = selectId === "filter-uf-alert-select" ? "municipio-search-alert" : "municipio-search-main";
+  container.appendChild(createMunicipioSearchInput(searchId, onChange));
   container.querySelector("select")?.addEventListener("change", onChange);
 }
 
@@ -648,9 +659,12 @@ function getFilteredAlertRows(data) {
   const tema =
     document.getElementById("filter-theme-alert-select")?.value || "todos";
 
+  const municipioBusca = document.getElementById("municipio-search-alert")?.value || "";
+
   return [...data]
     .filter((item) => uf === "todos" || item.uf === uf)
-    .filter((item) => tema === "todos" || item.tema === tema);
+    .filter((item) => tema === "todos" || item.tema === tema)
+    .filter((item) => municipioMatchesSearch(item, municipioBusca));
 }
 
 function updateSummaryTexts(data) {
@@ -688,9 +702,10 @@ function updateSummaryTexts(data) {
 
 function renderMunicipioTable(data, page = 1) {
   const uf = document.getElementById("filter-uf-main")?.value || "todos";
-  const rows = buildMunicipioRows(data).filter(
-    (item) => uf === "todos" || item.uf === uf,
-  );
+  const municipioBusca = document.getElementById("municipio-search-main")?.value || "";
+  const rows = buildMunicipioRows(data)
+    .filter((item) => uf === "todos" || item.uf === uf)
+    .filter((item) => municipioMatchesSearch(item, municipioBusca));
   const tbody = document.querySelector(".table-container tbody");
   const pagination = document.getElementById("pagination-container");
   if (!tbody || !pagination) return;
@@ -758,7 +773,7 @@ function renderActionTable(data, page = 1) {
         <td>${escapeHtml(row.municipio || "-")}</td>
         <td title="${escapeHtml(row.tema)}">${escapeHtml(row.tema)}</td>
         <td title="${escapeHtml(row.local_acao)}">${escapeHtml(row.local_acao)}</td>
-        <td>${row.ano_acao > 0 ? formatNumber(row.ano_acao) : "-"}</td>
+        <td>${row.ano_acao > 0 ? row.ano_acao : "-"}</td>
         <td>${formatNumber(row.publico)}</td>
         <td>${link}</td>
       </tr>
@@ -775,45 +790,27 @@ function renderPagination(container, totalPages, current, onPageChange) {
   container.innerHTML = "";
   if (totalPages <= 1) return;
 
-  const createBtn = (label, page, disabled = false, active = false) => {
+  const createBtn = (label, page, disabled = false) => {
     const btn = document.createElement("button");
+    btn.type = "button";
     btn.className = "pagination-button";
-    if (active) btn.classList.add("active");
     btn.disabled = disabled;
     btn.textContent = label;
     btn.addEventListener("click", () => onPageChange(page));
     return btn;
   };
 
-  container.appendChild(
-    createBtn("‹", Math.max(1, current - 1), current === 1),
-  );
+  const status = document.createElement("span");
+  status.className = "pagination-status";
+  status.textContent = `Página ${current} de ${totalPages}`;
 
-  for (let page = 1; page <= totalPages; page += 1) {
-    if (
-      page === 1 ||
-      page === totalPages ||
-      (page >= current - 1 && page <= current + 1)
-    ) {
-      container.appendChild(
-        createBtn(String(page), page, false, page === current),
-      );
-    } else if (page === current - 2 || page === current + 2) {
-      const ellipsis = document.createElement("span");
-      ellipsis.className = "pagination-ellipsis";
-      ellipsis.textContent = "...";
-      container.appendChild(ellipsis);
-    }
-  }
-
-  container.appendChild(
-    createBtn("›", Math.min(totalPages, current + 1), current === totalPages),
-  );
+  container.appendChild(createBtn("‹", Math.max(1, current - 1), current === 1));
+  container.appendChild(status);
+  container.appendChild(createBtn("›", Math.min(totalPages, current + 1), current === totalPages));
 }
 
 async function carregarMapbox(stateRows) {
   console.log(stateRows);
-  // console.log("Dados de NUCA por UF:", nucaDataByUF);
   mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
 
   const MAPA_UF = {
@@ -840,7 +837,6 @@ async function carregarMapbox(stateRows) {
   const dadosConvertidos = {};
 
   for (const [chave, valor] of Object.entries(stateRows)) {
-    // console.log(chave);
     console.log(valor["estado"]);
 
     const sigla = MAPA_UF[valor["estado"]] || valor["estado"];
@@ -1033,13 +1029,11 @@ function setupTerritoryButtons() {
 }
 
 function applyFilters() {
-  const yearValue = document.getElementById("ez-select")?.value || "todos";
+  const ufValue = document.getElementById("ez-select")?.value || "todos";
 
-  let baseData = rawData.filter((item) => {
-    return yearValue === "todos" || String(item.ano_acao) === yearValue;
+  filteredData = rawData.filter((item) => {
+    return ufValue === "todos" || item.uf === ufValue;
   });
-
-  filteredData = filterDataByTerritory(baseData, currentTerritory);
 
   updateCounters(filteredData);
   renderTopCharts(filteredData);
@@ -1075,9 +1069,6 @@ function applyStaticTranslations() {
     ".column-2 .container.text.bg-image p:nth-child(1)": "intro1",
     ".column-2 .container.text.bg-image p:nth-child(2)": "intro2",
     ".territory-filters > p": "territoryFilter",
-    ".territory-btn[data-territory='todos']": "territoryAll",
-    ".territory-btn[data-territory='semiarido']": "territorySemiarid",
-    ".territory-btn[data-territory='amazonia-legal']": "territoryAmazon",
     ".nucas .chart-title": "chartThemes",
     ".genero .chart-title": "chartPlaces",
     ".column-3:not(.carrossel-section) .text-nucas-uf h3": "mapTitle",
@@ -1149,7 +1140,6 @@ async function init() {
   setupLanguageButtons();
   setupTerritoryButtons();
 
-  //  add time stamp to API calls to prevent caching during development
   const timestamp = new Date().getTime();
 
   try {
@@ -1169,8 +1159,6 @@ async function init() {
 
     console.log("Total de público:", totalPublico);
 
-    // PROCESSAMENTO: Removemos o .filter restrito para garantir que TODAS as ações sejam somadas
-    // Mesmo que UF ou Município estejam vazios, a ação conta para o total global.
     rawData = Array.isArray(acoesData) ? acoesData.map(normalizeAction) : [];
 
     console.log("Dados de ações carregados (Total Bruto):", rawData.length);
@@ -1207,10 +1195,6 @@ async function init() {
 }
 
 document.addEventListener("DOMContentLoaded", init);
-
-
-
-// carrossel
 
 
 const track = document.getElementById("carousel-track");

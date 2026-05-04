@@ -7,18 +7,18 @@
     <link rel="stylesheet" href="./assets/style.css?v=1.1">
     <link rel="icon" href="./imagens/selo-unicef.png" type="image/png">
     <title>Dashboard - Selo Unicef</title>
-    <!-- Adição do Chart.js para os gráficos -->
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
     <script
         src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 
-    <!-- INÍCIO: Adições Mapbox -->
+    
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.js"></script>
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.css" rel="stylesheet" />
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <!-- FIM: Adições Mapbox -->
+    
 
-    <!-- OTIMIZAÇÃO: PapaParse para leitura rápida de CSV -->
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
 </head>
@@ -27,9 +27,8 @@
 
     <header>
         <div class="btns-container">
-            <!-- <div class="btn active">Sobre os NUCAs</div> -->
-            <!-- <div class="btn">NUCAs em Ação</div>
-            <div class="btn">Outras Ações</div> -->
+            
+            
             <h4><a href="https://docs.google.com/spreadsheets/d/1hGOlbHZnNqLMpWoksYPZCawfadpJi-aN/edit?gid=1628412039#gid=1628412039" target="_blank">Clique aqui</a> e confira o status e pontuação do seu município em 28/11/2025</h4>
         </div>
     </header>
@@ -54,17 +53,17 @@
         </div>
         <div class="container-numbers">
             <div class="container total-members blue-light ">
-                <!-- Os valores serão preenchidos via JavaScript -->
+                
                 <p class="members-number">...</p>
                 <p>Adolescentes inscritos/as</p>
             </div>
             <div class="container total-mun blue-light ">
-                <!-- Os valores serão preenchidos via JavaScript -->
+                
                 <p class="mun-number">...</p>
                 <p>Municípios com adolescentes inscritos/as</p>
             </div>
             <div class="container total-nucas blue-light">
-                <!-- Os valores serão preenchidos via JavaScript -->
+                
                 <p class="nucas-number">...</p>
                 <p>NUCAs criados</p>
             </div>
@@ -84,18 +83,14 @@
         </div>
         <div class="container graphics light">
             <div class="filters">
-                <!-- <p>Filtre por território</p> -->
-                <!-- ATUALIZAÇÃO: Transformado de botões para dropdown -->
                 <div class="filter-ez">
                     <select id="ez-select">
-                        <option value="todos">Todos os territórios</option>
-                        <option value="amazonia-legal">Amazônia Legal</option>
-                        <option value="semiarido">Semiárido</option>
+                        <option value="todos">Todos os estados</option>
                     </select>
                 </div>
             </div>
 
-            <!-- ATUALIZAÇÃO: Novos gráficos adicionados -->
+            
             <div class="graphics-pizza">
                 <div class="nucas">
                     <div class="chart-title-container">
@@ -109,14 +104,14 @@
                     </div>
                     <canvas id="generoChart"></canvas>
                 </div>
-                <!-- NOVO: Gráfico de Pertencimento -->
+                
                 <div class="pertencimento">
                     <div class="chart-title-container">
                         <h3 class="chart-title">Pertencimento étnico/cultural</h3>
                     </div>
                     <canvas id="pertencimentoChart"></canvas>
                 </div>
-                <!-- NOVO: Gráfico de Raça/Cor -->
+                
                 <div class="raca">
                     <div class="chart-title-container">
                         <h3 class="chart-title">Raça/Cor</h3>
@@ -128,7 +123,7 @@
 
     </section>
 
-    <!-- NOVA SEÇÃO: Mapa e Gráfico de Barras -->
+    
     <section class="column-3">
         <div class="map-container">
             <div class="title-img">
@@ -139,13 +134,13 @@
                 </div>
             </div>
 
-            <!-- CONTAINER DO MAPBOX (substitui o SVG estático) -->
+            
             <div id="mapbox-map" class="mapa-brasil-container"></div>
 
         </div>
 
         <div class="chart-bar-container">
-            <!-- <h3 class="chart-title">NUCAs criados por estado</h3> -->
+            
             <div class="chart-bar-canvas">
                 <canvas id="nucasBarChart"></canvas>
             </div>
@@ -153,7 +148,7 @@
 
     </section>
 
-    <!-- SEÇÃO ORIGINAL: Tabela de NUCAs Criados -->
+    
     <section class="column-4">
         <div class="filter-container">
             <div class="title-img">
@@ -173,7 +168,7 @@
         </div>
 
         <div class="table-adolescentes">
-            <!-- Container adicionado para permitir rolagem horizontal em telas pequenas -->
+            
             <div class="table-container">
                 <table>
                     <thead>
@@ -184,29 +179,29 @@
                             <th>Indígenas</th>
                             <th>Quilombolas</th>
                             <th>Ribeirinhos</th>
-                            <!-- <th>Status</th> -->
+                            
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Conteúdo será inserido dinamicamente via JavaScript -->
+                        
                     </tbody>
                 </table>
             </div>
-            <!-- Container para os botões de paginação -->
+            
             <div id="pagination-container" class="pagination-container"></div>
         </div>
     </section>
 
-    <!-- NOVA SEÇÃO: Tabela de NUCAs "Quase Lá" -->
+    
     <section class="column-4" id="alert-section">
         <div class="filter-container">
             <div class="title-img">
-                <!-- Você pode querer trocar o ícone se tiver outro, mantive o mesmo -->
+                
                 <img src="./imagens/casas.png" alt="Logo Selo UNICEF">
                 <div class="itens">
                     <h3>Detalhes dos NUCAs que estão quase lá</h3>
                     <div class="filter-uf-alert">
-                        <!-- Filtro específico para esta tabela -->
+                        
                     </div>
                 </div>
             </div>
@@ -225,7 +220,7 @@
                             <th>Estado</th>
                             <th>Município</th>
                             <th>Total</th>
-                            <!-- ATUALIZADO: Colunas de Gênero em vez de Etnia -->
+                            
                             <th>Feminino</th>
                             <th>Masculino</th>
                             <th>Não binário</th>
@@ -233,36 +228,18 @@
                         </tr>
                     </thead>
                     <tbody id="tbody-alert">
-                        <!-- Conteúdo será inserido dinamicamente via JavaScript -->
+                        
                     </tbody>
                 </table>
             </div>
-            <!-- Container para os botões de paginação desta tabela específica -->
+            
             <div id="pagination-container-alert" class="pagination-container"></div>
         </div>
     </section>
 
-    <!-- <section class="column-5">
+    
 
-        <div class="logos">
-            <div class="logo-container">
-                <p>Parcerias</p>
-                <img src="./imagens/logos-1.png" alt="" srcset="">
-            </div>
-            <div class="logo-container">
-                <p>Parcerias estratégicas</p>
-                <img src="./imagens/logos-2.png" alt="" srcset="">
-            </div>
-            <div class="logo-container">
-                <p>Parcerias técnicas</p>
-                <img src="./imagens/logos-3.png" alt="" srcset="">
-            </div>
-
-        </div>
-
-    </section> -->
-
-    <!-- Mantivemos apenas a chamada do script principal -->
+    
     <script src="./assets/main.js?v=1.1"></script>
 
 </body>

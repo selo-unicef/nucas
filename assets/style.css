@@ -85,7 +85,7 @@ h1 {
 }
 
 h4 {
-    /* margin-bottom: 10px; */
+    
     font-weight: 400;
     font-size: 17px;
     color: #ffffff;
@@ -109,7 +109,7 @@ h4 a {
 
 .info-titulo > div:first-child {
     width: 210px;
-    /* display: none; */
+    
 }
 
 .space {
@@ -120,7 +120,7 @@ h4 a {
     display: flex;
     align-items: center;
     gap: 8px;
-    /* opacity: 0; */
+    
 }
 
 .translate .lang-pt,
@@ -151,8 +151,6 @@ section {
     margin: 0px 10px;
 }
 
-
-/* ### column 1 ### */
 
 section.column-1 {
     height: 365px;
@@ -217,9 +215,9 @@ div.container-numbers>.container p:nth-child(2) {
 
 .container.featured-image {
     width: 50%;
-    /* ajuste conforme precisar */
+    
     overflow: hidden;
-    /* esconde o que ultrapassar */
+    
     position: relative;
 }
 
@@ -227,13 +225,11 @@ div.container-numbers>.container p:nth-child(2) {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* preenche proporcionalmente */
+    
     object-position: center;
-    /* centraliza a imagem */
+    
     display: block;
 }
-
-
 
 
 div.container.blue-light {
@@ -249,11 +245,8 @@ div.container.light {
 }
 
 
-/* ### column 2  ###*/
-
-
 section.column-2 {
-    /* ATUALIZADO: Altura automática para acomodar o Grid */
+    
     height: auto;
     min-height: 600px;
     display: flex;
@@ -268,14 +261,14 @@ section.column-2 .container.text.bg-image {
     line-height: 25px;
     font-size: 17.5px;
     font-weight: 350;
-    /* Ajustei o caminho da imagem de fundo para ser relativo à raiz do CSS */
+    
     background-image: url("../imagens/bg-blue.png");
     background-size: cover;
-    /* preenche proporcionalmente */
+    
     background-position: center;
-    /* centraliza a imagem */
+    
     background-repeat: no-repeat;
-    /* evita repetição */
+    
 }
 
 section.column-2 .container.text.bg-image p {
@@ -293,11 +286,7 @@ section.column-2 .container.graphics {
     padding: 20px 50px;
 }
 
-/* ------------------------------------------- */
-/* ESTILOS DE GRÁFICOS PIZZA (DONUT) */
-/* ------------------------------------------- */
 
-/* ATUALIZAÇÃO: Mudança para Grid Layout para acomodar 4 gráficos */
 .graphics-pizza {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -308,39 +297,39 @@ section.column-2 .container.graphics {
     width: 100%;
 }
 
-/* Cada célula do grid */
+
 .graphics-pizza>div {
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
-    /* Altura mínima para garantir espaço */
+    
     min-height: 250px;
 }
 
 .graphics-pizza canvas {
     width: 100% !important;
     height: auto !important;
-    /* max-width: 220px; */
-    /* Limita o tamanho máximo visual */
+    
+    
     max-height: 220px;
 }
 
-/* ATUALIZAÇÃO: Container para título e total */
+
 .chart-title-container {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
     gap: 10px;
-    /* Espaço entre título e total */
+    
     margin-bottom: 15px;
-    /* Margem que antes era do .chart-title */
+    
     min-height: 40px;
-    /* Garante alinhamento mesmo com títulos de 2 linhas */
+    
 }
 
-/* ATUALIZAÇÃO: Estilo para o número total */
+
 .chart-total {
     font-size: 1rem;
     font-weight: 700;
@@ -349,27 +338,25 @@ section.column-2 .container.graphics {
     padding: 2px 8px;
     border-radius: 6px;
     min-width: 30px;
-    /* Largura mínima para acomodar "..." */
+    
     text-align: center;
 }
 
 .chart-title {
     margin-bottom: 0;
-    /* ATUALIZAÇÃO: Removida margem, agora no container */
+    
     font-size: 1.0rem;
-    /* Leve redução para caber melhor */
+    
     color: var(--font-color, #3E3E3E);
     text-align: center;
     font-weight: 700;
 }
 
-/* ATUALIZAÇÃO: Removidos os estilos dos botões .options */
+
 .filter-ez {
     margin-top: 10px;
 }
 
-
-/* ### COLUMN 3 (MAPA E BAR CHART) ### */
 
 section.column-3 {
     height: 750px;
@@ -383,7 +370,7 @@ section.column-3 {
     justify-content: space-between;
 }
 
-/* Estilos para Map e Bar Chart containers */
+
 section.column-3 .map-container,
 section.column-3 .chart-bar-container {
     width: 48%;
@@ -393,21 +380,20 @@ section.column-3 .chart-bar-container {
     align-items: center;
 }
 
-/* Estilos do Mapa Container */
+
 .mapa-brasil-container {
     width: 100%;
     max-width: 450px;
     height: 500px;
     margin-top: 20px;
     flex-grow: 1;
-    /* As propriedades 'display: flex' e alinhamento foram removidas para garantir a interatividade correta do Mapbox. */
+    
 }
 
 
-/* Estilos para os Paths dentro do SVG */
 .mapa-brasil-container svg path {
     stroke: #FFFFFF;
-    /* Borda branca para destaque */
+    
     stroke-width: 0.5;
     transition: fill 0.3s ease-in-out;
 }
@@ -430,7 +416,7 @@ section.column-3 .title-img img {
     height: auto;
 }
 
-/* Estilos do Gráfico de Barras */
+
 .chart-bar-container .chart-title {
     margin-top: 0;
     margin-bottom: 20px;
@@ -440,11 +426,11 @@ section.column-3 .title-img img {
 .chart-bar-canvas {
     width: 100%;
     height: 100%;
-    /* Garante que o canvas use a maior parte do espaço vertical */
+    
     max-height: 550px;
     padding-left: 10px;
     margin-top: 100px;
-    /* Pequeno padding para as labels do eixo Y */
+    
 }
 
 .chart-bar-canvas canvas {
@@ -464,10 +450,6 @@ h3 {
     margin-bottom: 10px;
 
 }
-
-
-/* TABLE */
-
 
 
 section.column-4 {
@@ -490,8 +472,8 @@ table {
     background-color: #EBEBD9;
     border-radius: 12px;
     overflow: hidden;
-    /* table-layout: fixed; */
-    /* <-- REMOVIDO PARA PERMITIR SCROLL */
+    
+    
 }
 
 
@@ -500,15 +482,15 @@ td {
     padding: 10px 14px;
     text-align: center;
     white-space: nowrap;
-    /* Impede que o texto quebre a linha */
+    
     overflow: hidden;
-    /* Esconde o texto que transborda */
+    
     text-overflow: ellipsis;
-    /* Adiciona "..." ao final do texto cortado */
+    
 }
 
 th {
-    /* border: 5px solid #005980; */
+    
     padding: 10px 14px;
     text-align: center;
     background-color: var(--bg-container-blue-light);
@@ -516,7 +498,7 @@ th {
     font-weight: bold;
 }
 
-/* Estilo para a coluna de status na tabela de alerta */
+
 .status-red {
     color: #D32F2F;
     font-weight: bold;
@@ -545,36 +527,6 @@ tr.row-yellow:hover {
     background-color: #e2dcba;
 }
 
-
-/* Definição da largura das colunas - REMOVIDO PARA PERMITIR SCROLL */
-/*
-.table-container th:nth-child(1) {
-    width: 15%;
-}
-.table-container th:nth-child(2) {
-    width: 25%;
-}
-.table-container th:nth-child(3) {
-    width: 15%;
-}
-.table-container th:nth-child(4) {
-    width: 10%;
-}
-.table-container th:nth-child(5) {
-    width: 10%;
-}
-.table-container th:nth-child(6) {
-    width: 10%;
-}
-.table-container th:nth-child(7) {
-    width: 15%;
-}
-*/
-
-
-/* tr:nth-child(even) {
-    background-color: #EBEBD9;
-} */
 
 tr:hover {
     background-color: #e2e2ce;
@@ -624,18 +576,15 @@ a:hover {
 }
 
 
-/* --- NOVOS ESTILOS PARA RESPONSIVIDADE E PAGINAÇÃO --- */
-
-/* Container da tabela para rolagem horizontal em telas pequenas */
 .table-container {
     width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    /* Melhora a experiência de rolagem em iOS */
+    
     border-radius: 12px;
 }
 
-/* Container dos botões de paginação */
+
 .pagination-container {
     display: flex;
     justify-content: center;
@@ -643,7 +592,7 @@ a:hover {
     padding: 20px 0;
     gap: 8px;
     flex-wrap: wrap;
-    /* Permite que os botões quebrem a linha */
+    
 }
 
 .pagination-container button {
@@ -685,9 +634,6 @@ tr.header {
 }
 
 
-/* filtro */
-
-/* ATUALIZAÇÃO: Aplicando o mesmo estilo ao novo dropdown .filter-ez */
 .filter-uf select,
 .filter-ez select,
 .filter-uf-alert select {
@@ -699,7 +645,7 @@ tr.header {
     font-weight: 600;
     font-size: 14px;
     cursor: pointer;
-    /* ATUALIZAÇÃO: Garante que o select do EZ tenha largura suficiente */
+    
     min-width: 250px;
 }
 
@@ -765,10 +711,148 @@ section.column-5 .logos .logo-container:nth-child(2) img {
 
 
 
+.municipio-search {
+  /* width: min(260px, 100%); */
+  padding: 10px 12px;
+  border: 1px solid #d6d6c8;
+  border-radius: 999px;
+  background: #fff;
+  color: #3E3E3E;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+  min-width: 250px;
+}
+
+.municipio-search:focus {
+  border-color: #958C80;
+}
+
+.filter-uf,
+.filter-uf-alert,
+.filters-alert-row {
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.filter-uf,
+.filter-uf-alert,
+.filters-alert-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.municipio-search {
+  /* width: min(260px, 100%); */
+  min-height: 39px;
+  padding: 8px 12px;
+  border: 1px solid #005980;
+  border-radius: 8px;
+  background-color: #EBEBD9;
+  color: #005980;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+  min-width: 250px;
+}
+
+.municipio-search::placeholder {
+  color: rgba(0, 89, 128, 0.72);
+}
+
+.municipio-search:focus {
+  border-color: #003f5c;
+  box-shadow: 0 0 0 2px rgba(0, 89, 128, 0.12);
+}
 
 
+.table-container table,
+#table-alert {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
 
-/* responsivo */
+.table-container th,
+.table-container td,
+#table-alert th,
+#table-alert td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.table-container table th:nth-child(1),
+.table-container table td:nth-child(1),
+#table-alert th:nth-child(1),
+#table-alert td:nth-child(1) {
+    width: 12%;
+}
+
+.table-container table th:nth-child(2),
+.table-container table td:nth-child(2),
+#table-alert th:nth-child(2),
+#table-alert td:nth-child(2) {
+    width: 20%;
+}
+
+.table-container table th:nth-child(3),
+.table-container table td:nth-child(3),
+.table-container table th:nth-child(4),
+.table-container table td:nth-child(4),
+.table-container table th:nth-child(5),
+.table-container table td:nth-child(5),
+.table-container table th:nth-child(6),
+.table-container table td:nth-child(6) {
+    width: 12%;
+}
+
+.table-container table th:nth-child(7),
+.table-container table td:nth-child(7),
+#table-alert th:nth-child(7),
+#table-alert td:nth-child(7) {
+    width: 16%;
+    font-size: 12.5px;
+}
+
+.pagination-container {
+    min-height: 76px;
+    flex-wrap: nowrap;
+    gap: 10px;
+}
+
+.pagination-container button {
+    min-width: 44px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pagination-status {
+    min-width: 132px;
+    text-align: center;
+    color: #005980;
+    font-weight: 700;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .table-container table,
+    #table-alert {
+        min-width: 780px;
+    }
+
+    .pagination-container {
+        flex-wrap: nowrap;
+    }
+}
+
+
 
 
 @media (max-width: 1240px) {
@@ -795,13 +879,12 @@ section.column-5 .logos .logo-container:nth-child(2) img {
         height: fit-content;
     }
 
-    /* Ajuste Grid para tablets: 1 coluna ou manter 2 menores */
+    
     .graphics-pizza {
         gap: 20px;
     }
 
 }
-
 
 
 @media (max-width: 960px) {
@@ -819,7 +902,8 @@ section.column-5 .logos .logo-container:nth-child(2) img {
 
     .filter-uf select,
     .filter-ez select,
-    .filter-uf-alert select {
+    .filter-uf-alert select,
+    .municipio-search {
         min-width: 150px;
         width: 170px;
     }
@@ -834,7 +918,7 @@ section.column-5 .logos .logo-container:nth-child(2) img {
         color: var(--font-title-color);
     }
 
-    /* Em telas médias/pequenas, uma coluna para gráficos */
+    
     .graphics-pizza {
         grid-template-columns: 1fr;
     }
@@ -902,14 +986,14 @@ section.column-5 .logos .logo-container:nth-child(2) img {
 
     section.column-2 .container.graphics {
         height: auto;
-        /* Allow graphics to grow */
+        
     }
 
-    /* Grid de 1 coluna mobile já definido no media query anterior, mas reforçando */
+    
     .graphics-pizza {
         grid-template-columns: 1fr;
         max-height: none;
-        /* Remove limitação de altura */
+        
     }
 
     .graphics-pizza>div {

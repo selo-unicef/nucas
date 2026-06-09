@@ -30,8 +30,10 @@ const I18N = {
     cardPeople: "PESSOAS MOBILIZADAS NOS TERRITÓRIOS",
     cardTeens: "Adolescentes dos NUCAs participando",
     cardNucas: "NUCAs criados",
-    intro1: "Os Núcleos de Cidadania de Adolescentes (NUCAs) fazem parte da metodologia do Selo UNICEF e são um indicador essencial da garantia do direito à participação de adolescentes e jovens, assegurando espaço seguro para o desenvolvimento das competências e da cidadania de meninas, menines e meninos em seus territórios.",
-    intro2: 'Este painel interativo reflete o movimento dos NUCAs na edição do Selo UNICEF 2025-2028. A pessoa mobilizadora de adolescentes deve colaborar com a alimentação desta ferramenta através da utilização dos formulários oficiais de registro de adolescentes e de atividades dos NUCAs. <a href="https://selounicef.org.br/formularios-dos-nucas-edicao-2025-2028-do-selo-unicef" target="_blank">Clique aqui</a> e saiba mais.',
+    intro1:
+      "Os Núcleos de Cidadania de Adolescentes (NUCAs) fazem parte da metodologia do Selo UNICEF e são um indicador essencial da garantia do direito à participação de adolescentes e jovens, assegurando espaço seguro para o desenvolvimento das competências e da cidadania de meninas, menines e meninos em seus territórios.",
+    intro2:
+      'Este painel interativo reflete o movimento dos NUCAs na edição do Selo UNICEF 2025-2028. A pessoa mobilizadora de adolescentes deve colaborar com a alimentação desta ferramenta através da utilização dos formulários oficiais de registro de adolescentes e de atividades dos NUCAs. <a href="https://selounicef.org.br/formularios-dos-nucas-edicao-2025-2028-do-selo-unicef" target="_blank">Clique aqui</a> e saiba mais.',
     territoryFilter: "Filtre por estado",
     territoryAll: "Todos os territórios",
     territorySemiarid: "Semiárido",
@@ -39,20 +41,44 @@ const I18N = {
     chartThemes: "Temas das ações",
     chartPlaces: "Local de realização",
     mapTitle: "Ações pelo Brasil",
-    mapSubtitle: "Veja a distribuição das ações desenvolvidas nos NUCAs por estado",
+    mapSubtitle:
+      "Veja a distribuição das ações desenvolvidas nos NUCAs por estado",
     carouselTitle: "Registros das Ações",
-    carouselSubtitle: "Acompanhe como as atividades realizadas dos NUCAs foram desenvolvidas pelo Brasil",
+    carouselSubtitle:
+      "Acompanhe como as atividades realizadas dos NUCAs foram desenvolvidas pelo Brasil",
     detailsTitle: "Panorama das ações por município",
-    detailsText: "<strong>Filtre por estado</strong> e veja, por município, o total de ações realizadas, adolescentes engajados e pessoas mobilizadas.",
+    detailsText:
+      "<strong>Filtre por estado</strong> e veja, por município, o total de ações realizadas, adolescentes engajados e pessoas mobilizadas.",
     loadingNational: "Carregando dados nacionais...",
     registeredTitle: "Detalhes das ações registradas",
-    registeredText: "Confira os registros individuais das ações lançadas pelos municípios, com tema, local, ano, alcance estimado e link de divulgação quando informado.",
+    registeredText:
+      "Confira os registros individuais das ações lançadas pelos municípios, com tema, local, ano, alcance estimado e link de divulgação quando informado.",
     loadingData: "Carregando dados...",
-    thState: "Estado", thCity: "Município", thTotalActions: "Ações totais realizadas", thTotalTeens: "Adolescentes totais engajados", thPeople: "Pessoas mobilizadas", thTheme: "Tema", thPlace: "Local", thYear: "Ano", thDisclosure: "Divulgação",
-    allYears: "Todos os anos", allStates: "Todos os estados", allThemes: "Todos os temas", noInfo: "Não informado", others: "Outros", noData: "Nenhum dado encontrado.", seePost: "Ver post", actionsLabel: "Ações",
-    summaryMain: "<strong>{actions}</strong> ações registradas e <strong>{people}</strong> pessoas mobilizadas pelo país",
-    summaryAlert: "Detalhes de <strong>{actions}</strong> ações{where}, com <strong>{people}</strong> pessoas mobilizadas",
-    inBrazil: " no Brasil", inState: "no estado <strong>{uf}</strong>", inTheme: "no tema <strong>{theme}</strong>", mapPopupActions: "Ações"
+    thState: "Estado",
+    thCity: "Município",
+    thTotalActions: "Ações totais realizadas",
+    thTotalTeens: "Adolescentes totais engajados",
+    thPeople: "Pessoas mobilizadas",
+    thTheme: "Tema",
+    thPlace: "Local",
+    thYear: "Ano",
+    thDisclosure: "Divulgação",
+    allYears: "Todos os anos",
+    allStates: "Todos os estados",
+    allThemes: "Todos os temas",
+    noInfo: "Não informado",
+    others: "Outros",
+    noData: "Nenhum dado encontrado.",
+    seePost: "Ver post",
+    actionsLabel: "Ações",
+    summaryMain:
+      "<strong>{actions}</strong> ações registradas e <strong>{people}</strong> pessoas mobilizadas pelo país",
+    summaryAlert:
+      "Detalhes de <strong>{actions}</strong> ações{where}, com <strong>{people}</strong> pessoas mobilizadas",
+    inBrazil: " no Brasil",
+    inState: "no estado <strong>{uf}</strong>",
+    inTheme: "no tema <strong>{theme}</strong>",
+    mapPopupActions: "Ações",
   },
   en: {
     locale: "en-US",
@@ -64,8 +90,10 @@ const I18N = {
     cardPeople: "PEOPLE MOBILIZED IN THE TERRITORIES",
     cardTeens: "Adolescents participating in NUCAs",
     cardNucas: "Created NUCAs",
-    intro1: "The Adolescent Citizenship Centers (NUCAs) are part of the UNICEF Seal methodology and are an essential indicator of adolescents’ and young people’s right to participate, ensuring a safe space for girls, boys, and non-binary adolescents to develop skills and citizenship in their territories.",
-    intro2: 'This interactive dashboard reflects the NUCA movement in the 2025-2028 UNICEF Seal edition. The adolescent mobilizer should help keep this tool updated by using the official forms to register adolescents and NUCA activities. <a href="https://selounicef.org.br/formularios-dos-nucas-edicao-2025-2028-do-selo-unicef" target="_blank">Click here</a> to learn more.',
+    intro1:
+      "The Adolescent Citizenship Centers (NUCAs) are part of the UNICEF Seal methodology and are an essential indicator of adolescents’ and young people’s right to participate, ensuring a safe space for girls, boys, and non-binary adolescents to develop skills and citizenship in their territories.",
+    intro2:
+      'This interactive dashboard reflects the NUCA movement in the 2025-2028 UNICEF Seal edition. The adolescent mobilizer should help keep this tool updated by using the official forms to register adolescents and NUCA activities. <a href="https://selounicef.org.br/formularios-dos-nucas-edicao-2025-2028-do-selo-unicef" target="_blank">Click here</a> to learn more.',
     territoryFilter: "Filter by state",
     territoryAll: "All territories",
     territorySemiarid: "Semi-arid Region",
@@ -77,17 +105,39 @@ const I18N = {
     carouselTitle: "Action records",
     carouselSubtitle: "Follow how NUCA activities were developed across Brazil",
     detailsTitle: "Overview of actions by municipality",
-    detailsText: "<strong>Filter by state</strong> and see, by municipality, the total number of actions carried out, adolescents engaged, and people mobilized.",
+    detailsText:
+      "<strong>Filter by state</strong> and see, by municipality, the total number of actions carried out, adolescents engaged, and people mobilized.",
     loadingNational: "Loading national data...",
     registeredTitle: "Details of registered actions",
-    registeredText: "Check the individual records of actions submitted by municipalities, including theme, location, year, estimated reach, and dissemination link when provided.",
+    registeredText:
+      "Check the individual records of actions submitted by municipalities, including theme, location, year, estimated reach, and dissemination link when provided.",
     loadingData: "Loading data...",
-    thState: "State", thCity: "Municipality", thTotalActions: "Total actions carried out", thTotalTeens: "Total adolescents engaged", thPeople: "People mobilized", thTheme: "Theme", thPlace: "Location", thYear: "Year", thDisclosure: "Dissemination",
-    allYears: "All years", allStates: "All states", allThemes: "All themes", noInfo: "Not informed", others: "Others", noData: "No data found.", seePost: "View post", actionsLabel: "Actions",
-    summaryMain: "<strong>{actions}</strong> registered actions and <strong>{people}</strong> people mobilized nationwide",
-    summaryAlert: "Details of <strong>{actions}</strong> actions{where}, with <strong>{people}</strong> people mobilized",
-    inBrazil: " in Brazil", inState: "in the state of <strong>{uf}</strong>", inTheme: "in the theme <strong>{theme}</strong>", mapPopupActions: "Actions"
-  }
+    thState: "State",
+    thCity: "Municipality",
+    thTotalActions: "Total actions carried out",
+    thTotalTeens: "Total adolescents engaged",
+    thPeople: "People mobilized",
+    thTheme: "Theme",
+    thPlace: "Location",
+    thYear: "Year",
+    thDisclosure: "Dissemination",
+    allYears: "All years",
+    allStates: "All states",
+    allThemes: "All themes",
+    noInfo: "Not informed",
+    others: "Others",
+    noData: "No data found.",
+    seePost: "View post",
+    actionsLabel: "Actions",
+    summaryMain:
+      "<strong>{actions}</strong> registered actions and <strong>{people}</strong> people mobilized nationwide",
+    summaryAlert:
+      "Details of <strong>{actions}</strong> actions{where}, with <strong>{people}</strong> people mobilized",
+    inBrazil: " in Brazil",
+    inState: "in the state of <strong>{uf}</strong>",
+    inTheme: "in the theme <strong>{theme}</strong>",
+    mapPopupActions: "Actions",
+  },
 };
 
 function t(key, vars = {}) {
@@ -107,7 +157,6 @@ function translateLabel(label = "") {
   if (label === "Outros" || label === "Others") return t("others");
   return label;
 }
-
 
 const COLORS = {
   primary: "#E1A38E",
@@ -156,11 +205,9 @@ function safeInt(value) {
 
   if (str.includes(",") && str.includes(".")) {
     str = str.replace(/\./g, "").replace(/,/g, "");
-  }
-  else if (str.includes(",")) {
+  } else if (str.includes(",")) {
     str = str.split(",")[0];
-  }
-  else if (/\.\d{3}$/.test(str)) {
+  } else if (/\.\d{3}$/.test(str)) {
     str = str.replace(/\./g, "");
   }
 
@@ -169,9 +216,8 @@ function safeInt(value) {
 }
 
 function escapeHtml(value) {
-  return String(value ?? "")
+  return String(value ?? "");
 }
-
 
 function normalizeSearchText(value) {
   return String(value || "")
@@ -192,7 +238,8 @@ function createMunicipioSearchInput(id, onInput) {
   input.type = "search";
   input.id = id;
   input.className = "municipio-search";
-  input.placeholder = currentLanguage === "en" ? "Search municipality" : "Buscar município...";
+  input.placeholder =
+    currentLanguage === "en" ? "Search municipality" : "Buscar município...";
   input.setAttribute("aria-label", input.placeholder);
   input.addEventListener("input", onInput);
   return input;
@@ -389,7 +436,7 @@ function createVerticalBarChart(canvasId, labels, values, barColor) {
           barThickness: 30,
           maxBarThickness: 28,
           categoryPercentage: 0.8,
-          barPercentage: 0.1, 
+          barPercentage: 0.1,
         },
       ],
     },
@@ -406,7 +453,8 @@ function createVerticalBarChart(canvasId, labels, values, barColor) {
           displayColors: false,
           callbacks: {
             title: (items) => items?.[0]?.label || "",
-            label: (ctx) => `${t("actionsLabel")}: ${formatNumber(ctx.parsed.x)}`,
+            label: (ctx) =>
+              `${t("actionsLabel")}: ${formatNumber(ctx.parsed.x)}`,
           },
         },
         datalabels: {
@@ -425,7 +473,7 @@ function createVerticalBarChart(canvasId, labels, values, barColor) {
       layout: {
         padding: {
           top: 8,
-          right: 20, 
+          right: 20,
           bottom: 8,
           left: 10,
         },
@@ -433,7 +481,7 @@ function createVerticalBarChart(canvasId, labels, values, barColor) {
       scales: {
         x: {
           beginAtZero: true,
-          grace: "15%", 
+          grace: "15%",
           grid: {
             display: false,
             drawBorder: false,
@@ -482,9 +530,20 @@ function createHorizontalBarChart(canvasId, labels, values, labelName) {
     if (!text) return "";
 
     const lowerWords = [
-      "de", "da", "do", "das", "dos",
-      "e", "em", "para", "por", "com",
-      "no", "na", "nos", "nas"
+      "de",
+      "da",
+      "do",
+      "das",
+      "dos",
+      "e",
+      "em",
+      "para",
+      "por",
+      "com",
+      "no",
+      "na",
+      "nos",
+      "nas",
     ];
 
     return String(text)
@@ -524,7 +583,8 @@ function createHorizontalBarChart(canvasId, labels, values, labelName) {
         tooltip: {
           callbacks: {
             title: (items) => items?.[0]?.label || "",
-            label: (ctx) => `${toTitleCasePT(labelName)}: ${formatNumber(ctx.parsed.x)}`,
+            label: (ctx) =>
+              `${toTitleCasePT(labelName)}: ${formatNumber(ctx.parsed.x)}`,
           },
         },
         datalabels: {
@@ -571,10 +631,25 @@ function createHorizontalBarChart(canvasId, labels, values, labelName) {
 }
 
 function renderTopCharts(data) {
-  const temas = topNWithOthers(
-    aggregateByKey(data, (item) => translateLabel(item.tema)),
-    7,
+  const temasPermitidos = [
+    "Saúde integral e integrada de adolescentes",
+    "Transição positiva para o mundo do trabalho",
+    "Prevenção às violências",
+    "Resiliência Climática - #EntreNoClimaUNICEF",
+    "Governança local/Orçamento público (PPA e Agenda Transversal)",
+    "Equidade étnico-racial",
+    "Empoderamento de meninas",
+    "#MeuVotoImporta2026",
+  ];
+
+  const dataTemasFiltrado = data.filter((item) =>
+    temasPermitidos.includes(item.tema),
   );
+
+  const temas = Object.entries(
+    aggregateByKey(dataTemasFiltrado, (item) => translateLabel(item.tema)),
+  ).sort((a, b) => b[1] - a[1]);
+  
   const locais = topNWithOthers(
     aggregateByKey(data, (item) => translateLabel(item.local_acao)),
     7,
@@ -605,7 +680,9 @@ function populateYearFilter(data) {
   const select = document.getElementById("ez-select");
   if (!select) return;
   const ufs = [
-    ...new Set(data.map((item) => item.uf).filter((u) => u && u !== "NÃO INFORMADO")),
+    ...new Set(
+      data.map((item) => item.uf).filter((u) => u && u !== "NÃO INFORMADO"),
+    ),
   ].sort();
   select.innerHTML =
     `<option value="todos">${t("allStates")}</option>` +
@@ -627,7 +704,10 @@ function populateUfFilter(containerSelector, selectId, onChange) {
       ${ufs.map((uf) => `<option value="${uf}">${uf}</option>`).join("")}
     </select>
   `;
-  const searchId = selectId === "filter-uf-alert-select" ? "municipio-search-alert" : "municipio-search-main";
+  const searchId =
+    selectId === "filter-uf-alert-select"
+      ? "municipio-search-alert"
+      : "municipio-search-main";
   container.appendChild(createMunicipioSearchInput(searchId, onChange));
   container.querySelector("select")?.addEventListener("change", onChange);
 }
@@ -640,7 +720,13 @@ function populateThemeFilter(containerSelector, selectId, onChange) {
     ...new Set(
       rawData
         .map((item) => item.tema)
-        .filter((tema) => tema && tema.trim() && tema !== "Não informado" && tema !== "Not informed"),
+        .filter(
+          (tema) =>
+            tema &&
+            tema.trim() &&
+            tema !== "Não informado" &&
+            tema !== "Not informed",
+        ),
     ),
   ].sort((a, b) => a.localeCompare(b, "pt-BR"));
 
@@ -659,7 +745,8 @@ function getFilteredAlertRows(data) {
   const tema =
     document.getElementById("filter-theme-alert-select")?.value || "todos";
 
-  const municipioBusca = document.getElementById("municipio-search-alert")?.value || "";
+  const municipioBusca =
+    document.getElementById("municipio-search-alert")?.value || "";
 
   return [...data]
     .filter((item) => uf === "todos" || item.uf === uf)
@@ -674,7 +761,10 @@ function updateSummaryTexts(data) {
   const textMain = document.querySelector(".text-space");
   const textAlert = document.querySelector(".text-space-alert");
   if (textMain) {
-    textMain.innerHTML = t("summaryMain", { actions: formatNumber(totalAcoes), people: formatNumber(totalPublico) });
+    textMain.innerHTML = t("summaryMain", {
+      actions: formatNumber(totalAcoes),
+      people: formatNumber(totalPublico),
+    });
   }
 
   if (textAlert) {
@@ -689,20 +779,26 @@ function updateSummaryTexts(data) {
     );
 
     const partes = [];
-    if (uf !== "todos")
-      partes.push(t("inState", { uf: escapeHtml(uf) }));
+    if (uf !== "todos") partes.push(t("inState", { uf: escapeHtml(uf) }));
     if (tema !== "todos")
       partes.push(t("inTheme", { theme: escapeHtml(tema) }));
 
-    const complemento = partes.length ? ` ${partes.join(currentLanguage === "en" ? " and " : " e ")}` : t("inBrazil");
+    const complemento = partes.length
+      ? ` ${partes.join(currentLanguage === "en" ? " and " : " e ")}`
+      : t("inBrazil");
 
-    textAlert.innerHTML = t("summaryAlert", { actions: formatNumber(alertRows.length), where: complemento, people: formatNumber(totalAlertPublico) });
+    textAlert.innerHTML = t("summaryAlert", {
+      actions: formatNumber(alertRows.length),
+      where: complemento,
+      people: formatNumber(totalAlertPublico),
+    });
   }
 }
 
 function renderMunicipioTable(data, page = 1) {
   const uf = document.getElementById("filter-uf-main")?.value || "todos";
-  const municipioBusca = document.getElementById("municipio-search-main")?.value || "";
+  const municipioBusca =
+    document.getElementById("municipio-search-main")?.value || "";
   const rows = buildMunicipioRows(data)
     .filter((item) => uf === "todos" || item.uf === uf)
     .filter((item) => municipioMatchesSearch(item, municipioBusca));
@@ -804,9 +900,13 @@ function renderPagination(container, totalPages, current, onPageChange) {
   status.className = "pagination-status";
   status.textContent = `Página ${current} de ${totalPages}`;
 
-  container.appendChild(createBtn("‹", Math.max(1, current - 1), current === 1));
+  container.appendChild(
+    createBtn("‹", Math.max(1, current - 1), current === 1),
+  );
   container.appendChild(status);
-  container.appendChild(createBtn("›", Math.min(totalPages, current + 1), current === totalPages));
+  container.appendChild(
+    createBtn("›", Math.min(totalPages, current + 1), current === totalPages),
+  );
 }
 
 async function carregarMapbox(stateRows) {
@@ -1067,8 +1167,10 @@ function applyStaticTranslations() {
     ".lang-en": "languageEn",
     ".total-members p:nth-child(2)": "cardActions",
     ".total-mun p:nth-child(2)": "cardPeople",
-    ".container-numbers .total-nucas:nth-of-type(3) p:nth-child(2)": "cardTeens",
-    ".container-numbers .total-nucas:nth-of-type(4) p:nth-child(2)": "cardNucas",
+    ".container-numbers .total-nucas:nth-of-type(3) p:nth-child(2)":
+      "cardTeens",
+    ".container-numbers .total-nucas:nth-of-type(4) p:nth-child(2)":
+      "cardNucas",
     ".column-2 .container.text.bg-image p:nth-child(1)": "intro1",
     ".column-2 .container.text.bg-image p:nth-child(2)": "intro2",
     ".territory-filters > p": "territoryFilter",
@@ -1079,7 +1181,8 @@ function applyStaticTranslations() {
     ".carrossel-section .carousel-header h3": "carouselTitle",
     ".carrossel-section .carousel-header p": "carouselSubtitle",
     ".column-4:not(#alert-section) .title-img h3": "detailsTitle",
-    ".column-4:not(#alert-section) .filter-container .text p:first-child": "detailsText",
+    ".column-4:not(#alert-section) .filter-container .text p:first-child":
+      "detailsText",
     "#alert-section .title-img h3": "registeredTitle",
     "#alert-section .filter-container .text p:first-child": "registeredText",
     ".column-4:not(#alert-section) th:nth-child(1)": "thState",
@@ -1096,34 +1199,48 @@ function applyStaticTranslations() {
     "#table-alert th:nth-child(7)": "thDisclosure",
   };
 
-  Object.entries(selectors).forEach(([selector, key]) => setElementContent(selector, key));
+  Object.entries(selectors).forEach(([selector, key]) =>
+    setElementContent(selector, key),
+  );
 
   const textSpace = document.querySelector(".text-space");
-  if (textSpace && !filteredData.length) textSpace.textContent = t("loadingNational");
+  if (textSpace && !filteredData.length)
+    textSpace.textContent = t("loadingNational");
 
   const textSpaceAlert = document.querySelector(".text-space-alert");
-  if (textSpaceAlert && !filteredData.length) textSpaceAlert.textContent = t("loadingData");
+  if (textSpaceAlert && !filteredData.length)
+    textSpaceAlert.textContent = t("loadingData");
 
   updateLanguageButtons();
 }
 
 function updateLanguageButtons() {
-  document.querySelector(".lang-pt")?.classList.toggle("active", currentLanguage === "pt");
-  document.querySelector(".lang-en")?.classList.toggle("active", currentLanguage === "en");
+  document
+    .querySelector(".lang-pt")
+    ?.classList.toggle("active", currentLanguage === "pt");
+  document
+    .querySelector(".lang-en")
+    ?.classList.toggle("active", currentLanguage === "en");
 }
 
 function refreshAfterLanguageChange() {
   applyStaticTranslations();
   populateYearFilter(rawData);
-  populateUfFilter(".filter-uf", "filter-uf-main", () => renderMunicipioTable(filteredData, 1));
+  populateUfFilter(".filter-uf", "filter-uf-main", () =>
+    renderMunicipioTable(filteredData, 1),
+  );
   populateUfFilter(".filter-uf-alert", "filter-uf-alert-select", () => {
     updateSummaryTexts(filteredData);
     renderActionTable(filteredData, 1);
   });
-  populateThemeFilter(".filter-theme-alert", "filter-theme-alert-select", () => {
-    updateSummaryTexts(filteredData);
-    renderActionTable(filteredData, 1);
-  });
+  populateThemeFilter(
+    ".filter-theme-alert",
+    "filter-theme-alert-select",
+    () => {
+      updateSummaryTexts(filteredData);
+      renderActionTable(filteredData, 1);
+    },
+  );
   if (rawData.length) applyFilters();
 }
 
@@ -1134,8 +1251,12 @@ function setLanguage(language) {
 }
 
 function setupLanguageButtons() {
-  document.querySelector(".lang-pt")?.addEventListener("click", () => setLanguage("pt"));
-  document.querySelector(".lang-en")?.addEventListener("click", () => setLanguage("en"));
+  document
+    .querySelector(".lang-pt")
+    ?.addEventListener("click", () => setLanguage("pt"));
+  document
+    .querySelector(".lang-en")
+    ?.addEventListener("click", () => setLanguage("en"));
   applyStaticTranslations();
 }
 
@@ -1151,20 +1272,39 @@ async function init() {
       fetch(`${API_NUCAS_URL}?t=${timestamp}`),
     ]);
 
-    const acoesData = await acoesRes.json();
+    const acoesDataBruto = await acoesRes.json();
     nucasData = await nucasRes.json();
 
-    console.log("Dados de ações brutos:", acoesData);
+    console.log("Dados de ações brutos:", acoesDataBruto);
+    console.log("Status encontrados:", [
+      ...new Set(acoesDataBruto.map((acao) => acao.status)),
+    ]);
+
+    const statusPermitidos = [
+      "Em validação",
+      "Aprovado",
+      "Em validação/Aprovado",
+    ];
+
+    const acoesData = Array.isArray(acoesDataBruto)
+      ? acoesDataBruto.filter((acao) => {
+          const status = String(acao.status || "").trim();
+          return statusPermitidos.includes(status);
+        })
+      : [];
+
+    console.log("Dados de ações filtrados:", acoesData);
+    console.log("Total após filtro:", acoesData.length);
 
     const totalPublico = acoesData.reduce((soma, acao) => {
       return soma + Number(acao.publico || 0);
     }, 0);
 
-    console.log("Total de público:", totalPublico);
+    console.log("Total de público filtrado:", totalPublico);
 
-    rawData = Array.isArray(acoesData) ? acoesData.map(normalizeAction) : [];
+    rawData = acoesData.map(normalizeAction);
 
-    console.log("Dados de ações carregados (Total Bruto):", rawData.length);
+    console.log("Dados de ações carregados após filtro:", rawData.length);
 
     try {
       const geojsonResponse = await fetch(BRAZIL_STATES_GEOJSON_URL);
@@ -1175,13 +1315,16 @@ async function init() {
     }
 
     populateYearFilter(rawData);
+
     populateUfFilter(".filter-uf", "filter-uf-main", () =>
       renderMunicipioTable(filteredData, 1),
     );
+
     populateUfFilter(".filter-uf-alert", "filter-uf-alert-select", () => {
       updateSummaryTexts(filteredData);
       renderActionTable(filteredData, 1);
     });
+
     populateThemeFilter(
       ".filter-theme-alert",
       "filter-theme-alert-select",
@@ -1199,7 +1342,6 @@ async function init() {
 
 document.addEventListener("DOMContentLoaded", init);
 
-
 const track = document.getElementById("carousel-track");
 const modal = document.getElementById("media-modal");
 const modalContent = document.getElementById("modal-content");
@@ -1212,7 +1354,7 @@ function getYoutubeId(url) {
     /youtube\.com\/watch\?v=([^&]+)/,
     /youtu\.be\/([^?&]+)/,
     /youtube\.com\/embed\/([^?&]+)/,
-    /youtube\.com\/shorts\/([^?&]+)/
+    /youtube\.com\/shorts\/([^?&]+)/,
   ];
 
   for (const pattern of patterns) {
@@ -1270,9 +1412,9 @@ function createCarouselItem(item) {
 }
 
 fetch("./data/carrossel.json")
-  .then(response => response.json())
-  .then(data => {
-    data.forEach(item => {
+  .then((response) => response.json())
+  .then((data) => {
+    data.forEach((item) => {
       if (item.url_foto || item.url_video) {
         track.appendChild(createCarouselItem(item));
       }
@@ -1288,7 +1430,7 @@ function scrollCarousel(direction) {
 
   track.scrollBy({
     left: direction * itemWidth,
-    behavior: "smooth"
+    behavior: "smooth",
   });
 }
 
@@ -1305,7 +1447,7 @@ closeModal.addEventListener("click", () => {
   modalContent.innerHTML = "";
 });
 
-modal.addEventListener("click", event => {
+modal.addEventListener("click", (event) => {
   if (event.target === modal) {
     modal.classList.remove("active");
     modalContent.innerHTML = "";

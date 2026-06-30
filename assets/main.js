@@ -1,9 +1,16 @@
-const API_NUCAS_URL =
-  "https://api-selo-unicef-cloudrun-839032982303.us-central1.run.app/nucas/";
+
+const SUPABASE_URL = "https://hsiosuhgmkflakpckxxc.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhzaW9zdWhnbWtmbGFrcGNreHhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0NTcwOTUsImV4cCI6MjA4NjAzMzA5NX0.c-9dQeQ1DD_6pRPu9xJUGtsr9QAs9eNa8sS3bbsYa3c";
+
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
 
 const DADOS_PROCESSADOS = {
   totalMembros: 0,
-  totalMembrosNucaCriado: 0, 
+  totalMembrosNucaCriado: 0,
   nucaStatus: {},
   generoContagens: {},
 };
@@ -46,9 +53,9 @@ const MAPBOX_ACCESS_TOKEN =
 
 const BRAZIL_STATES_GEOJSON_URL = "./data/brazil_states.geojson";
 
-let adolescentesData = []; 
-let todosAdolescentesData = []; 
-let alertNucasData = []; 
+let adolescentesData = [];
+let todosAdolescentesData = [];
+let alertNucasData = [];
 
 let currentPage = 1;
 let currentAlertPage = 1;
@@ -328,7 +335,9 @@ function updateEZSelectOptions() {
   const ezSelect = document.getElementById("ez-select");
   if (!ezSelect) return;
   const currentValue = ezSelect.value || "todos";
-  const estados = Object.keys(DADOS_DETALHADOS_POR_MUNICIPIO).sort((a, b) => a.localeCompare(b, "pt-BR"));
+  const estados = Object.keys(DADOS_DETALHADOS_POR_MUNICIPIO).sort((a, b) =>
+    a.localeCompare(b, "pt-BR"),
+  );
   ezSelect.innerHTML =
     `<option value="todos">${t("all_states")}</option>` +
     estados.map((uf) => `<option value="${uf}">${uf}</option>`).join("");
@@ -457,11 +466,7 @@ function updateDonutCharts(nucaStatusCounts, genderCounts) {
     return `${label} (${formatNumber(val)})`;
   });
 
-  const nucaStatusColors = [
-    "#178076", 
-    "#D3A80A", 
-    "#E1A38E", 
-  ];
+  const nucaStatusColors = ["#178076", "#D3A80A", "#E1A38E"];
 
   createDoughnutChart(
     "nucasChart",
@@ -473,11 +478,7 @@ function updateDonutCharts(nucaStatusCounts, genderCounts) {
   const genderLabels = Object.keys(genderCounts);
   const genderDataValues = Object.values(genderCounts);
 
-  const genderColors = [
-    "#E1A38E", 
-    "#BCD876", 
-    "#958C80", 
-  ];
+  const genderColors = ["#E1A38E", "#BCD876", "#958C80"];
 
   const filteredGenderLabels = [];
   const filteredGenderData = [];
@@ -550,18 +551,12 @@ function updateRacaChart(counts) {
   const data = [
     counts.Amarela || 0,
     counts.Branca || 0,
-    counts.Indigena || 0, 
+    counts.Indigena || 0,
     counts.Parda || 0,
     counts.Preta || 0,
   ];
 
-  const colors = [
-    "#F2C94C", 
-    "#D3D3D3", 
-    "#E1A38E", 
-    "#A87E6E", 
-    "#3E3E3E", 
-  ];
+  const colors = ["#F2C94C", "#D3D3D3", "#E1A38E", "#A87E6E", "#3E3E3E"];
 
   const filteredLabels = [];
   const filteredData = [];
@@ -591,16 +586,10 @@ let membrosTotaisBR;
 
 async function loadAndProcessData() {
   try {
-    const response = await fetch(API_NUCAS_URL);
-    if (!response.ok) {
-      throw new Error(`Erro ao buscar dados: ${response.statusText}`);
-    }
-    const data = await response.json();
-
-    const rows = data;
+    const rows = await buscarTodosRegistros("detalhes_nucas");
 
     let totalMembers = 0;
-    let totalMembersNucaCriado = 0; 
+    let totalMembersNucaCriado = 0;
 
     const nucaStatusCounts = {
       "✅ NUCA criado": 0,
@@ -639,7 +628,7 @@ async function loadAndProcessData() {
 
         if (status === "✅ NUCA criado") {
           NUCA_COUNT_BY_UF[uf] = (NUCA_COUNT_BY_UF[uf] || 0) + 1;
-          totalMembersNucaCriado += total; 
+          totalMembersNucaCriado += total;
         } else {
           if (
             status.includes("❌") ||
@@ -677,7 +666,7 @@ async function loadAndProcessData() {
     membrosTotaisBR = totalMembers;
 
     DADOS_PROCESSADOS.totalMembros = totalMembers;
-    DADOS_PROCESSADOS.totalMembrosNucaCriado = totalMembersNucaCriado; 
+    DADOS_PROCESSADOS.totalMembrosNucaCriado = totalMembersNucaCriado;
     DADOS_PROCESSADOS.nucaStatus = nucaStatusCounts;
     DADOS_PROCESSADOS.generoContagens = genderCounts;
 
@@ -745,25 +734,38 @@ function calcularDadosGraficosPorEstado(ufSelecionada) {
     Masculino: 0,
     "Não binário": 0,
   };
-  const pertencimentoFiltrado = { Indigenas: 0, Quilombolas: 0, Ribeirinhos: 0 };
-  const racaFiltrada = { Amarela: 0, Branca: 0, Indigena: 0, Parda: 0, Preta: 0 };
+  const pertencimentoFiltrado = {
+    Indigenas: 0,
+    Quilombolas: 0,
+    Ribeirinhos: 0,
+  };
+  const racaFiltrada = {
+    Amarela: 0,
+    Branca: 0,
+    Indigena: 0,
+    Parda: 0,
+    Preta: 0,
+  };
 
-  const municipios = ufSelecionada === "todos"
-    ? Object.values(DADOS_DETALHADOS_POR_MUNICIPIO).flat()
-    : (DADOS_DETALHADOS_POR_MUNICIPIO[ufSelecionada] || []);
+  const municipios =
+    ufSelecionada === "todos"
+      ? Object.values(DADOS_DETALHADOS_POR_MUNICIPIO).flat()
+      : DADOS_DETALHADOS_POR_MUNICIPIO[ufSelecionada] || [];
 
   let totalMembersFiltrado = 0;
   municipios.forEach((municipio) => {
-    if (municipio.status in nucaStatusFiltrado) nucaStatusFiltrado[municipio.status]++;
+    if (municipio.status in nucaStatusFiltrado)
+      nucaStatusFiltrado[municipio.status]++;
     totalMembersFiltrado += municipio.total;
     genderCountsFiltrado["Feminino"] += municipio.feminino;
     genderCountsFiltrado["Masculino"] += municipio.masculino;
     genderCountsFiltrado["Não binário"] += municipio.naoBinario;
   });
 
-  const adolescentesBase = ufSelecionada === "todos"
-    ? todosAdolescentesData
-    : todosAdolescentesData.filter((row) => row.UF === ufSelecionada);
+  const adolescentesBase =
+    ufSelecionada === "todos"
+      ? todosAdolescentesData
+      : todosAdolescentesData.filter((row) => row.UF === ufSelecionada);
 
   adolescentesBase.forEach((row) => {
     pertencimentoFiltrado.Indigenas += parseInt(row.Indigenas || 0, 10);
@@ -776,7 +778,13 @@ function calcularDadosGraficosPorEstado(ufSelecionada) {
     racaFiltrada.Indigena += parseInt(row.IndigenaRaca || 0, 10);
   });
 
-  return { nucaStatusFiltrado, genderCountsFiltrado, pertencimentoFiltrado, racaFiltrada, totalMembersFiltrado };
+  return {
+    nucaStatusFiltrado,
+    genderCountsFiltrado,
+    pertencimentoFiltrado,
+    racaFiltrada,
+    totalMembersFiltrado,
+  };
 }
 
 function somarAdolescentesCriadosPorUF(ufSelecionada = "todos") {
@@ -792,14 +800,17 @@ function somarAdolescentesCriadosPorUF(ufSelecionada = "todos") {
 
 function atualizarGraficosDonutPorEstado(ufSelecionada = "todos") {
   if (ufSelecionada === "todos") {
-    updateDonutCharts(DADOS_PROCESSADOS.nucaStatus, DADOS_PROCESSADOS.generoContagens);
+    updateDonutCharts(
+      DADOS_PROCESSADOS.nucaStatus,
+      DADOS_PROCESSADOS.generoContagens,
+    );
 
     document.querySelector(".nucas-number").textContent = formatNumber(
-      DADOS_PROCESSADOS.nucaStatus["✅ NUCA criado"] || 0
+      DADOS_PROCESSADOS.nucaStatus["✅ NUCA criado"] || 0,
     );
 
     document.querySelector(".members-number").textContent = formatNumber(
-      somarAdolescentesCriadosPorUF("todos")
+      somarAdolescentesCriadosPorUF("todos"),
     );
 
     recalcularEAtualizarGraficosExtrasGlobais();
@@ -809,11 +820,11 @@ function atualizarGraficosDonutPorEstado(ufSelecionada = "todos") {
   const dados = calcularDadosGraficosPorEstado(ufSelecionada);
 
   document.querySelector(".nucas-number").textContent = formatNumber(
-    dados.nucaStatusFiltrado["✅ NUCA criado"] || 0
+    dados.nucaStatusFiltrado["✅ NUCA criado"] || 0,
   );
 
   document.querySelector(".members-number").textContent = formatNumber(
-    somarAdolescentesCriadosPorUF(ufSelecionada)
+    somarAdolescentesCriadosPorUF(ufSelecionada),
   );
 
   updateDonutCharts(dados.nucaStatusFiltrado, dados.genderCountsFiltrado);
@@ -828,13 +839,16 @@ function setupEZFilters() {
     return;
   }
 
-  const estados = Object.keys(DADOS_DETALHADOS_POR_MUNICIPIO).sort((a, b) => a.localeCompare(b, "pt-BR"));
+  const estados = Object.keys(DADOS_DETALHADOS_POR_MUNICIPIO).sort((a, b) =>
+    a.localeCompare(b, "pt-BR"),
+  );
   const valorAtual = ezSelect.value || "todos";
   ezSelect.innerHTML =
     `<option value="todos">${t("all_states")}</option>` +
     estados.map((uf) => `<option value="${uf}">${uf}</option>`).join("");
   ezSelect.value = estados.includes(valorAtual) ? valorAtual : "todos";
-  ezSelect.onchange = (event) => atualizarGraficosDonutPorEstado(event.target.value);
+  ezSelect.onchange = (event) =>
+    atualizarGraficosDonutPorEstado(event.target.value);
 }
 
 function recalcularEAtualizarGraficosExtrasGlobais() {
@@ -855,7 +869,6 @@ function recalcularEAtualizarGraficosExtrasGlobais() {
   updatePertencimentoChart(pertencimentoGlobal);
   updateRacaChart(racaGlobal);
 }
-
 
 async function carregarMapbox(nucaDataByUF) {
   console.log("Dados de NUCA por UF:", nucaDataByUF);
@@ -898,7 +911,6 @@ async function carregarMapbox(nucaDataByUF) {
       (dadosConvertidos[sigla] || 0) + nucaDataByUF[chave];
   }
 
-  
   console.log("Dados convertidos para siglas:", dadosConvertidos);
 
   let larguraTela = window.innerWidth;
@@ -1130,7 +1142,7 @@ function createBarChart(nucaDataByUF) {
       layout: {
         padding: {
           left: 0,
-          right: 40, 
+          right: 40,
         },
       },
       plugins: {
@@ -1207,7 +1219,6 @@ function createBarChart(nucaDataByUF) {
   });
 }
 
-
 function normalizeSearchText(value) {
   return String(value || "")
     .normalize("NFD")
@@ -1227,14 +1238,15 @@ function createMunicipioSearchInput(id, onInput) {
   input.type = "search";
   input.id = id;
   input.className = "municipio-search";
-  input.placeholder = currentLanguage === "en" ? "Search municipality" : "Buscar município...";
+  input.placeholder =
+    currentLanguage === "en" ? "Search municipality" : "Buscar município...";
   input.setAttribute("aria-label", input.placeholder);
   input.addEventListener("input", onInput);
   return input;
 }
 
-const API_ADOLESCENTES_URL =
-  "https://api-selo-unicef-cloudrun-839032982303.us-central1.run.app/adolescentes/";
+// const API_ADOLESCENTES_URL =
+//   "https://api-selo-unicef-cloudrun-839032982303.us-central1.run.app/adolescentes/";
 
 function displayTablePage(data, tableBody, page) {
   tableBody.innerHTML = "";
@@ -1312,11 +1324,15 @@ function setupPagination(data, paginationContainer, tableBody) {
     setupPagination(data, paginationContainer, tableBody);
   };
 
-  const prevButton = createButton("←", currentPage === 1, () => updatePage(currentPage - 1));
+  const prevButton = createButton("←", currentPage === 1, () =>
+    updatePage(currentPage - 1),
+  );
   const status = document.createElement("span");
   status.className = "pagination-status";
   status.innerText = `Página ${currentPage} de ${pageCount}`;
-  const nextButton = createButton("→", currentPage === pageCount, () => updatePage(currentPage + 1));
+  const nextButton = createButton("→", currentPage === pageCount, () =>
+    updatePage(currentPage + 1),
+  );
 
   paginationContainer.appendChild(prevButton);
   paginationContainer.appendChild(status);
@@ -1344,11 +1360,15 @@ function setupAlertPagination(data, paginationContainer, tableBody) {
     setupAlertPagination(data, paginationContainer, tableBody);
   };
 
-  const prevButton = createButton("←", currentAlertPage === 1, () => updatePage(currentAlertPage - 1));
+  const prevButton = createButton("←", currentAlertPage === 1, () =>
+    updatePage(currentAlertPage - 1),
+  );
   const status = document.createElement("span");
   status.className = "pagination-status";
   status.innerText = `Página ${currentAlertPage} de ${pageCount}`;
-  const nextButton = createButton("→", currentAlertPage === pageCount, () => updatePage(currentAlertPage + 1));
+  const nextButton = createButton("→", currentAlertPage === pageCount, () =>
+    updatePage(currentAlertPage + 1),
+  );
 
   paginationContainer.appendChild(prevButton);
   paginationContainer.appendChild(status);
@@ -1367,9 +1387,12 @@ function criarFiltroUF(dados) {
     `<option value="">${t("all_states")}</option>` +
     ufs.map((uf) => `<option value="${uf}">${uf}</option>`).join("");
 
-  const searchInput = createMunicipioSearchInput("municipio-search-main", () => {
-    aplicarFiltroPorUF(select.value);
-  });
+  const searchInput = createMunicipioSearchInput(
+    "municipio-search-main",
+    () => {
+      aplicarFiltroPorUF(select.value);
+    },
+  );
 
   filtroUFDiv.appendChild(select);
   filtroUFDiv.appendChild(searchInput);
@@ -1392,9 +1415,12 @@ function criarFiltroUFAlert(dados) {
     `<option value="">${t("all_states")}</option>` +
     ufs.map((uf) => `<option value="${uf}">${uf}</option>`).join("");
 
-  const searchInput = createMunicipioSearchInput("municipio-search-alert", () => {
-    aplicarFiltroPorUFAlert(select.value);
-  });
+  const searchInput = createMunicipioSearchInput(
+    "municipio-search-alert",
+    () => {
+      aplicarFiltroPorUFAlert(select.value);
+    },
+  );
 
   filtroUFDiv.appendChild(select);
   filtroUFDiv.appendChild(searchInput);
@@ -1418,8 +1444,11 @@ function aplicarFiltroPorUF(uf) {
     dadosFiltrados = adolescentesData.filter((row) => row.UF === uf);
   }
 
-  const municipioBusca = document.getElementById("municipio-search-main")?.value || "";
-  dadosFiltrados = dadosFiltrados.filter((row) => municipioMatchesSearch(row, municipioBusca));
+  const municipioBusca =
+    document.getElementById("municipio-search-main")?.value || "";
+  dadosFiltrados = dadosFiltrados.filter((row) =>
+    municipioMatchesSearch(row, municipioBusca),
+  );
 
   currentPage = 1;
   displayTablePage(dadosFiltrados, tableBody, currentPage);
@@ -1466,8 +1495,11 @@ function aplicarFiltroPorUFAlert(uf) {
     dadosFiltrados = alertNucasData.filter((row) => row.UF === uf);
   }
 
-  const municipioBusca = document.getElementById("municipio-search-alert")?.value || "";
-  dadosFiltrados = dadosFiltrados.filter((row) => municipioMatchesSearch(row, municipioBusca));
+  const municipioBusca =
+    document.getElementById("municipio-search-alert")?.value || "";
+  dadosFiltrados = dadosFiltrados.filter((row) =>
+    municipioMatchesSearch(row, municipioBusca),
+  );
 
   currentAlertPage = 1;
   displayAlertTablePage(dadosFiltrados, tableBody, currentAlertPage);
@@ -1486,15 +1518,41 @@ function aplicarFiltroPorUFAlert(uf) {
   }
 }
 
+
+async function buscarTodosRegistros(tabela, colunas = "*") {
+  const pageSize = 1000;
+  let from = 0;
+  let todos = [];
+
+  while (true) {
+    const { data, error } = await supabaseClient
+      .from(tabela)
+      .select(colunas)
+      .range(from, from + pageSize - 1);
+
+    if (error) {
+      throw error;
+    }
+
+    if (!data || data.length === 0) {
+      break;
+    }
+
+    todos = todos.concat(data);
+
+    if (data.length < pageSize) {
+      break;
+    }
+
+    from += pageSize;
+  }
+
+  return todos;
+}
+
 async function loadAdolescentesTableData() {
   try {
-    const response = await fetch(API_ADOLESCENTES_URL);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-
-    const rows = data;
+    const rows = await buscarTodosRegistros("detalhes_adolescentes");
 
     const rawData = rows
       .map((item) => {
@@ -1555,7 +1613,7 @@ async function loadAdolescentesTableData() {
     updatePertencimentoChart(pertencimentoCounts);
     updateRacaChart(racaCounts);
 
-    const tableBody = document.querySelector(".table-container tbody"); 
+    const tableBody = document.querySelector(".table-container tbody");
     const paginationContainer = document.getElementById("pagination-container");
     const textoResumo = document.querySelector(".text-space");
 
@@ -1589,12 +1647,11 @@ async function loadAdolescentesTableData() {
   }
 }
 
-
 document.addEventListener("DOMContentLoaded", async () => {
   applyStaticTranslations();
   setupLanguageSwitcher();
-  const loadTopData = loadAndProcessData(); 
-  const loadBottomData = loadAdolescentesTableData(); 
+  const loadTopData = loadAndProcessData();
+  const loadBottomData = loadAdolescentesTableData();
 
   await Promise.all([loadTopData, loadBottomData]);
 
@@ -1602,4 +1659,3 @@ document.addEventListener("DOMContentLoaded", async () => {
   setupEZFilters();
   refreshDynamicTranslations();
 });
-

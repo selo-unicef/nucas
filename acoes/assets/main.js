@@ -23,7 +23,7 @@ const I18N = {
   pt: {
     locale: "pt-BR",
     pageTitle: "Dashboard - Selo Unicef",
-    pageHeading: "NUCAs em ação",
+    pageHeading: "NUCA em Ação",
     languagePt: "🇧🇷 Português",
     languageEn: "🇺🇸 Inglês",
     cardActions: "Ações realizadas",
@@ -381,27 +381,33 @@ function destroyChart(id) {
   }
 }
 
-function createVerticalBarChart(canvasId, labels, values, barColor) {
+function createVerticalBarChart(canvasId, labels, values, barColor, maxItems = 7) {
   const ctx = document.getElementById(canvasId);
   if (!ctx) return;
 
   destroyChart(canvasId);
 
-  let finalLabels = [...labels];
-  let finalValues = [...values];
+let finalLabels = [...labels];
+let finalValues = [...values];
 
-  if (labels.length > 7) {
-    const limit = 7;
-    finalLabels = labels.slice(0, limit);
-    finalValues = values.slice(0, limit);
+if (
+  maxItems !== null &&
+  maxItems !== undefined &&
+  labels.length > maxItems
+) {
 
-    const othersValue = values
-      .slice(limit)
-      .reduce((acc, curr) => acc + (curr || 0), 0);
+  finalLabels = labels.slice(0, maxItems);
+  finalValues = values.slice(0, maxItems);
 
+  const othersValue = values
+    .slice(maxItems)
+    .reduce((acc, curr) => acc + (curr || 0), 0);
+
+  if (othersValue > 0) {
     finalLabels.push(t("others"));
     finalValues.push(othersValue);
   }
+}
 
   const wrapLabel = (label, maxChars = 22, maxLines = 3) => {
     if (!label) return "";
@@ -642,13 +648,23 @@ function renderTopCharts(data) {
     "#MeuVotoImporta2026",
   ];
 
-  const dataTemasFiltrado = data.filter((item) =>
-    temasPermitidos.includes(item.tema),
-  );
+  const temasPermitidosNormalizados = temasPermitidos.map((tema) => tema.trim());
 
-  const temas = Object.entries(
-    aggregateByKey(dataTemasFiltrado, (item) => translateLabel(item.tema)),
-  ).sort((a, b) => b[1] - a[1]);
+const temasAgrupados = aggregateByKey(data, (item) => {
+  const tema = (item.tema || "").trim();
+
+  if (temasPermitidosNormalizados.includes(tema)) {
+    return translateLabel(tema);
+  }
+
+  return t("others");
+});
+
+const temas = Object.entries(temasAgrupados).sort((a, b) => {
+  if (a[0] === t("others")) return 1;
+  if (b[0] === t("others")) return -1;
+  return b[1] - a[1];
+});
   
   const locais = topNWithOthers(
     aggregateByKey(data, (item) => translateLabel(item.local_acao)),
@@ -656,18 +672,20 @@ function renderTopCharts(data) {
   );
 
   createVerticalBarChart(
-    "temasChart",
-    temas.map(([label]) => label),
-    temas.map(([, value]) => value),
-    COLORS.yellow,
-  );
+  "temasChart",
+  temas.map(([label]) => label),
+  temas.map(([, value]) => value),
+  COLORS.yellow,
+  null
+);
 
-  createVerticalBarChart(
-    "locaisChart",
-    locais.map(([label]) => label),
-    locais.map(([, value]) => value),
-    "#cca079",
-  );
+createVerticalBarChart(
+  "locaisChart",
+  locais.map(([label]) => label),
+  locais.map(([, value]) => value),
+  "#cca079",
+  7 // continua agrupando em "Outros"
+);
 }
 
 function getYearOptions(data) {
@@ -716,19 +734,30 @@ function populateThemeFilter(containerSelector, selectId, onChange) {
   const container = document.querySelector(containerSelector);
   if (!container) return;
 
+  // const temas = [
+  //   ...new Set(
+  //     rawData
+  //       .map((item) => item.tema)
+  //       .filter(
+  //         (tema) =>
+  //           tema &&
+  //           tema.trim() &&
+  //           tema !== "Não informado" &&
+  //           tema !== "Not informed",
+  //       ),
+  //   ),
+  // ].sort((a, b) => a.localeCompare(b, "pt-BR"));
+
   const temas = [
-    ...new Set(
-      rawData
-        .map((item) => item.tema)
-        .filter(
-          (tema) =>
-            tema &&
-            tema.trim() &&
-            tema !== "Não informado" &&
-            tema !== "Not informed",
-        ),
-    ),
-  ].sort((a, b) => a.localeCompare(b, "pt-BR"));
+  "Saúde integral e integrada de adolescentes",
+  "Transição positiva para o mundo do trabalho",
+  "Prevenção às violências",
+  "Resiliência Climática - #EntreNoClimaUNICEF",
+  "Governança local/Orçamento público (PPA e Agenda Transversal)",
+  "Equidade étnico-racial",
+  "Empoderamento de meninas",
+  "#MeuVotoImporta2026",
+];
 
   container.innerHTML = `
     <select id="${selectId}">

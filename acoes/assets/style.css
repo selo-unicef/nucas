@@ -121,6 +121,7 @@ h4 a {
 
 .translate .lang-pt,
 .translate .lang-en {
+    /* exemplo */
     background-color: #EBEBD9;
     color: #005980;
     border: 1px solid #005980;

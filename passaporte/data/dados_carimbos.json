@@ -1,0 +1,110 @@
+[
+  {
+    "selo": "Registrou 3 ações no prazo (2026)",
+    "registro": "Automático",
+    "label": "3acoes_2026",
+    "imagem": "CARIMBO - REGISTRADAS PRAZO 2026.png",
+    "tipo": "acoes_ate_ano",
+    "ano": 2026
+  },
+  {
+    "selo": "Registrou 3 ações no prazo (2027)",
+    "registro": "Automático",
+    "label": "3acoes_2027",
+    "imagem": "CARIMBO - NO PRAZO 2027.png",
+    "tipo": "acoes_no_ano",
+    "ano": 2027
+  },
+  {
+    "selo": "PPCA incluído",
+    "registro": "Manual",
+    "label": "ppca_incluido",
+    "imagem": "CARIMBO - PPCA.png",
+    "tipo": "manual_ignorado"
+  },
+  {
+    "selo": "PPCA revisado – 2º Fórum Comunitário",
+    "registro": "Manual",
+    "label": "ppca_revisado",
+    "imagem": "CARIMBO - PPCA REVISADO.png",
+    "tipo": "manual_ignorado"
+  },
+  {
+    "selo": "Participação de adolescentes indígenas, quilombolas, ciganos e ribeirinhos",
+    "registro": "Automático",
+    "label": "participacao_povos",
+    "imagem": "CARIMBO - PARTICIPACAO.png",
+    "tipo": "detalhes_adolescentes_povos"
+  },
+  {
+    "selo": "NUCA criado no prazo",
+    "registro": "Automático",
+    "label": "nuca_criado_prazo",
+    "imagem": "CARIMBO - CRIADO NO PRAZO.png",
+    "tipo": "nuca_criado_prazo"
+  },
+  {
+    "selo": "Ocupe Saúde de Adolescentes",
+    "registro": "Manual",
+    "label": "ocupe_saude",
+    "imagem": "CARIMBO - OCUPE SAUDE.png",
+    "tipo": "tema_exato",
+    "tema": "Ocupe Saúde de Adolescentes"
+  },
+  {
+    "selo": "#MeuVotoImporta",
+    "registro": "Automático",
+    "label": "meu_voto_importa",
+    "imagem": "CARIMBO - MEU VOTO.png",
+    "tipo": "tema_exato",
+    "tema": "#MeuVotoImporta2026"
+  },
+  {
+    "selo": "Equidade étnico-racial",
+    "registro": "Automático",
+    "label": "equidade_racial",
+    "imagem": "CARIMBO - ETNICO RACIAL.png",
+    "tipo": "tema_exato",
+    "tema": "Equidade étnico-racial"
+  },
+  {
+    "selo": "Equidade de gênero",
+    "registro": "Automático",
+    "label": "equidade_genero",
+    "imagem": "CARIMBO - EQUIDADE GENERO.png",
+    "tipo": "tema_exato",
+    "tema": "Equidade de gênero"
+  },
+  {
+    "selo": "#EntreNoClimaUNICEF",
+    "registro": "Automático",
+    "label": "entre_no_clima",
+    "imagem": "CARIMBO - ENTRE NO CLIMA.png",
+    "tipo": "tema_exato",
+    "tema": "Resiliência Climática - #EntreNoClimaUNICEF"
+  },
+  {
+    "selo": "Proteção – Prevenção e enfrentamento às violências",
+    "registro": "Manual",
+    "label": "prevencao_violencias",
+    "imagem": "CARIMBO - ENFRENTAMENTO.png",
+    "tipo": "tema_exato",
+    "tema": "Prevenção às violências"
+  },
+  {
+    "selo": "Controle social – Orçamento público",
+    "registro": "Manual",
+    "label": "controle_social_orcamento",
+    "imagem": "CARIMBO - CONTROLE SOCIAL.png",
+    "tipo": "tema_exato",
+    "tema": "Controle social – Orçamento público"
+  },
+  {
+    "selo": "O Futuro Começa Agora – 1MIO",
+    "registro": "Manual",
+    "label": "futuro_comeca_agora",
+    "imagem": "CARIMBO - 1MIO.png",
+    "tipo": "tema_exato",
+    "tema": "O Futuro Começa Agora – 1MIO"
+  }
+]

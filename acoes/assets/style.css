@@ -192,7 +192,7 @@ div.container-numbers>.container {
     align-items: center;
     justify-content: center;
     ;
-    padding: 5px 20px;
+    padding: 5px 43px;
 }
 
 div.container-numbers p {
@@ -425,7 +425,7 @@ section.column-3 .title-img img {
     height: 100%;
     
     max-height: 550px;
-    padding-left: 10px;
+    /* padding-left: 10px; */
     margin-top: 100px;
     
 }
@@ -1539,7 +1539,7 @@ section.column-3.carrossel-section {
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        padding: 15px 20px;
+        padding: 15px 43px;
     }
 
     .text-nucas-uf h3 {

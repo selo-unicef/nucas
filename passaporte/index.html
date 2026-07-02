@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Passaporte de Selos - NUCA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <section class="hero-card">
+      <div class="hero-copy">
+        <p class="eyebrow">Selo UNICEF 2025-2028</p>
+        <h1>Gerador Passaporte</h1>
+        <p class="hint">Digite o município participante e gere automaticamente o Passaporte com os selos conquistados</p>
+      </div>
+
+      <div class="search-panel">
+        <label class="search-field" for="municipioSearch">
+          <p class="buscar">Buscar município</p>
+          <div class="search-input-wrap">
+            <input id="municipioSearch" type="search" placeholder="Ex.: São Francisco de Assis do Piauí" autocomplete="off" />
+            <button id="btnBuscar" type="button">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M11 4a7 7 0 100 14 7 7 0 000-14zM21 21l-4.3-4.3" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Gerar
+            </button>
+          </div>
+          <div id="suggestionsBox" class="suggestions-box" aria-label="Sugestões de municípios"></div>
+        </label>
+        <div id="statusMessage" class="status-message">Carregando dados dos municípios...</div>
+      </div>
+    </section>
+
+    <section class="workspace">
+      <div class="preview-card">
+        <div class="preview-header">
+          <div>
+            <p class="eyebrow small">Pré-visualização</p>
+            <h2>Passaporte gerado</h2>
+          </div>
+          <div id="previewStatus" class="preview-status">Aguardando município</div>
+        </div>
+
+        <div id="loadingOverlay" class="loading-overlay" aria-hidden="true">
+          <div class="spinner"></div>
+          <strong>Gerando passaporte...</strong>
+          <span>Organizando mapa, dados e selos</span>
+        </div>
+
+        <div class="passport-stage">
+          <article id="passaporte" class="passaporte">
+            <header class="passaporte-topo">
+              <h2 id="municipioTitulo">Selecione um município</h2>
+              <span>SELO UNICEF 2025-2028</span>
+            </header>
+
+            <section class="passaporte-miolo">
+              <div class="capa">
+                <h3>PASSAPORTE DA<br />PARTICIPAÇÃO<br />CIDADÃ</h3>
+                <div class="logo-imagem">
+                  <img src="./assets/selo-unicef.png" alt="" srcset="">
+                </div>
+
+                <div class="mapa-brasil" aria-label="Mapa do Brasil com marcador do município selecionado">
+                  <svg id="brasilMap" viewBox="0 0 520 430" role="img" aria-label="Mapa do Brasil"></svg>
+                </div>
+
+                <p class="text-passaporte">Município comprometido com a jornada de participação cidadã de adolescentes</p>
+              </div>
+
+              <aside class="selos-lateral">
+                <!-- <h4>Selos conquistados</h4> -->
+                <div id="selosContainer" class="selos-container">
+                  <!-- <p class="empty-stamps">Os selos aparecerão aqui após a busca.</p> -->
+                </div>
+              </aside>
+            </section>
+
+            <footer class="passaporte-footer">
+              <span id="resumoMunicipio">Aguardando seleção</span>
+            </footer>
+            <div class="patrocinadores">
+            <img src="./assets/barra-patrocinadores.png" alt="" srcset="">
+          </div>
+          </article>
+
+          
+        </div>
+
+        <div class="download-actions">
+          <button id="btnPng" type="button" disabled>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M4 19.5h16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Baixar Imagem
+          </button>
+          <button id="btnPdf" type="button" disabled>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M4 19.5h16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Baixar PDF
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite">
+    <div class="toast-icon">✓</div>
+    <div>
+      <strong>Passaporte gerado com sucesso</strong>
+      <p id="toastText">Município selecionado.</p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

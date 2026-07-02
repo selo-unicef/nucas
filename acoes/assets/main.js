@@ -63,8 +63,8 @@ const I18N = {
     languageEn: "🇺🇸 Inglês",
     cardActions: "Ações realizadas",
     cardPeople: "PESSOAS MOBILIZADAS NOS TERRITÓRIOS",
-    cardTeens: "Adolescentes dos NUCAs participando",
-    cardNucas: "NUCAs criados",
+    cardTeens: "Adolescentes dos NUCAs com ações",
+    cardNucas: "NUCAs em Ação",
     intro1:
       "Os Núcleos de Cidadania de Adolescentes (NUCAs) fazem parte da metodologia do Selo UNICEF e são um indicador essencial da garantia do direito à participação de adolescentes e jovens, assegurando espaço seguro para o desenvolvimento das competências e da cidadania de meninas, menines e meninos em seus territórios.",
     intro2:
@@ -390,19 +390,126 @@ function setCounter(selector, value) {
   if (el) el.textContent = formatNumber(value);
 }
 
+
+const MAPA_UF_SIGLAS = {
+  ACRE: "AC",
+  ALAGOAS: "AL",
+  AMAPÁ: "AP",
+  AMAZONAS: "AM",
+  BAHIA: "BA",
+  CEARÁ: "CE",
+  "DISTRITO FEDERAL": "DF",
+  "ESPÍRITO SANTO": "ES",
+  GOIÁS: "GO",
+  MARANHÃO: "MA",
+  "MATO GROSSO": "MT",
+  "MATO GROSSO DO SUL": "MS",
+  "MINAS GERAIS": "MG",
+  PARÁ: "PA",
+  PARAÍBA: "PB",
+  PARANÁ: "PR",
+  PERNAMBUCO: "PE",
+  PIAUÍ: "PI",
+  "RIO DE JANEIRO": "RJ",
+  "RIO GRANDE DO NORTE": "RN",
+  "RIO GRANDE DO SUL": "RS",
+  RONDÔNIA: "RO",
+  RORAIMA: "RR",
+  "SANTA CATARINA": "SC",
+  "SÃO PAULO": "SP",
+  SERGIPE: "SE",
+  TOCANTINS: "TO",
+};
+
+function getFlexibleValue(row, keys = []) {
+  if (!row) return "";
+  const normalizedTargetKeys = keys.map((key) => normalizeSearchText(key));
+  const foundKey = Object.keys(row).find((key) =>
+    normalizedTargetKeys.includes(normalizeSearchText(key)),
+  );
+  return foundKey ? row[foundKey] : "";
+}
+
+function getUfSigla(value) {
+  const raw = String(value || "").trim().toUpperCase();
+  if (!raw) return "";
+
+  const parenthesisMatch = raw.match(/\(([A-Z]{2})\)/);
+  if (parenthesisMatch) return parenthesisMatch[1];
+
+  if (/^[A-Z]{2}$/.test(raw)) return raw;
+
+  const normalizedUf = normalizeSearchText(raw).toUpperCase();
+  const normalizedMap = Object.entries(MAPA_UF_SIGLAS).reduce((acc, [estado, sigla]) => {
+    acc[normalizeSearchText(estado).toUpperCase()] = sigla;
+    return acc;
+  }, {});
+
+  return normalizedMap[normalizedUf] || raw;
+}
+
+function getNucaUf(nuca) {
+  return getUfSigla(getFlexibleValue(nuca, ["uf", "UF", "estado", "Estado"]));
+}
+
+function getNucaMunicipio(nuca) {
+  return String(
+    getFlexibleValue(nuca, ["municipio", "Município", "município", "Municipio"]) || "",
+  ).trim();
+}
+
+function getActionNucaKey(item) {
+  return `${getUfSigla(item.uf)}__${normalizeSearchText(item.municipio)}`;
+}
+
+function getNucaKey(nuca) {
+  return `${getNucaUf(nuca)}__${normalizeSearchText(getNucaMunicipio(nuca))}`;
+}
+
+function isNucaCriado(nuca) {
+  const status = String(
+    getFlexibleValue(nuca, ["NUCA criado?", "nuca_criado", "nuca criado", "status"]),
+  ).trim();
+  return status.includes("✅") || normalizeSearchText(status).includes("nuca criado");
+}
+
+function getTotalMembrosNuca(nuca) {
+  const total = safeInt(getFlexibleValue(nuca, ["Total membros", "total_membros", "total membros"]));
+  if (total > 0) return total;
+
+  return (
+    safeInt(getFlexibleValue(nuca, ["Feminino", "feminino"])) +
+    safeInt(getFlexibleValue(nuca, ["Masculino", "masculino"])) +
+    safeInt(getFlexibleValue(nuca, ["Não binário", "Nao binario", "não binário", "nao_binario"]))
+  );
+}
+
+function getNucasCriadosComAcoes(data) {
+  const municipiosComAcoes = new Set(data.map(getActionNucaKey).filter((key) => !key.endsWith("__")));
+  const nucasUnicos = new Map();
+
+  nucasData.forEach((nuca) => {
+    const key = getNucaKey(nuca);
+    if (!key.endsWith("__") && municipiosComAcoes.has(key) && isNucaCriado(nuca)) {
+      nucasUnicos.set(key, nuca);
+    }
+  });
+
+  return [...nucasUnicos.values()];
+}
+
 function updateCounters(data) {
   const totalAcoes = data.length;
 
   const totalPublico = data.reduce((sum, item) => sum + item.publico, 0);
 
-  const totalAdolescentes = data.reduce(
-    (sum, item) => sum + item.adoles_parcipantes,
+  const nucasCriadosComAcoes = getNucasCriadosComAcoes(data);
+  const totalAdolescentes = nucasCriadosComAcoes.reduce(
+    (sum, nuca) => sum + getTotalMembrosNuca(nuca),
     0,
   );
 
-  const totalNucasCriados = nucasData.filter(
-    (n) => n.status && n.status.includes("✅"),
-  ).length;
+  const totalNucasCriados = nucasCriadosComAcoes.length;
 
   setCounter(".acoes-number", totalAcoes);
   setCounter(".mobilizacao-number", totalPublico);
@@ -819,16 +926,34 @@ function getFilteredAlertRows(data) {
 }
 
 function updateSummaryTexts(data) {
-  const totalAcoes = data.length;
-  const totalPublico = data.reduce((sum, item) => sum + item.publico, 0);
-
   const textMain = document.querySelector(".text-space");
   const textAlert = document.querySelector(".text-space-alert");
+
   if (textMain) {
+    const ufMain = document.getElementById("filter-uf-main")?.value || "todos";
+    const municipioBusca =
+      document.getElementById("municipio-search-main")?.value || "";
+
+    const mainRows = buildMunicipioRows(data)
+      .filter((item) => ufMain === "todos" || item.uf === ufMain)
+      .filter((item) => municipioMatchesSearch(item, municipioBusca));
+
+    const totalAcoesMain = mainRows.reduce(
+      (sum, item) => sum + item.acoes_total,
+      0,
+    );
+    const totalPublicoMain = mainRows.reduce(
+      (sum, item) => sum + item.publico_total,
+      0,
+    );
+
+    const complementoMain =
+      ufMain !== "todos" ? ` ${t("inState", { uf: escapeHtml(ufMain) })}` : "";
+
     textMain.innerHTML = t("summaryMain", {
-      actions: formatNumber(totalAcoes),
-      people: formatNumber(totalPublico),
-    });
+      actions: formatNumber(totalAcoesMain),
+      people: formatNumber(totalPublicoMain),
+    }).replace(currentLanguage === "en" ? " nationwide" : " pelo país", complementoMain);
   }
 
   if (textAlert) {
@@ -1377,9 +1502,10 @@ async function init() {
 
     populateYearFilter(rawData);
 
-    populateUfFilter(".filter-uf", "filter-uf-main", () =>
-      renderMunicipioTable(filteredData, 1),
-    );
+    populateUfFilter(".filter-uf", "filter-uf-main", () => {
+      updateSummaryTexts(rawData);
+      renderMunicipioTable(filteredData, 1);
+    });
 
     populateUfFilter(".filter-uf-alert", "filter-uf-alert-select", () => {
       updateSummaryTexts(filteredData);

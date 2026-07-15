@@ -38,6 +38,7 @@ async function buscarTodosRegistros(tabela, colunas = "*") {
 }
 
 const BRAZIL_STATES_GEOJSON_URL = "./data/brazil_states.geojson";
+const POPULACAO_MUNICIPIOS_URL = "./data/populacao_mun.json";
 const MAPBOX_ACCESS_TOKEN =
   "pk.eyJ1IjoibHVjYXN0aGF5bmFuLWVzdGFkYW8iLCJhIjoiY21tZmRrdXk1MDZpajJ0cHMyZW01aDg3MCJ9.1WXDZqllxNPv95_HuEEedA";
 
@@ -50,6 +51,7 @@ let currentTerritory = "todos";
 const rowsPerPage = 10;
 let actionsMap = null;
 let ufMap = {};
+let populacaoMunicipiosMap = new Map();
 const chartInstances = {};
 
 let currentLanguage = localStorage.getItem("dashboardLanguage") || "pt";
@@ -446,6 +448,88 @@ function getUfSigla(value) {
   }, {});
 
   return normalizedMap[normalizedUf] || raw;
+}
+
+function parsePopulationValue(value) {
+  if (value === null || value === undefined || value === "") return 0;
+
+  if (typeof value === "number") {
+    // O arquivo pode trazer, por exemplo, 9.593 para representar 9.593 habitantes.
+    // Nesse caso, o JSON interpreta como decimal; convertemos de volta para inteiro.
+    return Number.isInteger(value) ? value : Math.round(value * 1000);
+  }
+
+  const digits = String(value).replace(/[^0-9]/g, "");
+  return digits ? parseInt(digits, 10) : 0;
+}
+
+function getPopulationKey(municipio, uf) {
+  return `${getUfSigla(uf)}__${normalizeSearchText(municipio)}`;
+}
+
+function buildPopulationMap(populacaoData) {
+  const map = new Map();
+
+  (Array.isArray(populacaoData) ? populacaoData : []).forEach((row) => {
+    const municipio = String(
+      getFlexibleValue(row, ["Município", "Municipio", "municipio"]) || "",
+    ).trim();
+
+    const uf = getUfSigla(
+      getFlexibleValue(row, ["UF", "uf", "Estado", "estado", "Município - UF"]),
+    );
+
+    const populacao = parsePopulationValue(
+      getFlexibleValue(row, ["Pop 2022", "População 2022", "Populacao 2022", "populacao"]),
+    );
+
+    if (!municipio || !uf || populacao <= 0) return;
+
+    map.set(getPopulationKey(municipio, uf), populacao);
+  });
+
+  return map;
+}
+
+function getMobilizationLimitPercentage(populacao) {
+  if (populacao <= 1000) return 0.5;
+  if (populacao <= 10000) return 0.4;
+  if (populacao <= 50000) return 0.3;
+  if (populacao <= 100000) return 0.2;
+  if (populacao <= 500000) return 0.1;
+  return 0.05;
+}
+
+function adjustMobilizedPeople(action) {
+  const publicoInformado = safeInt(action.publico);
+  const uf = getUfSigla(action.uf);
+  const key = getPopulationKey(action.municipio, uf);
+  const populacao = populacaoMunicipiosMap.get(key);
+
+  // Sem população correspondente, preserva o valor informado pela API.
+  if (!populacao) {
+    return {
+      ...action,
+      publico: publicoInformado,
+      publico_original: publicoInformado,
+      populacao_municipio: null,
+      publico_foi_ajustado: false,
+    };
+  }
+
+  const percentualLimite = getMobilizationLimitPercentage(populacao);
+  const limiteMobilizados = Math.floor(populacao * percentualLimite);
+  const publicoAjustado = Math.min(publicoInformado, limiteMobilizados);
+
+  return {
+    ...action,
+    publico: publicoAjustado,
+    publico_original: publicoInformado,
+    populacao_municipio: populacao,
+    percentual_limite_publico: percentualLimite,
+    limite_publico: limiteMobilizados,
+    publico_foi_ajustado: publicoInformado > limiteMobilizados,
+  };
 }
 
 function getNucaUf(nuca) {
@@ -1454,12 +1538,26 @@ async function init() {
   setupTerritoryButtons();
 
   try {
-    const [acoesDataBruto, nucasDataBruto] = await Promise.all([
+    const [acoesDataBruto, nucasDataBruto, populacaoResponse] = await Promise.all([
       buscarTodosRegistros("acoes_nuca"),
       buscarTodosRegistros("detalhes_nucas"),
+      fetch(POPULACAO_MUNICIPIOS_URL),
     ]);
 
+    if (!populacaoResponse.ok) {
+      throw new Error(
+        `Erro ao carregar população dos municípios: ${populacaoResponse.status} ${populacaoResponse.statusText}`,
+      );
+    }
+
+    const populacaoData = await populacaoResponse.json();
+    populacaoMunicipiosMap = buildPopulationMap(populacaoData);
     nucasData = nucasDataBruto;
+
+    console.log(
+      "Municípios com população carregada:",
+      populacaoMunicipiosMap.size,
+    );
 
     console.log("Dados de ações brutos:", acoesDataBruto);
     console.log("Status encontrados:", [
@@ -1488,9 +1586,20 @@ async function init() {
 
     console.log("Total de público filtrado:", totalPublico);
 
-    rawData = acoesData.map(normalizeAction);
+    rawData = acoesData
+      .map(normalizeAction)
+      .map(adjustMobilizedPeople);
+
+    const acoesComPublicoAjustado = rawData.filter(
+      (acao) => acao.publico_foi_ajustado,
+    );
 
     console.log("Dados de ações carregados após filtro:", rawData.length);
+    console.log(
+      "Ações com pessoas mobilizadas ajustadas:",
+      acoesComPublicoAjustado.length,
+      acoesComPublicoAjustado,
+    );
 
     try {
       const geojsonResponse = await fetch(BRAZIL_STATES_GEOJSON_URL);
@@ -1640,3 +1749,4 @@ modal.addEventListener("click", (event) => {
     modalContent.innerHTML = "";
   }
 });
+ß

@@ -75,9 +75,9 @@ const I18N = {
     cardMunicipalities: "Municípios com adolescentes inscritos/as",
     cardNucas: "NUCAs criados",
     intro1:
-      "Os <strong>Núcleos de Cidadania de Adolescentes (NUCAs)</strong> fazem parte da metodologia do Selo UNICEF e são um indicador essencial da garantia do direito à participação de adolescentes e jovens, assegurando espaço seguro para o desenvolvimento das competências e da cidadania de meninas, menines e meninos em seus territórios.",
+      'Este painel interativo mostra o retrato dos Núcleos de Cidadania de Adolescentes (NUCAs) na edição do Selo UNICEF 2025-2028: quantos núcleos foram criados ou reativados em cada município e quem são seus integrantes — por gênero, pertencimento étnico-cultural e raça e cor. Também identifica os municípios "quase lá", com pendências a regularizar até o encerramento desta edição.',
     intro2:
-      'Este painel interativo reflete o cadastro de adolescentes dos NUCAs na edição do Selo UNICEF 2025-2028. A pessoa mobilizadora deve colaborar com a alimentação desta ferramenta através da utilização dos formulários oficiais de registro de adolescentes. <a href="https://docs.google.com/forms/d/e/1FAIpQLScSR4eJmS6G1lUpJen58lu2hJN7HIadt7liJyi7aExqKNwDwA/viewform" target="_blank">Clique aqui</a> e saiba mais.',
+      'Os dados são validados a partir do cadastro de adolescentes feito pela pessoa mobilizadora via formulário de Inscrição de Adolescentes nos NUCAs – Selo UNICEF Edição 2025-2028. Para acompanhar o que os NUCAs estão fazendo em cada território, <a href="/acoes">acesse o Painel NUCA em Ação</a> e saiba mais.',
     ez_all: "Todos os territórios",
     ez_amazonia: "Amazônia Legal",
     ez_semiarido: "Semiárido",

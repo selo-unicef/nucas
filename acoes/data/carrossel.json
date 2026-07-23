@@ -1,15 +1,15 @@
 [
   {
-    "descricao": "Ceará e Rio Grande do Norte levam protagonismo do NUCA ao III Congresso de Enfrentamento à Violência Sexual contra Crianças e Adolescentes",
-    "url_foto": "imagens-carrossel/image1.png",
-    "url_video": "",
-    "link": "https://selounicef.org.br/noticias/ceara-e-rio-grande-do-norte-levam-protagonismo-do-nuca-ao-iii-congresso-de-enfrentamento"
-  },
-  {
     "descricao": "Quem cuida do Tapajós: o protagonismo de adolescentes indígenas na Amazônia",
     "url_foto": "imagens-carrossel/image2.png",
     "url_video": "",
     "link": "https://www.unicef.org/brazil/historias/quem-cuida-do-tapajos-o-protagonismo-de-adolescentes-indigenas-na-amazonia"
+  },
+  {
+    "descricao": "Ceará e Rio Grande do Norte levam protagonismo do NUCA ao III Congresso de Enfrentamento à Violência Sexual contra Crianças e Adolescentes",
+    "url_foto": "imagens-carrossel/image1.png",
+    "url_video": "",
+    "link": "https://selounicef.org.br/noticias/ceara-e-rio-grande-do-norte-levam-protagonismo-do-nuca-ao-iii-congresso-de-enfrentamento"
   },
   {
     "descricao": "Como eu me percebi como cidadã consciente do meu papel social",
@@ -18,13 +18,13 @@
     "link": "https://www.unicef.org/brazil/historias/como-eu-me-percebi-como-cidada-consciente-do-meu-papel-social"
   },
   {
-    "descricao": "NUCAs Caruaru",
+    "descricao": "Adolescentes dos NUCAs de Pernambuco discutem política e orçamento público",
     "url_foto": "imagens-carrossel/image4.png",
     "url_video": "",
     "link": ""
   },
   {
-    "descricao": "Realização de plantio de árvores e blitz educativa sobre mudanças climáticas em Pastos Bons",
+    "descricao": "Realização de plantio de árvores e blitz educativa sobre mudanças climáticas em Pastos Bons, Maranhão",
     "url_foto": "imagens-carrossel/image6.png",
     "url_video": "",
     "link": "https://www.famem.org.br/noticias/noticias/exibe/0043779-realizacao-de-plantio-de-arvores-e-blitz-educativa-sobre-mudancas-climaticas-em-pastos-bons"
@@ -36,7 +36,7 @@
     "link": "https://selounicef.org.br/noticias/adolescentes-lancam-manifesto-pelo-clima-direitos-e-oportunidades-no-para"
   },
   {
-    "descricao": "Estudantes do NUCA visitaram as dependências do TRE-SE",
+    "descricao": "Integrantes do NUCA de Salgado (SE) visitaram as dependências do TRE-SE",
     "url_foto": "imagens-carrossel/image8.png",
     "url_video": "",
     "link": "https://www.tre-se.jus.br/comunicacao/noticias/2026/Abril/estudantes-do-nuca-visitaram-as-dependencias-do-tre-se"

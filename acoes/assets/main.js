@@ -69,9 +69,9 @@ const I18N = {
     cardTeens: "Adolescentes dos NUCAs com ações",
     cardNucas: "NUCAs em Ação",
     intro1:
-      "Os Núcleos de Cidadania de Adolescentes (NUCAs) fazem parte da metodologia do Selo UNICEF e são um indicador essencial da garantia do direito à participação de adolescentes e jovens, assegurando espaço seguro para o desenvolvimento das competências e da cidadania de meninas, menines e meninos em seus territórios.",
+      "Este painel interativo mostra as ações realizadas por adolescentes dos NUCAs em seus municípios, organizadas por tema — mudanças climáticas, saúde, prevenção às violências, participação política, entre outros —, com o número de adolescentes participantes e pessoas mobilizadas por eles.",
     intro2:
-      'Este painel interativo reflete as ações desenvolvidas pelos NUCAs na edição do Selo UNICEF 2025-2028. A pessoa mobilizadora deve colaborar com a alimentação desta ferramenta através da utilização dos formulários oficiais de registro de atividades dos NUCAs. <a href="https://docs.google.com/forms/d/e/1FAIpQLScobyUgTUC3BH-c8P1SwE3iw0g859PGDz1v4cLtH2pJ66DTZQ/viewform" target="_blank">Clique aqui</a> e saiba mais.',
+      'Os dados são registrados pela pessoa mobilizadora de adolescentes via formulário de registro de ações dos NUCAs e validados pelos parceiros implementadores do Selo UNICEF.Para conhecer o perfil de adolescentes integrantes dos NUCAs — por gênero, pertencimento étnico-cultural e raça e cor —, <a href="/">acesse o Painel dos NUCAs</a>',
     territoryFilter: "Filtre por estado",
     territoryAll: "Todos os territórios",
     territorySemiarid: "Semiárido",
@@ -81,7 +81,7 @@ const I18N = {
     mapTitle: "Ações pelo Brasil",
     mapSubtitle:
       "Veja a distribuição das ações desenvolvidas nos NUCAs por estado",
-    carouselTitle: "Registros das Ações",
+    carouselTitle: "Alguns destaques",
     carouselSubtitle:
       "Acompanhe como as atividades realizadas dos NUCAs foram desenvolvidas pelo Brasil",
     detailsTitle: "Panorama das ações por município",

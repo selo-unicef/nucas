@@ -585,6 +585,17 @@ let membrosTotaisBR;
 
 async function loadAndProcessData() {
   try {
+    // Limpa dados anteriores para evitar contagens duplicadas
+    Object.keys(NUCA_COUNT_BY_UF).forEach((uf) => {
+      delete NUCA_COUNT_BY_UF[uf];
+    });
+
+    Object.keys(DADOS_DETALHADOS_POR_MUNICIPIO).forEach((uf) => {
+      delete DADOS_DETALHADOS_POR_MUNICIPIO[uf];
+    });
+
+    alertNucasData = [];
+
     const rows = await buscarTodosRegistros("detalhes_nucas");
 
     let totalMembers = 0;
@@ -595,94 +606,68 @@ async function loadAndProcessData() {
       "⚠️ Não atende aos critérios": 0,
       "❌ Membros insuficientes": 0,
     };
+
     const genderCounts = {
       Feminino: 0,
       Masculino: 0,
       "Não binário": 0,
     };
 
-    alertNucasData = [];
-
     rows.forEach((item) => {
-      const status = item.status ? item.status.trim() : undefined;
+      const status = item.status ? item.status.trim() : "";
+      const uf = item.uf ? item.uf.trim() : "";
+      const municipio = item.municipio ? item.municipio.trim() : "";
 
-      if (status && status !== "---") {
-        const uf = item.uf ? item.uf.trim() : "";
-        const municipio = item.municipio ? item.municipio.trim() : "";
+      if (!status || status === "---") return;
 
-        const total = parseInt(item.total_membros, 10) || 0;
-        const feminino = parseInt(item.feminino, 10) || 0;
-        const masculino = parseInt(item.masculino, 10) || 0;
-        const naoBinario = parseInt(item.nao_binario, 10) || 0;
+      const total = parseInt(item.total_membros, 10) || 0;
+      const feminino = parseInt(item.feminino, 10) || 0;
+      const masculino = parseInt(item.masculino, 10) || 0;
+      const naoBinario = parseInt(item.nao_binario, 10) || 0;
 
-        if (status in nucaStatusCounts) {
-          nucaStatusCounts[status]++;
-        }
+      if (status in nucaStatusCounts) {
+        nucaStatusCounts[status]++;
+      }
 
-        totalMembers += total;
+      totalMembers += total;
 
-        if (status === "✅ NUCA criado") {
-          NUCA_COUNT_BY_UF[uf] = (NUCA_COUNT_BY_UF[uf] || 0) + 1;
-          totalMembersNucaCriado += total;
+      if (status === "✅ NUCA criado") {
+        NUCA_COUNT_BY_UF[uf] = (NUCA_COUNT_BY_UF[uf] || 0) + 1;
+        totalMembersNucaCriado += total;
 
-          // Gênero apenas dos registros com NUCA criado
-          genderCounts["Feminino"] += feminino;
-          genderCounts["Masculino"] += masculino;
-          genderCounts["Não binário"] += naoBinario;
-        } else {
-          if (
-            status.includes("❌") ||
-            status.includes("⚠️") ||
-            status.includes("Membros insuficientes") ||
-            status.includes("Não atende aos critérios")
-          ) {
-            alertNucasData.push({
-              UF: uf,
-              Municipio: municipio,
-              Total: total,
-              Feminino: feminino,
-              Masculino: masculino,
-              NaoBinario: naoBinario,
-              Status: status,
-            });
-          }
-        }
-
-        if (status === "✅ NUCA criado") {
-          NUCA_COUNT_BY_UF[uf] = (NUCA_COUNT_BY_UF[uf] || 0) + 1;
-          totalMembersNucaCriado += total;
-        } else {
-          if (
-            status.includes("❌") ||
-            status.includes("⚠️") ||
-            status.includes("Membros insuficientes") ||
-            status.includes("Não atende aos critérios")
-          ) {
-            alertNucasData.push({
-              UF: uf,
-              Municipio: municipio,
-              Total: total,
-              Feminino: feminino,
-              Masculino: masculino,
-              NaoBinario: naoBinario,
-              Status: status,
-            });
-          }
-        }
-
-        if (!DADOS_DETALHADOS_POR_MUNICIPIO[uf]) {
-          DADOS_DETALHADOS_POR_MUNICIPIO[uf] = [];
-        }
-        DADOS_DETALHADOS_POR_MUNICIPIO[uf].push({
-          uf: uf,
-          municipio: municipio,
-          feminino: feminino,
-          masculino: masculino,
-          naoBinario: naoBinario,
-          total: total,
-          status: status,
+        genderCounts.Feminino += feminino;
+        genderCounts.Masculino += masculino;
+        genderCounts["Não binário"] += naoBinario;
+      } else if (
+        status.includes("❌") ||
+        status.includes("⚠️") ||
+        status.includes("Membros insuficientes") ||
+        status.includes("Não atende aos critérios")
+      ) {
+        alertNucasData.push({
+          UF: uf,
+          Municipio: municipio,
+          Total: total,
+          Feminino: feminino,
+          Masculino: masculino,
+          NaoBinario: naoBinario,
+          Status: status,
         });
       }
+
+      if (!DADOS_DETALHADOS_POR_MUNICIPIO[uf]) {
+        DADOS_DETALHADOS_POR_MUNICIPIO[uf] = [];
+      }
+
+      DADOS_DETALHADOS_POR_MUNICIPIO[uf].push({
+        uf,
+        municipio,
+        feminino,
+        masculino,
+        naoBinario,
+        total,
+        status,
+      });
     });
 
     membrosTotaisBR = totalMembers;

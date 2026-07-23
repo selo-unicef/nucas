@@ -1,32 +1,44 @@
 [
-    {
-        "descricao": "Vídeo sobre a Lei da Escuta Protegida",
-        "url_foto": "",
-        "url_video": "https://www.youtube.com/watch?v=092t2EwHMn8&t"
-    },
-    {
-        "descricao": "Encontro do adolescente em Caruaru",
-        "url_foto": "https://selounicef.org.br/sites/default/files/inline-images/nucape-interna03.jpg",
-        "url_video": ""
-    },
-    {
-        "descricao": "Capacitação para 500 gestores púbicos de municípios da Bahia",
-        "url_foto": "https://selounicef.org.br/sites/default/files/inline-images/SeloBA5_0.jpg",
-        "url_video": ""
-    },
-    {
-        "descricao": "Municípios paraibanos são convidados para nova edição do Selo UNICEF 2025-2028",
-        "url_foto": "https://selounicef.org.br/sites/default/files/inline-images/20241029_124227.jpg",
-        "url_video": ""
-    },
-    {
-        "descricao": "Agrestina avança nas ações do Selo UNICEF com a realização do 1º Fórum Comunitário",
-        "url_foto": "https://agrestina.pe.gov.br/wp-content/uploads/2025/12/MG_7246.jpg",
-        "url_video": ""
-    },
-    {
-        "descricao": "Palmas recebe evento formativo sobre agendas de educação do Selo UNICEF",
-        "url_foto": "https://selounicef.org.br/sites/default/files/2026-04/Cr%C3%A9ditos%20Juliana%20CarneiroSeduc%20-%20Governo%20do%20Tocantins%20%281%29.JPG",
-        "url_video": ""
-    }
+  {
+    "descricao": "Ceará e Rio Grande do Norte levam protagonismo do NUCA ao III Congresso de Enfrentamento à Violência Sexual contra Crianças e Adolescentes",
+    "url_foto": "imagens-carrossel/image1.png",
+    "url_video": "",
+    "link": "https://selounicef.org.br/noticias/ceara-e-rio-grande-do-norte-levam-protagonismo-do-nuca-ao-iii-congresso-de-enfrentamento"
+  },
+  {
+    "descricao": "Quem cuida do Tapajós: o protagonismo de adolescentes indígenas na Amazônia",
+    "url_foto": "imagens-carrossel/image2.png",
+    "url_video": "",
+    "link": "https://www.unicef.org/brazil/historias/quem-cuida-do-tapajos-o-protagonismo-de-adolescentes-indigenas-na-amazonia"
+  },
+  {
+    "descricao": "Como eu me percebi como cidadã consciente do meu papel social",
+    "url_foto": "imagens-carrossel/image3.png",
+    "url_video": "",
+    "link": "https://www.unicef.org/brazil/historias/como-eu-me-percebi-como-cidada-consciente-do-meu-papel-social"
+  },
+  {
+    "descricao": "NUCAs Caruaru",
+    "url_foto": "imagens-carrossel/image4.png",
+    "url_video": "",
+    "link": ""
+  },
+  {
+    "descricao": "Realização de plantio de árvores e blitz educativa sobre mudanças climáticas em Pastos Bons",
+    "url_foto": "imagens-carrossel/image6.png",
+    "url_video": "",
+    "link": "https://www.famem.org.br/noticias/noticias/exibe/0043779-realizacao-de-plantio-de-arvores-e-blitz-educativa-sobre-mudancas-climaticas-em-pastos-bons"
+  },
+  {
+    "descricao": "Adolescentes lançam Manifesto pelo clima, direitos e oportunidades no Pará",
+    "url_foto": "imagens-carrossel/image7.png",
+    "url_video": "",
+    "link": "https://selounicef.org.br/noticias/adolescentes-lancam-manifesto-pelo-clima-direitos-e-oportunidades-no-para"
+  },
+  {
+    "descricao": "Estudantes do NUCA visitaram as dependências do TRE-SE",
+    "url_foto": "imagens-carrossel/image8.png",
+    "url_video": "",
+    "link": "https://www.tre-se.jus.br/comunicacao/noticias/2026/Abril/estudantes-do-nuca-visitaram-as-dependencias-do-tre-se"
+  }
 ]

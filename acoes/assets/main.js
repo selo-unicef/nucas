@@ -1,9 +1,10 @@
 const SUPABASE_URL = "https://hsiosuhgmkflakpckxxc.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhzaW9zdWhnbWtmbGFrcGNreHhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0NTcwOTUsImV4cCI6MjA4NjAzMzA5NX0.c-9dQeQ1DD_6pRPu9xJUGtsr9QAs9eNa8sS3bbsYa3c";
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhzaW9zdWhnbWtmbGFrcGNreHhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0NTcwOTUsImV4cCI6MjA4NjAzMzA5NX0.c-9dQeQ1DD_6pRPu9xJUGtsr9QAs9eNa8sS3bbsYa3c";
 
 const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
-  SUPABASE_ANON_KEY
+  SUPABASE_ANON_KEY,
 );
 
 async function buscarTodosRegistros(tabela, colunas = "*") {
@@ -392,7 +393,6 @@ function setCounter(selector, value) {
   if (el) el.textContent = formatNumber(value);
 }
 
-
 const MAPA_UF_SIGLAS = {
   ACRE: "AC",
   ALAGOAS: "AL",
@@ -433,7 +433,9 @@ function getFlexibleValue(row, keys = []) {
 }
 
 function getUfSigla(value) {
-  const raw = String(value || "").trim().toUpperCase();
+  const raw = String(value || "")
+    .trim()
+    .toUpperCase();
   if (!raw) return "";
 
   const parenthesisMatch = raw.match(/\(([A-Z]{2})\)/);
@@ -442,10 +444,13 @@ function getUfSigla(value) {
   if (/^[A-Z]{2}$/.test(raw)) return raw;
 
   const normalizedUf = normalizeSearchText(raw).toUpperCase();
-  const normalizedMap = Object.entries(MAPA_UF_SIGLAS).reduce((acc, [estado, sigla]) => {
-    acc[normalizeSearchText(estado).toUpperCase()] = sigla;
-    return acc;
-  }, {});
+  const normalizedMap = Object.entries(MAPA_UF_SIGLAS).reduce(
+    (acc, [estado, sigla]) => {
+      acc[normalizeSearchText(estado).toUpperCase()] = sigla;
+      return acc;
+    },
+    {},
+  );
 
   return normalizedMap[normalizedUf] || raw;
 }
@@ -480,7 +485,12 @@ function buildPopulationMap(populacaoData) {
     );
 
     const populacao = parsePopulationValue(
-      getFlexibleValue(row, ["Pop 2022", "População 2022", "Populacao 2022", "populacao"]),
+      getFlexibleValue(row, [
+        "Pop 2022",
+        "População 2022",
+        "Populacao 2022",
+        "populacao",
+      ]),
     );
 
     if (!municipio || !uf || populacao <= 0) return;
@@ -538,7 +548,12 @@ function getNucaUf(nuca) {
 
 function getNucaMunicipio(nuca) {
   return String(
-    getFlexibleValue(nuca, ["municipio", "Município", "município", "Municipio"]) || "",
+    getFlexibleValue(nuca, [
+      "municipio",
+      "Município",
+      "município",
+      "Municipio",
+    ]) || "",
   ).trim();
 }
 
@@ -552,29 +567,51 @@ function getNucaKey(nuca) {
 
 function isNucaCriado(nuca) {
   const status = String(
-    getFlexibleValue(nuca, ["NUCA criado?", "nuca_criado", "nuca criado", "status"]),
+    getFlexibleValue(nuca, [
+      "NUCA criado?",
+      "nuca_criado",
+      "nuca criado",
+      "status",
+    ]),
   ).trim();
-  return status.includes("✅") || normalizeSearchText(status).includes("nuca criado");
+  return (
+    status.includes("✅") || normalizeSearchText(status).includes("nuca criado")
+  );
 }
 
 function getTotalMembrosNuca(nuca) {
-  const total = safeInt(getFlexibleValue(nuca, ["Total membros", "total_membros", "total membros"]));
+  const total = safeInt(
+    getFlexibleValue(nuca, ["Total membros", "total_membros", "total membros"]),
+  );
   if (total > 0) return total;
 
   return (
     safeInt(getFlexibleValue(nuca, ["Feminino", "feminino"])) +
     safeInt(getFlexibleValue(nuca, ["Masculino", "masculino"])) +
-    safeInt(getFlexibleValue(nuca, ["Não binário", "Nao binario", "não binário", "nao_binario"]))
+    safeInt(
+      getFlexibleValue(nuca, [
+        "Não binário",
+        "Nao binario",
+        "não binário",
+        "nao_binario",
+      ]),
+    )
   );
 }
 
 function getNucasCriadosComAcoes(data) {
-  const municipiosComAcoes = new Set(data.map(getActionNucaKey).filter((key) => !key.endsWith("__")));
+  const municipiosComAcoes = new Set(
+    data.map(getActionNucaKey).filter((key) => !key.endsWith("__")),
+  );
   const nucasUnicos = new Map();
 
   nucasData.forEach((nuca) => {
     const key = getNucaKey(nuca);
-    if (!key.endsWith("__") && municipiosComAcoes.has(key) && isNucaCriado(nuca)) {
+    if (
+      !key.endsWith("__") &&
+      municipiosComAcoes.has(key) &&
+      isNucaCriado(nuca)
+    ) {
       nucasUnicos.set(key, nuca);
     }
   });
@@ -607,33 +644,34 @@ function destroyChart(id) {
   }
 }
 
-function createVerticalBarChart(canvasId, labels, values, barColor, maxItems = 7) {
+function createVerticalBarChart(
+  canvasId,
+  labels,
+  values,
+  barColor,
+  maxItems = 7,
+) {
   const ctx = document.getElementById(canvasId);
   if (!ctx) return;
 
   destroyChart(canvasId);
 
-let finalLabels = [...labels];
-let finalValues = [...values];
+  let finalLabels = [...labels];
+  let finalValues = [...values];
 
-if (
-  maxItems !== null &&
-  maxItems !== undefined &&
-  labels.length > maxItems
-) {
+  if (maxItems !== null && maxItems !== undefined && labels.length > maxItems) {
+    finalLabels = labels.slice(0, maxItems);
+    finalValues = values.slice(0, maxItems);
 
-  finalLabels = labels.slice(0, maxItems);
-  finalValues = values.slice(0, maxItems);
+    const othersValue = values
+      .slice(maxItems)
+      .reduce((acc, curr) => acc + (curr || 0), 0);
 
-  const othersValue = values
-    .slice(maxItems)
-    .reduce((acc, curr) => acc + (curr || 0), 0);
-
-  if (othersValue > 0) {
-    finalLabels.push(t("others"));
-    finalValues.push(othersValue);
+    if (othersValue > 0) {
+      finalLabels.push(t("others"));
+      finalValues.push(othersValue);
+    }
   }
-}
 
   const wrapLabel = (label, maxChars = 22, maxLines = 3) => {
     if (!label) return "";
@@ -874,44 +912,46 @@ function renderTopCharts(data) {
     "#MeuVotoImporta2026",
   ];
 
-  const temasPermitidosNormalizados = temasPermitidos.map((tema) => tema.trim());
+  const temasPermitidosNormalizados = temasPermitidos.map((tema) =>
+    tema.trim(),
+  );
 
-const temasAgrupados = aggregateByKey(data, (item) => {
-  const tema = (item.tema || "").trim();
+  const temasAgrupados = aggregateByKey(data, (item) => {
+    const tema = (item.tema || "").trim();
 
-  if (temasPermitidosNormalizados.includes(tema)) {
-    return translateLabel(tema);
-  }
+    if (temasPermitidosNormalizados.includes(tema)) {
+      return translateLabel(tema);
+    }
 
-  return t("others");
-});
+    return t("others");
+  });
 
-const temas = Object.entries(temasAgrupados).sort((a, b) => {
-  if (a[0] === t("others")) return 1;
-  if (b[0] === t("others")) return -1;
-  return b[1] - a[1];
-});
-  
+  const temas = Object.entries(temasAgrupados).sort((a, b) => {
+    if (a[0] === t("others")) return 1;
+    if (b[0] === t("others")) return -1;
+    return b[1] - a[1];
+  });
+
   const locais = topNWithOthers(
     aggregateByKey(data, (item) => translateLabel(item.local_acao)),
     7,
   );
 
   createVerticalBarChart(
-  "temasChart",
-  temas.map(([label]) => label),
-  temas.map(([, value]) => value),
-  COLORS.yellow,
-  null
-);
+    "temasChart",
+    temas.map(([label]) => label),
+    temas.map(([, value]) => value),
+    COLORS.yellow,
+    null,
+  );
 
-createVerticalBarChart(
-  "locaisChart",
-  locais.map(([label]) => label),
-  locais.map(([, value]) => value),
-  "#cca079",
-  7 // continua agrupando em "Outros"
-);
+  createVerticalBarChart(
+    "locaisChart",
+    locais.map(([label]) => label),
+    locais.map(([, value]) => value),
+    "#cca079",
+    7, // continua agrupando em "Outros"
+  );
 }
 
 function getYearOptions(data) {
@@ -1037,7 +1077,10 @@ function updateSummaryTexts(data) {
     textMain.innerHTML = t("summaryMain", {
       actions: formatNumber(totalAcoesMain),
       people: formatNumber(totalPublicoMain),
-    }).replace(currentLanguage === "en" ? " nationwide" : " pelo país", complementoMain);
+    }).replace(
+      currentLanguage === "en" ? " nationwide" : " pelo país",
+      complementoMain,
+    );
   }
 
   if (textAlert) {
@@ -1538,11 +1581,12 @@ async function init() {
   setupTerritoryButtons();
 
   try {
-    const [acoesDataBruto, nucasDataBruto, populacaoResponse] = await Promise.all([
-      buscarTodosRegistros("acoes_nuca"),
-      buscarTodosRegistros("detalhes_nucas"),
-      fetch(POPULACAO_MUNICIPIOS_URL),
-    ]);
+    const [acoesDataBruto, nucasDataBruto, populacaoResponse] =
+      await Promise.all([
+        buscarTodosRegistros("acoes_nuca"),
+        buscarTodosRegistros("detalhes_nucas"),
+        fetch(POPULACAO_MUNICIPIOS_URL),
+      ]);
 
     if (!populacaoResponse.ok) {
       throw new Error(
@@ -1586,9 +1630,7 @@ async function init() {
 
     console.log("Total de público filtrado:", totalPublico);
 
-    rawData = acoesData
-      .map(normalizeAction)
-      .map(adjustMobilizedPeople);
+    rawData = acoesData.map(normalizeAction).map(adjustMobilizedPeople);
 
     const acoesComPublicoAjustado = rawData.filter(
       (acao) => acao.publico_foi_ajustado,
@@ -1698,8 +1740,21 @@ function createCarouselItem(item) {
 
     div.addEventListener("click", () => {
       modalContent.innerHTML = `
-        <img src="${item.url_foto}" alt="${item.descricao}">
-      `;
+    <img src="${item.url_foto}" alt="${item.descricao}">
+
+    ${
+      item.link
+        ? `
+          <div class="btn-link-foto">
+            <a href="${item.link}" target="_blank" rel="noopener noreferrer">
+              Ler matéria
+            </a>
+          </div>
+        `
+        : ""
+    }
+  `;
+
       modal.classList.add("active");
     });
   }
@@ -1749,4 +1804,4 @@ modal.addEventListener("click", (event) => {
     modalContent.innerHTML = "";
   }
 });
-ß
+ß;

@@ -1220,6 +1220,14 @@ section.column-3.carrossel-section {
     white-space: nowrap;
 }
 
+.btn-link-foto {
+    background-color: #ffffff;
+    width: fit-content;
+    padding: 5px 20px;
+    border-radius: 18px;
+    margin-top: 10px;
+}
+
 @media (max-width: 768px) {
     .table-container table,
     #table-alert {

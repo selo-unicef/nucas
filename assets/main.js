@@ -1,11 +1,10 @@
-
 const SUPABASE_URL = "https://hsiosuhgmkflakpckxxc.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhzaW9zdWhnbWtmbGFrcGNreHhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0NTcwOTUsImV4cCI6MjA4NjAzMzA5NX0.c-9dQeQ1DD_6pRPu9xJUGtsr9QAs9eNa8sS3bbsYa3c";
-
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhzaW9zdWhnbWtmbGFrcGNreHhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0NTcwOTUsImV4cCI6MjA4NjAzMzA5NX0.c-9dQeQ1DD_6pRPu9xJUGtsr9QAs9eNa8sS3bbsYa3c";
 
 const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
-  SUPABASE_ANON_KEY
+  SUPABASE_ANON_KEY,
 );
 
 const DADOS_PROCESSADOS = {
@@ -622,9 +621,32 @@ async function loadAndProcessData() {
 
         totalMembers += total;
 
-        genderCounts["Feminino"] += feminino;
-        genderCounts["Masculino"] += masculino;
-        genderCounts["Não binário"] += naoBinario;
+        if (status === "✅ NUCA criado") {
+          NUCA_COUNT_BY_UF[uf] = (NUCA_COUNT_BY_UF[uf] || 0) + 1;
+          totalMembersNucaCriado += total;
+
+          // Gênero apenas dos registros com NUCA criado
+          genderCounts["Feminino"] += feminino;
+          genderCounts["Masculino"] += masculino;
+          genderCounts["Não binário"] += naoBinario;
+        } else {
+          if (
+            status.includes("❌") ||
+            status.includes("⚠️") ||
+            status.includes("Membros insuficientes") ||
+            status.includes("Não atende aos critérios")
+          ) {
+            alertNucasData.push({
+              UF: uf,
+              Municipio: municipio,
+              Total: total,
+              Feminino: feminino,
+              Masculino: masculino,
+              NaoBinario: naoBinario,
+              Status: status,
+            });
+          }
+        }
 
         if (status === "✅ NUCA criado") {
           NUCA_COUNT_BY_UF[uf] = (NUCA_COUNT_BY_UF[uf] || 0) + 1;
@@ -754,13 +776,18 @@ function calcularDadosGraficosPorEstado(ufSelecionada) {
 
   let totalMembersFiltrado = 0;
   municipios.forEach((municipio) => {
-    if (municipio.status in nucaStatusFiltrado)
-      nucaStatusFiltrado[municipio.status]++;
+  if (municipio.status in nucaStatusFiltrado) {
+    nucaStatusFiltrado[municipio.status]++;
+  }
+
+  // Gênero e total apenas dos municípios com NUCA criado
+  if (municipio.status === "✅ NUCA criado") {
     totalMembersFiltrado += municipio.total;
     genderCountsFiltrado["Feminino"] += municipio.feminino;
     genderCountsFiltrado["Masculino"] += municipio.masculino;
     genderCountsFiltrado["Não binário"] += municipio.naoBinario;
-  });
+  }
+});
 
   const adolescentesBase =
     ufSelecionada === "todos"
@@ -1517,7 +1544,6 @@ function aplicarFiltroPorUFAlert(uf) {
     });
   }
 }
-
 
 async function buscarTodosRegistros(tabela, colunas = "*") {
   const pageSize = 1000;

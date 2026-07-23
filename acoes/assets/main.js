@@ -71,7 +71,7 @@ const I18N = {
     intro1:
       "Os Núcleos de Cidadania de Adolescentes (NUCAs) fazem parte da metodologia do Selo UNICEF e são um indicador essencial da garantia do direito à participação de adolescentes e jovens, assegurando espaço seguro para o desenvolvimento das competências e da cidadania de meninas, menines e meninos em seus territórios.",
     intro2:
-      'Este painel interativo reflete o movimento dos NUCAs na edição do Selo UNICEF 2025-2028. A pessoa mobilizadora de adolescentes deve colaborar com a alimentação desta ferramenta através da utilização dos formulários oficiais de registro de adolescentes e de atividades dos NUCAs. <a href="https://selounicef.org.br/formularios-dos-nucas-edicao-2025-2028-do-selo-unicef" target="_blank">Clique aqui</a> e saiba mais.',
+      'Este painel interativo reflete as ações desenvolvidas pelos NUCAs na edição do Selo UNICEF 2025-2028. A pessoa mobilizadora deve colaborar com a alimentação desta ferramenta através da utilização dos formulários oficiais de registro de atividades dos NUCAs. <a href="https://docs.google.com/forms/d/e/1FAIpQLScobyUgTUC3BH-c8P1SwE3iw0g859PGDz1v4cLtH2pJ66DTZQ/viewform" target="_blank">Clique aqui</a> e saiba mais.',
     territoryFilter: "Filtre por estado",
     territoryAll: "Todos os territórios",
     territorySemiarid: "Semiárido",

@@ -68,7 +68,7 @@ const I18N = {
     pageTitle: "Dashboard - Selo UNICEF",
     headerHtml:
       '<a href="https://docs.google.com/spreadsheets/d/1hGOlbHZnNqLMpWoksYPZCawfadpJi-aN/edit?gid=1628412039#gid=1628412039" target="_blank">Clique aqui</a> e confira o status e pontuação do seu município em 28/11/2025',
-    pageHeading: "Panorama dos NUCAs",
+    pageHeading: "Panorama do perfil dos NUCAs",
     languagePt: "🇧🇷 Português",
     languageEn: "🇺🇸 Inglês",
     cardMembers: "Adolescentes inscritos/as",
@@ -77,7 +77,7 @@ const I18N = {
     intro1:
       "Os <strong>Núcleos de Cidadania de Adolescentes (NUCAs)</strong> fazem parte da metodologia do Selo UNICEF e são um indicador essencial da garantia do direito à participação de adolescentes e jovens, assegurando espaço seguro para o desenvolvimento das competências e da cidadania de meninas, menines e meninos em seus territórios.",
     intro2:
-      'Este painel interativo reflete o movimento dos NUCAs na edição do Selo UNICEF 2025-2028. A pessoa mobilizadora de adolescentes deve colaborar com a alimentação desta ferramenta através da utilização dos formulários oficiais de registro de adolescentes e de atividades dos NUCAs. <a href="https://selounicef.org.br/formularios-dos-nucas-edicao-2025-2028-do-selo-unicef" target="_blank">Clique aqui</a> e saiba mais.',
+      'Este painel interativo reflete o cadastro de adolescentes dos NUCAs na edição do Selo UNICEF 2025-2028. A pessoa mobilizadora deve colaborar com a alimentação desta ferramenta através da utilização dos formulários oficiais de registro de adolescentes. <a href="https://docs.google.com/forms/d/e/1FAIpQLScSR4eJmS6G1lUpJen58lu2hJN7HIadt7liJyi7aExqKNwDwA/viewform" target="_blank">Clique aqui</a> e saiba mais.',
     ez_all: "Todos os territórios",
     ez_amazonia: "Amazônia Legal",
     ez_semiarido: "Semiárido",

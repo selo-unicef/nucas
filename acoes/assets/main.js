@@ -71,7 +71,7 @@ const I18N = {
     intro1:
       "Este painel interativo mostra as ações realizadas por adolescentes dos NUCAs em seus municípios, organizadas por tema — mudanças climáticas, saúde, prevenção às violências, participação política, entre outros —, com o número de adolescentes participantes e pessoas mobilizadas por eles.",
     intro2:
-      'Os dados são registrados pela pessoa mobilizadora de adolescentes via formulário de registro de ações dos NUCAs e validados pelos parceiros implementadores do Selo UNICEF.Para conhecer o perfil de adolescentes integrantes dos NUCAs — por gênero, pertencimento étnico-cultural e raça e cor —, <a href="/nucas">acesse o Painel dos NUCAs</a>',
+      'Os dados são registrados pela pessoa mobilizadora de adolescentes via formulário de registro de ações dos NUCAs e validados pelos parceiros implementadores do Selo UNICEF.Para conhecer o perfil de adolescentes integrantes dos NUCAs — por gênero, pertencimento étnico-cultural e raça e cor —, <a href="https://selounicef.org.br/panorama-do-perfil-dos-nucas">acesse o Painel dos NUCAs</a>',
     territoryFilter: "Filtre por estado",
     territoryAll: "Todos os territórios",
     territorySemiarid: "Semiárido",

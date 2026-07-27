@@ -155,7 +155,7 @@ const I18N = {
     intro1:
       "The <strong>Adolescent Citizenship Centers (NUCAs)</strong> are part of the UNICEF Seal methodology and are an essential indicator of the right of adolescents and young people to participate, ensuring a safe space for girls, boys, and non-binary adolescents to develop skills and citizenship in their territories.",
     intro2:
-      'This interactive dashboard shows the movement of NUCAs in the 2025-2028 UNICEF Seal edition. The adolescent mobilizer should help keep this tool updated by using the official forms to register adolescents and NUCA activities. <a href="https://selounicef.org.br/formularios-dos-nucas-edicao-2025-2028-do-selo-unicef" target="_blank">Click here</a> to learn more.',
+      'This interactive dashboard shows the movement of NUCAs in the 2025-2028 UNICEF Seal edition. The adolescent mobilizer should help keep this tool updated by using the official forms to register adolescents and NUCA activities. <a href="https://selounicef.org.br/painel-nuca-em-acao" target="_blank">Click here</a> to learn more.',
     ez_all: "All territories",
     ez_amazonia: "Legal Amazon",
     ez_semiarido: "Semi-arid Region",

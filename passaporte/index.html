@@ -22,9 +22,11 @@
         <label class="search-field" for="municipioSearch">
           <p class="buscar">Buscar município</p>
           <div class="search-input-wrap">
-            <input id="municipioSearch" type="search" placeholder="Ex.: São Francisco de Assis do Piauí" autocomplete="off" />
-            <button id="btnBuscar" type="button">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M11 4a7 7 0 100 14 7 7 0 000-14zM21 21l-4.3-4.3" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <input id="municipioSearch" type="search" placeholder="Carregando municípios..." autocomplete="off" disabled />
+            <button id="btnBuscar" type="button" disabled>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M11 4a7 7 0 100 14 7 7 0 000-14zM21 21l-4.3-4.3" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
               Gerar
             </button>
           </div>
@@ -47,56 +49,57 @@
         <div id="loadingOverlay" class="loading-overlay" aria-hidden="true">
           <div class="spinner"></div>
           <strong>Gerando passaporte...</strong>
-          <span>Organizando mapa, dados e selos</span>
+          <span>Organizando dados e selos</span>
         </div>
 
         <div class="passport-stage">
           <article id="passaporte" class="passaporte">
-            <header class="passaporte-topo">
-              <h2 id="municipioTitulo">Selecione um município</h2>
-              <span>SELO UNICEF 2025-2028</span>
-            </header>
+            <section class="passport-cover">
+              <div class="cover-title">PASSAPORTE<br>PARTICIPAÇÃO<br>CIDADÃ</div>
 
-            <section class="passaporte-miolo">
-              <div class="capa">
-                <h3>PASSAPORTE DA<br />PARTICIPAÇÃO<br />CIDADÃ</h3>
-                <div class="logo-imagem">
-                  <img src="./assets/selo-unicef.png" alt="" srcset="">
-                </div>
-
-                <div class="mapa-brasil" aria-label="Mapa do Brasil com marcador do município selecionado">
-                  <svg id="brasilMap" viewBox="0 0 520 430" role="img" aria-label="Mapa do Brasil"></svg>
-                </div>
-
-                <p class="text-passaporte">Município comprometido com a jornada de participação cidadã de adolescentes</p>
+              <!-- <div class="engagement-seal" aria-hidden="true">
+                <span>#NUCAEMAÇÃO</span>
+                <div class="engagement-hands">✋</div>
+              </div> -->
+              <div class="logo-selo" aria-label="Logo Selo UNICEF 2025-2028">
+                <img src="./assets/marca-dourada.png" alt="Logo Selo UNICEF 2025-2028">
               </div>
 
-              <aside class="selos-lateral">
-                <!-- <h4>Selos conquistados</h4> -->
-                <div id="selosContainer" class="selos-container">
-                  <!-- <p class="empty-stamps">Os selos aparecerão aqui após a busca.</p> -->
-                </div>
-              </aside>
+              <div class="mapa-brasil" aria-label="Mapa do Brasil">
+                <img src="./assets/mapa.png" alt="Mapa do Brasil">
+              </div>
+
+              <p class="cover-message">Município<br>comprometido<br>com a jornada<br>de participação<br>cidadã de<br>adolescentes</p>
             </section>
 
-            <footer class="passaporte-footer">
-              <span id="resumoMunicipio">Aguardando seleção</span>
-            </footer>
-            <div class="patrocinadores">
-            <img src="./assets/barra-patrocinadores.png" alt="" srcset="">
-          </div>
-          </article>
+            <section class="passport-stamps-page">
+              <header class="passport-identification">
+                <div class="unicef-logo-box">
+                  <img src="./assets/selo-unicef.png" alt="Selo UNICEF 2025-2028">
+                </div>
+                <h2 id="municipioTitulo">NOME DO<br>MUNICÍPIO (UF)</h2>
+              </header>
 
-          
+              <div id="selosContainer" class="selos-container">
+                <p class="empty-stamps">Os carimbos conquistados aparecerão aqui.</p>
+              </div>
+            </section>
+
+            <span id="resumoMunicipio" class="passaporte-footer">Aguardando seleção</span>
+          </article>
         </div>
 
         <div class="download-actions">
           <button id="btnPng" type="button" disabled>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M4 19.5h16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M4 19.5h16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
             Baixar Imagem
           </button>
           <button id="btnPdf" type="button" disabled>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M4 19.5h16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M4 19.5h16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
             Baixar PDF
           </button>
         </div>
@@ -113,7 +116,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <script src="config.js"></script>

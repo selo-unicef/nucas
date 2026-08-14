@@ -17,7 +17,6 @@
   --shadow-soft: 0 22px 60px rgba(0, 85, 134, .12);
   --shadow-card: 0 10px 34px rgba(0, 85, 134, .10);
 
-  /* Extended tokens for the shell (do not affect .passaporte) */
   --surface: #FFFFFF;
   --surface-muted: #F7F7F1;
   --border-subtle: rgba(0, 60, 90, .10);
@@ -73,7 +72,7 @@ input {
 }
 
 /* =========================================================
-   Sidebar (hero + busca)
+   Sidebar
    ========================================================= */
 .hero-card {
   position: sticky;
@@ -144,7 +143,9 @@ h1 {
   font-size: 14.5px;
 }
 
-/* --- search --- */
+/* =========================================================
+   Busca
+   ========================================================= */
 .search-panel {
   display: flex;
   flex-direction: column;
@@ -522,185 +523,201 @@ button.suggestion-item.active {
 }
 
 /* =========================================================
-   PASSAPORTE — layout preservado, apenas consolidado
-   (todas as regras abaixo reproduzem exatamente o resultado
-   visual final do CSS original; nenhuma medida foi alterada)
+   PASSAPORTE — página dupla
    ========================================================= */
 .passaporte {
   flex: 0 0 auto;
-  width: 980px;
-  height: 1140px;
-  min-height: 1140px;
-  background: var(--amarelo);
-  padding: 0 40px 122px;
-  position: relative;
-  transform-origin: top center;
-  border-radius: 4px;
+  width: 1400px;
+  height: 980px;
+  min-height: 980px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 51.5% 48.5%;
+  background: #fff;
+  border: 0;
+  border-radius: 24px;
   overflow: hidden;
-  border: 2px solid #bfbfbf;
+  position: relative;
+  box-shadow: 0 16px 55px rgba(0, 0, 0, .16);
+  transform-origin: top center;
 }
 
 .passport-stage .passaporte {
-  transform: scale(.58);
+  transform: scale(.61);
   transform-origin: top center;
-  margin-bottom: -478px;
+  margin-bottom: -382px;
 }
 
-.passaporte-topo {
-  width: 580px;
-  background: #fff;
-  border-radius: 0 0 42px 42px;
-  padding: 23px 18px 16px;
-  text-align: center;
-  margin-bottom: 24px;
-}
-
-.passaporte-topo h2 {
-  margin: 0 0 14px;
-  color: #0b0b0d;
-  font-size: 31px;
-  line-height: 1.05;
-  letter-spacing: -1.5px;
-}
-
-.passaporte-topo span {
-  display: inline-block;
-  background: var(--laranja);
-  color: var(--font-text-color);
-  padding: 9px 23px;
-  font-weight: 600;
-  font-size: 21px;
-  letter-spacing: .05em;
-}
-
-.passaporte-miolo {
-  display: grid;
-  grid-template-columns: 565px 1fr;
-  min-height: 790px;
-}
-
-.capa {
-  background: #3f7fbd;
-  color: var(--font-text-color);
-  border-radius: 0 72px 72px 0;
-  padding: 38px 50px 36px;
-  box-shadow: 10px 8px 21px rgba(0, 0, 0, .22);
+.passport-cover,
+.passport-stamps-page {
   position: relative;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.passport-cover {
+  color: #d6b55a;
+  padding: 118px 72px 64px;
+  border-radius: 24px 52px 52px 24px;
   z-index: 2;
+  background-color: #14265e;
 }
 
-.capa h3 {
-  margin: 0;
-  font-size: 53px;
-  line-height: 1.15;
-  letter-spacing: -1.6px;
-  font-weight: 700;
+.cover-title {
+  position: relative;
+  z-index: 3;
+  width: 320px;
+  font-size: 35px;
+  line-height: 1.02;
+  letter-spacing: -1.4px;
+  font-weight: 900;
+  text-align: right;
 }
 
-p.text-passaporte {
-  font-size: 24px !important;
-  font-weight: 500 !important;
-}
-
-.logo-imagem {
+.logo-selo {
   position: absolute;
-  right: 27px;
-  top: 141px;
-  width: 250px;
-  height: 266px;
-  border-radius: 40px;
+  z-index: 3;
+  top: 47px;
+  right: 58px;
+  width: 267px;
+  height: 267px;
+  /* border: 8px double #e8bb3d; */
+  /* border-radius: 50%; */
   display: grid;
   place-items: center;
+  /* color: #e8bb3d; */
+  transform: rotate(-7deg);
+  /* box-shadow: inset 0 0 0 5px rgba(232, 187, 61, .34), 0 0 0 2px rgba(232, 187, 61, .55); */
   text-align: center;
-  padding: 26px;
 }
 
-.logo-imagem img {
+.logo-selo img {
+  width: 100%;
+}
+
+.engagement-seal span {
+  position: absolute;
+  top: 30px;
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+.engagement-hands {
+  font-size: 96px;
+  line-height: 1;
+  filter: grayscale(1) sepia(1) saturate(3);
+}
+
+/* PNG fixo do mapa do Brasil */
+.passport-cover .mapa-brasil {
+  position: absolute;
+  left: 121px;
+  bottom: 140px;
+  width: 550px;
+  z-index: 3;
+}
+
+.passport-cover .mapa-brasil img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.cover-message {
+    position: absolute;
+    z-index: 3;
+    left: 111px;
+    bottom: 52px;
+    margin: 0;
+    color: #d6b55a;
+    font-weight: 700;
+    font-size: 29px;
+    line-height: 1.12;
+    text-align: right;
+}
+
+.passport-stamps-page {
+  background-image: url("./image/Passaporte.png");
+  background-repeat: no-repeat;
+  background-position: -50px center;
+  background-size: 100% 100%;
+  position: relative;
+  right: 35px;
+}
+
+.passport-stamps-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: .16;
+  background-image:
+    linear-gradient(90deg, rgba(0, 89, 128, .35) 1px, transparent 1px),
+    linear-gradient(rgba(0, 89, 128, .25) 1px, transparent 1px);
+  background-size: 72px 72px;
+  pointer-events: none;
+}
+
+.passport-identification {
+  position: relative;
+  z-index: 2;
+  height: 265px;
+  display: grid;
+  grid-template-columns: 245px 1fr;
+  align-items: center;
+  gap: 34px;
+}
+
+.unicef-logo-box {
+  height: 265px;
+  margin-top: 48px;
+  position: relative;
+  left: 34px;
+  border-radius: 0 40px 40px 0;
+  background: #fff;
+  display: grid;
+  place-items: center;
+  padding: 15px;
+}
+
+.unicef-logo-box img {
   width: 100%;
   height: 100%;
   object-fit: contain;
 }
 
-.logo-icon {
-  font-size: 52px;
-  color: var(--amarelo);
-}
-
-.mapa-brasil {
-  position: absolute;
-  left: 40px;
-  bottom: 50px;
-  width: 430px;
-  height: 500px;
-}
-
-.mapa-brasil svg {
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-
-.state-path {
-  fill: var(--amarelo);
-  stroke: #2d72b1;
-  stroke-width: 1.15;
-  stroke-linejoin: round;
-}
-
-.map-pin-svg {
-  fill: #a45d32;
-  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, .22));
-}
-
-.map-pin-core {
-  fill: var(--amarelo);
-}
-
-.capa p {
-  position: absolute;
-  left: 48px;
-  right: 46px;
-  bottom: 38px;
+.passport-identification h2 {
   margin: 0;
-  font-weight: 850;
-  font-size: 27px;
-  line-height: 1.18;
-}
-
-.selos-lateral {
-  background: var(--bg-container-light);
-  border: 13px solid #2f75bd;
-  border-left: 0;
-  border-radius: 0 68px 68px 0;
-  margin: 31px 0 18px -21px;
-  padding: 5px 22px 5px 45px;
-  display: flex;
-  align-items: stretch;
-  justify-content: center;
-}
-
-.selos-lateral h4 {
-  margin: 0 0 14px;
-  font-size: 17px;
-  color: var(--font-title-color);
+  color: #14265e;
+  font-size: 32px;
+  line-height: 1.02;
+  font-weight: 700;
+  letter-spacing: -1px;
   text-transform: uppercase;
-  letter-spacing: .08em;
+  position: relative;
+  left: 24px;
+  padding-top: 45px;
+  max-width: 310px;
 }
 
-.selos-container {
+.passport-stamps-page .selos-container {
+  position: relative;
+  z-index: 2;
   width: 100%;
-  min-height: 640px;
+  height: 640px;
+  min-height: 0;
+  padding: 20px 18px 8px;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
   align-content: center;
-  align-items: center;
-  gap: var(--stamp-gap, 6px);
-  padding: 8px;
+  justify-content: center;
+  gap: 0;
 }
 
-.selos-container.has-stamps {
-  padding: 16px 6px;
+.passport-stamps-page .selos-container.has-stamps {
+  padding: 0 4px 4px;
 }
 
 .selo-img {
@@ -710,55 +727,44 @@ p.text-passaporte {
   transform: rotate(var(--rot, 0deg));
 }
 
-.selos-container.has-stamps .selo-img {
-  width: var(--stamp-size, 112px);
-  height: var(--stamp-size, 112px);
+.passport-stamps-page .selos-container.has-stamps .selo-img {
+  width: var(--stamp-size, 170px);
+  height: var(--stamp-size, 170px);
+  margin: var(--stamp-overlap, -20px);
   object-fit: contain;
-  transform: rotate(var(--rot, 0deg));
-  margin: var(--stamp-overlap, 0);
-  transition: width .18s ease, height .18s ease, margin .18s ease;
+  filter: saturate(.96) contrast(1.03);
 }
 
-.selos-container.stamps-1,
-.selos-container.stamps-2,
-.selos-container.stamps-3 {
-  --stamp-size: 200px;
-  --stamp-gap: 0px;
-  --stamp-overlap: -8px;
+.passport-stamps-page .selos-container.stamps-1,
+.passport-stamps-page .selos-container.stamps-2,
+.passport-stamps-page .selos-container.stamps-3 {
+  --stamp-size: 245px;
+  --stamp-overlap: -12px;
 }
 
-.selos-container.stamps-4 {
-  --stamp-size: 165px;
+.passport-stamps-page .selos-container.stamps-4,
+.passport-stamps-page .selos-container.stamps-5,
+.passport-stamps-page .selos-container.stamps-6 {
+  --stamp-size: 205px;
+  --stamp-overlap: -15px;
 }
 
-
-.selos-container.stamps-5,
-.selos-container.stamps-6 {
-  --stamp-size: 140px;
-  --stamp-gap: 0px;
-  --stamp-overlap: -6px;
+.passport-stamps-page .selos-container.stamps-7,
+.passport-stamps-page .selos-container.stamps-8,
+.passport-stamps-page .selos-container.stamps-9,
+.passport-stamps-page .selos-container.stamps-10 {
+  --stamp-size: 178px;
+  --stamp-overlap: -20px;
 }
 
-
-
-.selos-container.stamps-7,
-.selos-container.stamps-8,
-.selos-container.stamps-9,
-.selos-container.stamps-10 {
-  --stamp-size: 122px;
-  --stamp-gap: 4px;
-  --stamp-overlap: -3px;
-}
-
-.selos-container.stamps-11,
-.selos-container.stamps-12,
-.selos-container.stamps-13,
-.selos-container.stamps-14,
-.selos-container.stamps-15,
-.selos-container.stamps-16 {
-  --stamp-size: 100px;
-  --stamp-gap: 3px;
-  --stamp-overlap: -1px;
+.passport-stamps-page .selos-container.stamps-11,
+.passport-stamps-page .selos-container.stamps-12,
+.passport-stamps-page .selos-container.stamps-13,
+.passport-stamps-page .selos-container.stamps-14,
+.passport-stamps-page .selos-container.stamps-15,
+.passport-stamps-page .selos-container.stamps-16 {
+  --stamp-size: 150px;
+  --stamp-overlap: -18px;
 }
 
 .empty-stamps {
@@ -771,65 +777,35 @@ p.text-passaporte {
 }
 
 .passaporte-footer {
-  position: absolute;
-  left: 43px;
-  right: 43px;
-  bottom: 92px;
-  color: rgba(0, 0, 0, .5);
-  font-size: 12px;
-  font-weight: 750;
   display: none;
-  z-index: 5;
 }
 
-.patrocinadores {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  height: 167px;
-  z-index: 12;
-  display: flex;
-  align-items: stretch;
-  justify-content: center;
-  background: #ffffff;
-  border-radius: 0;
-  padding: 0;
-  margin: 0;
-  overflow: hidden;
+.patrocinadores,
+.passaporte-topo,
+.passaporte-miolo {
+  display: none !important;
 }
 
-.patrocinadores img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: center;
-  margin: 0;
-}
-
-/* Export off-screen host used by html2canvas */
+/* Export off-screen host */
 .export-host {
   position: fixed;
   left: -99999px;
   top: 0;
-  width: 980px;
-  height: 1140px;
+  width: 1400px;
+  height: 980px;
   overflow: hidden;
   pointer-events: none;
   opacity: 0;
   z-index: -1;
 }
 
-/* A borda cinza do preview some apenas na exportação (PNG/PDF) */
 .export-host .passaporte,
 .passaporte.exporting {
   transform: none !important;
   margin: 0 !important;
-  width: 980px !important;
-  height: 1140px !important;
-  min-height: 1140px !important;
+  width: 1400px !important;
+  height: 980px !important;
+  min-height: 980px !important;
   max-width: none !important;
   max-height: none !important;
   border-radius: 0 !important;
@@ -894,10 +870,10 @@ p.text-passaporte {
   }
 
   .passport-stage .passaporte {
-    transform: scale(.44);
+    transform: scale(.34);
     transform-origin: top left;
-    margin-right: -548px;
-    margin-bottom: -638px;
+    margin-right: -924px;
+    margin-bottom: -647px;
   }
 
   .toast {
@@ -906,4 +882,23 @@ p.text-passaporte {
     left: 14px;
     width: auto;
   }
+}
+
+/* =========================================================
+   Estado inicial do buscador
+   ========================================================= */
+input:disabled {
+  cursor: wait;
+  opacity: .62;
+  color: var(--text-muted);
+}
+
+.search-input-wrap:has(input:disabled) {
+  opacity: .72;
+  box-shadow: none;
+}
+
+.search-input-wrap:has(input:disabled):focus-within {
+  border-color: var(--border-subtle);
+  box-shadow: none;
 }

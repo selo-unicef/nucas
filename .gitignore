@@ -1,1 +1,5 @@
-.history
+.historyprojeto_backup/
+
+projeto_backup/
+.history/
+.DS_Store

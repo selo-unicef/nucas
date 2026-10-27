@@ -1530,35 +1530,98 @@ function aplicarFiltroPorUFAlert(uf) {
   }
 }
 
-async function buscarTodosRegistros(tabela, colunas = "*") {
-  const pageSize = 1000;
-  let from = 0;
-  let todos = [];
+// Cache compartilhado entre as páginas, com atualização a cada 10 minutos.
+const DADOS_CACHE_TTL = 10 * 60 * 1000;
+const consultasEmAndamento = new Map();
+let conexaoCache = null;
 
-  while (true) {
-    const { data, error } = await supabaseClient
-      .from(tabela)
-      .select(colunas)
-      .range(from, from + pageSize - 1);
-
-    if (error) {
-      throw error;
-    }
-
-    if (!data || data.length === 0) {
-      break;
-    }
-
-    todos = todos.concat(data);
-
-    if (data.length < pageSize) {
-      break;
-    }
-
-    from += pageSize;
+function abrirCacheDados() {
+  if (!('indexedDB' in window)) return Promise.resolve(null);
+  if (!conexaoCache) {
+    conexaoCache = new Promise((resolve) => {
+      try {
+        const request = indexedDB.open('nucas-painel-cache-v1', 1);
+        request.onupgradeneeded = () => {
+          if (!request.result.objectStoreNames.contains('consultas')) {
+            request.result.createObjectStore('consultas');
+          }
+        };
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => resolve(null);
+        request.onblocked = () => resolve(null);
+      } catch (_) { resolve(null); }
+    });
   }
+  return conexaoCache;
+}
 
-  return todos;
+async function lerCacheDados(chave) {
+  const db = await abrirCacheDados();
+  if (!db) return null;
+  return new Promise((resolve) => {
+    try {
+      const request = db.transaction('consultas', 'readonly')
+        .objectStore('consultas').get(chave);
+      request.onsuccess = () => {
+        const salvo = request.result;
+        resolve(salvo && salvo.expiresAt > Date.now() && Array.isArray(salvo.data)
+          ? salvo.data : null);
+      };
+      request.onerror = () => resolve(null);
+    } catch (_) { resolve(null); }
+  });
+}
+
+async function salvarCacheDados(chave, data) {
+  const db = await abrirCacheDados();
+  if (!db) return;
+  return new Promise((resolve) => {
+    try {
+      const tx = db.transaction('consultas', 'readwrite');
+      tx.objectStore('consultas').put({ data, expiresAt: Date.now() + DADOS_CACHE_TTL }, chave);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => resolve();
+      tx.onabort = () => resolve();
+    } catch (_) { resolve(); }
+  });
+}
+
+// As colunas listadas são utilizadas em todas as visualizações do painel.
+// Ações permanece completa porque seus campos alimentam gráficos e o passaporte.
+const COLUNAS_PAINEL = {
+  detalhes_nucas: 'uf,municipio,status,total_membros,feminino,masculino,nao_binario',
+  detalhes_adolescentes: 'uf,municipio,indigenas,quilombolas,ribeirinhos,adolescentes,status,amarela,branca,parda,preta',
+};
+
+async function buscarTodosRegistros(tabela, colunas = '*') {
+  const selecao = colunas === '*' ? (COLUNAS_PAINEL[tabela] || '*') : colunas;
+  const chave = `${SUPABASE_URL}|${tabela}|${selecao}`;
+  if (consultasEmAndamento.has(chave)) return consultasEmAndamento.get(chave);
+
+  const consulta = (async () => {
+    const armazenado = await lerCacheDados(chave);
+    if (armazenado) return armazenado;
+
+    const pageSize = 1000;
+    let from = 0;
+    let todos = [];
+    while (true) {
+      const { data, error } = await supabaseClient
+        .from(tabela)
+        .select(selecao)
+        .range(from, from + pageSize - 1);
+      if (error) throw error;
+      if (!data || data.length === 0) break;
+      todos = todos.concat(data);
+      if (data.length < pageSize) break;
+      from += pageSize;
+    }
+    await salvarCacheDados(chave, todos);
+    return todos;
+  })();
+  consultasEmAndamento.set(chave, consulta);
+  try { return await consulta; }
+  finally { consultasEmAndamento.delete(chave); }
 }
 
 async function loadAdolescentesTableData() {
